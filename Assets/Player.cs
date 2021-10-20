@@ -12,17 +12,17 @@ public class Player : MonoBehaviour
      * 
      * 
      */
-    public const float VELOCITY = 3;
-    public const float JUMP_FORCE = 3;
-    public const float AIR_JUMP_FORCE = 3;
+    public static float VELOCITY = 3;
+    public static float JUMP_FORCE = 3;
+    public static float AIR_JUMP_FORCE = 3;
 
-    public const KeyCode LEFT = KeyCode.A;
-    public const KeyCode RIGHT = KeyCode.D;
-    public const KeyCode JUMP = KeyCode.W;
-    public const KeyCode FALL = KeyCode.S;
-    public const KeyCode MOVE_1 = KeyCode.Space;
+    public static KeyCode LEFT = KeyCode.A;
+    public static KeyCode RIGHT = KeyCode.D;
+    public static KeyCode JUMP = KeyCode.W;
+    public static KeyCode FALL = KeyCode.S;
+    public static KeyCode MOVE_1 = KeyCode.Space;
 
-    public const bool DEFAULT_SPRITE_DIRECTION = true;
+    public static bool DEFAULT_SPRITE_DIRECTION = true;
 
     /**PLAYER MOVEMENT: These track the characteristics of a specific character instance at any given point.
      * Changing these parameters will alter the movement abilities of players.
@@ -46,6 +46,23 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool jumpsExhausted;
 
+    /**STATE MANAGEMENT:
+     * Refactor to separate classes eventually
+     */
+    public enum PlayerState 
+    {
+        idle,
+        air,
+        airJumpsExhausted,
+        warmUp,
+        attack,
+        coolDown,
+        landing,
+        stun
+    }
+
+    public PlayerState state = PlayerState.idle;
+
     /**CONTROLLER: 
      * enables us to assign different codes to the character
      */
@@ -53,7 +70,7 @@ public class Player : MonoBehaviour
     //Input Assignment
     private KeyCode left = LEFT;
     private KeyCode right = RIGHT;
-    private KeyCode jump = JUMP;
+    private KeyCode up = JUMP;
     private KeyCode fall = FALL;
     private KeyCode move1 = MOVE_1;
 
@@ -65,51 +82,132 @@ public class Player : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         rb.freezeRotation = true;
     }
-
-    // Update is called once per frame
+ 
+    // Decide on State and then apply corresponding policies to said state
     void Update()
     {
+        switch (state) {
+            case PlayerState.idle:
+                updateIdle();
+                break;
+            case PlayerState.air:
+                updateAir();
+                break;
+            case PlayerState.airJumpsExhausted:
+                updateAirJumpsExhausted();
+                break;
+            case PlayerState.warmUp:
+                updateWarmUp();
+                break;
+            case PlayerState.attack:
+                updateAttack();
+                break;
+            case PlayerState.coolDown:
+                updateCoolDown();
+                break;
+            case PlayerState.landing:
+                updateLanding();
+                break;
+            case PlayerState.stun:
+                updateStun();
+                break;
+            default:
+                state = PlayerState.idle;
+                break;
+        }
 
-        //Left/Right Movement
-        //change velocity, update sprite
-        if (Input.GetKey(right))
-        { 
-            rb.velocity = new Vector2(velocity, rb.velocity.y);
-            sr.flipX = !defaultSpriteDirection;
-        }
-        else if (Input.GetKey(left))
-        {
-            rb.velocity = new Vector2(-velocity, rb.velocity.y);
-            sr.flipX = defaultSpriteDirection;
-        }
-        else
-        {
-            rb.velocity = new Vector2(0, rb.velocity.y);
-        }
 
-        //Single Jump
-        if (Input.GetKeyDown(jump))
+    }
+
+    /**A player, from idle, can:
+     * move
+     * jump
+     * attack
+     * be attacked
+     */
+    void updateIdle() 
+    {
+        if (Input.GetKey(right)) { moveRight(); }
+        else if (Input.GetKey(left)) { moveLeft(); }
+        if (Input.GetKeyDown(up)) { jump(); }
+    }
+
+    /**A player, from air, can:
+     * jump
+     * move
+     * attack
+     * be attacked
+     */
+    void updateAir() 
+    {
+        if (Input.GetKey(right)) { moveRight(); }
+        else if (Input.GetKey(left)) { moveLeft(); }
+        if (Input.GetKeyDown(up)) { jump(); }
+    }
+
+    /**A player, from air jumps exhausted, can:
+     * move
+     */
+    void updateAirJumpsExhausted() 
+    {
+        if (Input.GetKey(right)) { moveRight(); }
+        if (Input.GetKey(left)) { moveLeft(); }
+    }
+
+    /**PLAYER ACTIONS
+     * 
+     * 
+     * 
+     * 
+     */
+ 
+    private void jump() 
+    {
+        if (isGrounded)
         {
-            if (isGrounded == true)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, groundJumpForce);
-            }
-            else if (jumpsExhausted == false)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, airJumpForce);
-                jumpsExhausted = true;
-            }
+            rb.velocity = new Vector2(rb.velocity.x, groundJumpForce);
+            state = PlayerState.air;
         }
+        else if (!jumpsExhausted)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, airJumpForce);
+            jumpsExhausted = true;
+            state = PlayerState.airJumpsExhausted;
+        }
+    }
+
+    private void moveRight() 
+    {
+        rb.velocity = new Vector2(velocity, rb.velocity.y);
+        sr.flipX = !defaultSpriteDirection;
+    }
+
+    private void moveLeft()
+    {
+        rb.velocity = new Vector2(-velocity, rb.velocity.y);
+        sr.flipX = defaultSpriteDirection;
+    }
+
+    void updateWarmUp() { }
+    void updateAttack() { }
+    void updateCoolDown() { }
+    void updateLanding() { }
+    void updateStun() { }
+
+
+    void activateMove(Move move) 
+    { 
+        
     }
 
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
     {
-        print("reached");
         if (collision.gameObject.CompareTag("Floor"))
         {
             isGrounded = true;
             jumpsExhausted = false;
+            state = PlayerState.idle;
         }
     }
 
