@@ -1128,11 +1128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08bd2c67808b75c4a95ce5ab24871525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 50
-  jumpForce: 20
-  isGrounded: 0
-  jumpsExhausted: 0
-  maxJumps: 0
+  velocity: 3
+  groundJumpForce: 3
+  airJumpForce: 3
+  defaultSpriteDirection: 1
 --- !u!4 &2041087518
 Transform:
   m_ObjectHideFlags: 0
@@ -1141,7 +1140,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2041087513}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.5039744, y: -0.5502813, z: -13.169071}
+  m_LocalPosition: {x: -2.5039744, y: -0.5502813, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
