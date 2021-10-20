@@ -127,6 +127,7 @@ public class Player : MonoBehaviour
      */
     void updateIdle() 
     {
+        sr.color = Color.white;
         if (Input.GetKey(right)) { moveRight(); }
         else if (Input.GetKey(left)) { moveLeft(); }
         if (Input.GetKeyDown(up)) { jump(); }
@@ -140,6 +141,7 @@ public class Player : MonoBehaviour
      */
     void updateAir() 
     {
+        sr.color = Color.green;
         if (Input.GetKey(right)) { moveRight(); }
         else if (Input.GetKey(left)) { moveLeft(); }
         if (Input.GetKeyDown(up)) { jump(); }
@@ -150,6 +152,7 @@ public class Player : MonoBehaviour
      */
     void updateAirJumpsExhausted() 
     {
+        sr.color = Color.red;
         if (Input.GetKey(right)) { moveRight(); }
         if (Input.GetKey(left)) { moveLeft(); }
     }
