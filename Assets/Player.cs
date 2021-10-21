@@ -127,9 +127,14 @@ public class Player : MonoBehaviour
      */
     void updateIdle() 
     {
+        sr.color = Color.white;
+
         if (Input.GetKey(right)) { moveRight(); }
         else if (Input.GetKey(left)) { moveLeft(); }
+
         if (Input.GetKeyDown(up)) { jump(); }
+
+        if (Input.GetKeyDown(move1)) { performMove(); }
     }
 
     /**A player, from air, can:
@@ -140,9 +145,15 @@ public class Player : MonoBehaviour
      */
     void updateAir() 
     {
+        sr.color = Color.green;
+
         if (Input.GetKey(right)) { moveRight(); }
         else if (Input.GetKey(left)) { moveLeft(); }
+
         if (Input.GetKeyDown(up)) { jump(); }
+
+        if (Input.GetKeyDown(move1)) { performMove(); }
+
     }
 
     /**A player, from air jumps exhausted, can:
@@ -150,8 +161,34 @@ public class Player : MonoBehaviour
      */
     void updateAirJumpsExhausted() 
     {
+        sr.color = Color.grey;
         if (Input.GetKey(right)) { moveRight(); }
         if (Input.GetKey(left)) { moveLeft(); }
+    }
+
+    /**A player, from warm up, can:
+     * 
+     */
+    void updateWarmUp() 
+    {
+        sr.color = Color.yellow;
+    
+    }
+
+    /**A player, from attack, can:
+     * 
+     */
+    void updateAttack() 
+    {
+        sr.color = Color.red;
+    }
+    
+    /**A player, from cool down, can:
+     *
+     */
+    void updateCoolDown() 
+    {
+        sr.color = Color.blue;
     }
 
     /**PLAYER ACTIONS
@@ -160,7 +197,7 @@ public class Player : MonoBehaviour
      * 
      * 
      */
- 
+
     private void jump() 
     {
         if (isGrounded)
@@ -188,16 +225,25 @@ public class Player : MonoBehaviour
         sr.flipX = defaultSpriteDirection;
     }
 
-    void updateWarmUp() { }
-    void updateAttack() { }
-    void updateCoolDown() { }
+    private void performMove() 
+    {
+        StartCoroutine(MoveCoroutine());  
+    }
+
     void updateLanding() { }
     void updateStun() { }
 
 
-    void activateMove(Move move) 
-    { 
-        
+    IEnumerator MoveCoroutine() 
+    {
+        print("Move Coroutine activated.");
+        state = PlayerState.warmUp;
+        yield return new WaitForSeconds(1f);
+        state = PlayerState.attack;
+        yield return new WaitForSeconds(1f);
+        state = PlayerState.coolDown;
+        yield return new WaitForSeconds(1f);
+        state = PlayerState.idle;
     }
 
     //When a collision begins, this method is called
