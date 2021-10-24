@@ -28,6 +28,7 @@ public class Move : MonoBehaviour
     {
         cc = GetComponent<CircleCollider2D>();
         sr = GetComponent<SpriteRenderer>();
+        SetInactive();
     }
 
     // Update is called once per frame
@@ -35,4 +36,16 @@ public class Move : MonoBehaviour
     {
         
     }
+
+    public void SetInactive() 
+    {
+        transform.gameObject.SetActive(false);
+    }
+
+    public void SetActive() 
+    {
+        transform.gameObject.SetActive(true);
+    }
+
+
 }
