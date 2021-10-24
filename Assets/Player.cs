@@ -4,51 +4,35 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    /**COMPONENT DECLARATION*/
     Rigidbody2D rb;
     SpriteRenderer sr;
 
-    /***GENERATOR PARAMETERS: Intended to be moderated by generator
-     * TODO: Refactor constants into a separate object and initialize  them with a generator
-     * 
-     * 
-     */
-    public static float VELOCITY = 3;
-    public static float JUMP_FORCE = 3;
-    public static float AIR_JUMP_FORCE = 3;
+    /**PREFAB DECLARATION */
+    public Move move;
 
-    public static KeyCode LEFT = KeyCode.A;
-    public static KeyCode RIGHT = KeyCode.D;
-    public static KeyCode JUMP = KeyCode.W;
-    public static KeyCode FALL = KeyCode.S;
-    public static KeyCode MOVE_1 = KeyCode.Space;
-
-    public static bool DEFAULT_SPRITE_DIRECTION = true;
-
-    /**PLAYER MOVEMENT: These track the characteristics of a specific character instance at any given point.
-     * Changing these parameters will alter the movement abilities of players.
-     */
-
+    /**PLAYER MECHANICS: These track the characteristics of a specific character instance at any given point. Changing these parameters will alter the movement abilities of players. */
+    
     //velocity applied while a key is depressed.
-    public float velocity = VELOCITY;
+    public float velocity = 3;
 
     //force applied to each jump 
-    public float groundJumpForce = JUMP_FORCE;
+    public float groundJumpForce = 3;
 
     //force applied to each air jump
-    public float airJumpForce = AIR_JUMP_FORCE;
+    public float airJumpForce = 3;
 
     //true is right, false is left. Used for animation and move direction. TODO change this for readability
-    public bool defaultSpriteDirection = DEFAULT_SPRITE_DIRECTION;
+    public bool defaultSpriteDirection = true;
 
-    /**PRIVATE PARAMETERS: 
-     * Parameters used for internal logic or defined rules in our design space.
-     */
+    /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
+    public Move move1;
+
+    /**PRIVATE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
     private bool isGrounded;
     private bool jumpsExhausted;
 
-    /**STATE MANAGEMENT:
-     * Refactor to separate classes eventually
-     */
+    /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
     public enum PlayerState 
     {
         idle,
@@ -60,27 +44,28 @@ public class Player : MonoBehaviour
         landing,
         stun
     }
-
+    //default player state to idle on spawn.
     public PlayerState state = PlayerState.idle;
 
-    /**CONTROLLER: 
-     * enables us to assign different codes to the character
-     */
-
-    //Input Assignment
-    private KeyCode left = LEFT;
-    private KeyCode right = RIGHT;
-    private KeyCode up = JUMP;
-    private KeyCode fall = FALL;
-    private KeyCode move1 = MOVE_1;
+    /** PLAYER CONTROLS: sets the keycodes used to control the player. */
+    public KeyCode leftKey = KeyCode.A;
+    public KeyCode rightKey = KeyCode.D;
+    public KeyCode jumpKey = KeyCode.W;
+    public KeyCode fallKey = KeyCode.S;
+    public KeyCode move1Key = KeyCode.Space;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        //set relevant game objects as instance variables for performant access
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         rb.freezeRotation = true;
+
+        //instantiate moves on player creation
+        move1 = Instantiate<Move>(move, transform.position + new Vector3(1,0,0), Quaternion.identity, transform);
+        
     }
  
     // Decide on State and then apply corresponding policies to said state
@@ -129,12 +114,12 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.white;
 
-        if (Input.GetKey(right)) { moveRight(); }
-        else if (Input.GetKey(left)) { moveLeft(); }
+        if (Input.GetKey(rightKey)) { moveRight(); }
+        else if (Input.GetKey(leftKey)) { moveLeft(); }
 
-        if (Input.GetKeyDown(up)) { jump(); }
+        if (Input.GetKeyDown(jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(move1)) { performMove(); }
+        if (Input.GetKeyDown(move1Key)) { performMove(); }
     }
 
     /**A player, from air, can:
@@ -147,12 +132,12 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.green;
 
-        if (Input.GetKey(right)) { moveRight(); }
-        else if (Input.GetKey(left)) { moveLeft(); }
+        if (Input.GetKey(rightKey)) { moveRight(); }
+        else if (Input.GetKey(leftKey)) { moveLeft(); }
 
-        if (Input.GetKeyDown(up)) { jump(); }
+        if (Input.GetKeyDown(jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(move1)) { performMove(); }
+        if (Input.GetKeyDown(move1Key)) { performMove(); }
 
     }
 
@@ -162,8 +147,8 @@ public class Player : MonoBehaviour
     void updateAirJumpsExhausted() 
     {
         sr.color = Color.grey;
-        if (Input.GetKey(right)) { moveRight(); }
-        if (Input.GetKey(left)) { moveLeft(); }
+        if (Input.GetKey(rightKey)) { moveRight(); }
+        if (Input.GetKey(leftKey)) { moveLeft(); }
     }
 
     /**A player, from warm up, can:
@@ -181,6 +166,7 @@ public class Player : MonoBehaviour
     void updateAttack() 
     {
         sr.color = Color.red;
+        move1.SetActive();
     }
     
     /**A player, from cool down, can:
@@ -189,6 +175,7 @@ public class Player : MonoBehaviour
     void updateCoolDown() 
     {
         sr.color = Color.blue;
+        move1.SetInactive();
     }
 
     /**PLAYER ACTIONS
@@ -253,7 +240,10 @@ public class Player : MonoBehaviour
         {
             isGrounded = true;
             jumpsExhausted = false;
-            state = PlayerState.idle;
+            if (state == PlayerState.airJumpsExhausted || state == PlayerState.air) 
+            {
+                state = PlayerState.idle;
+            }
         }
     }
 
