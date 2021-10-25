@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameGenerator : MonoBehaviour
 {
-    /** Player Constants:
+    /** Player 1 Constants:
      *  SPAWN_LOCATION_P1 = ; // where the first spawn of the first player is
      *  LEFT_KEY_P1 = left; //left key movement
      *  RIGHT_KEY_P1 = right; //right key movement
@@ -12,6 +12,10 @@ public class GameGenerator : MonoBehaviour
      *  FALL_KEY_P1 = fall; //fall key (TODO)
      *  MOVE_1_KEY_P1 = move1Key; //attack key
      *  
+     *  Player 1 Move 1 Constants:
+     *  
+     *  
+     *  Player 2 Constants:
      *  SPAWN_LOCATION_P2 = ; // where the first spawn of the second player is
      *  LEFT_KEY_P2 = ; //left key movement
      *  RIGHT_KEY_P2 = ; //right key movement
@@ -29,20 +33,21 @@ public class GameGenerator : MonoBehaviour
 
         //TODO: Fetch from document - replace with constants set above during setup
         
-    
-
         //Player 1 Instantiation
-        Vector3 spawnLocationP1 = new Vector3(1, 0, 0);
+        Vector3 spawnLocationP1 = new Vector3(-2, 0, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
         //Player 1 Controls
         player1.leftKey = KeyCode.A;
-        player1.rightKey= KeyCode.D;
+        player1.rightKey = KeyCode.D;
         player1.jumpKey = KeyCode.W;
         player1.fallKey = KeyCode.S;
         player1.move1Key = KeyCode.Space;
+        //player 1 Move 1 Definition
+        player1.move1.center = player1.transform.position + new Vector3(-1, 0, 0);
+        
 
         //Player 2 Instantiation
-        Vector3 spawnLocationP2 = new Vector3(-1, 0, 0);
+        Vector3 spawnLocationP2 = new Vector3(2, 0, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         //Player 2 Controls
         player2.leftKey = KeyCode.J;

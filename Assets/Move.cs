@@ -11,16 +11,27 @@ public class Move : MonoBehaviour
      * 
      */
 
-    public Vector2 CENTER = new Vector2(1, 0);
-    public float X_SCALE = 1;
-    public float Y_SCALE = 1;
+    public Vector3 center = new Vector3(1, 0, 0);
+    public float xScale = 1;
+    public float yScale = 1;
     
-    public float Z_ROTATION = 0;
+    public float zRotation = 0;
 
-    public float WARM_UP_DURATION = 1;
-    public float EXECUTION_DURATION = 1;
-    public float COOL_DOWN_DURATION = 1;
+    //determines execution of the move
+    public float warmUpDuration = 0.1f;
+    public float executionDuration = 0.3f;
+    public float coolDownDuration = 0.1f;
 
+    //damage applied from hitting with the move
+    public float damageGiven = 10;
+
+    //TODO: damage recieved from executing the move
+    public float damageTaken = 10;
+
+    //TODO: additional directional base knockback
+
+    //Determines knockback intensity
+    public float knockbackScalar = 5;
 
 
     // Start is called before the first frame update
@@ -45,6 +56,16 @@ public class Move : MonoBehaviour
     public void SetActive() 
     {
         transform.gameObject.SetActive(true);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision) 
+    {
+
+    }
+
+    void OnCollisionExit2D(Collision2D collision) 
+    { 
+    
     }
 
 
