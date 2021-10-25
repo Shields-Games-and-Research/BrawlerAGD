@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6085442222757995880}
   - component: {fileID: 6085442222757995883}
-  - component: {fileID: 6085442222757995882}
-  - component: {fileID: 6085442222757995881}
+  - component: {fileID: 1539125409374822326}
+  - component: {fileID: 1235602595456767869}
   m_Layer: 0
   m_Name: Move
-  m_TagString: Untagged
+  m_TagString: Attack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,23 +84,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!58 &6085442222757995882
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6085442222757995895}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 0.5
---- !u!114 &6085442222757995881
+--- !u!114 &1539125409374822326
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,10 +96,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91343efb44ce3dd4d80269d2b1709f98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CENTER: {x: 1, y: 0}
-  X_SCALE: 1
-  Y_SCALE: 1
-  Z_ROTATION: 0
-  WARM_UP_DURATION: 1
-  EXECUTION_DURATION: 1
-  COOL_DOWN_DURATION: 1
+  center: {x: 1, y: 0, z: 0}
+  xScale: 1
+  yScale: 1
+  zRotation: 0
+  warmUpDuration: 0.1
+  executionDuration: 0.3
+  coolDownDuration: 0.1
+  damageGiven: 10
+  damageTaken: 10
+  knockbackScalar: 5
+--- !u!58 &1235602595456767869
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6085442222757995895}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.0012333393}
+  serializedVersion: 2
+  m_Radius: 0.6492423

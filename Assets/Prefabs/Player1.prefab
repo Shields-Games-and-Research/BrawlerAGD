@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9002358621052085746}
   m_Layer: 0
   m_Name: Player1
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,12 +46,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08bd2c67808b75c4a95ce5ab24871525, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: {fileID: 6085442222757995881, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
+  move: {fileID: 1539125409374822326, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
   velocity: 3
   groundJumpForce: 3
   airJumpForce: 3
   defaultSpriteDirection: 1
+  move1: {fileID: 0}
   state: 0
+  leftKey: 97
+  rightKey: 100
+  jumpKey: 119
+  fallKey: 115
+  move1Key: 32
 --- !u!50 &9002358621052085749
 Rigidbody2D:
   serializedVersion: 4
@@ -137,6 +143,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 1}
+  m_Offset: {x: 0.0071418285, y: 0}
+  m_Size: {x: 0.74289274, y: 1}
   m_Direction: 0

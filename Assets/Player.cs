@@ -22,15 +22,13 @@ public class Player : MonoBehaviour
     //force applied to each air jump
     public float airJumpForce = 3;
 
-    //true is right, false is left. Used for animation and move direction. TODO change this for readability
-    public bool defaultSpriteDirection = true;
-
     /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move1;
 
     /**PRIVATE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
     private bool isGrounded;
     private bool jumpsExhausted;
+    private float damage = 0;
 
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
     public enum PlayerState 
@@ -54,9 +52,7 @@ public class Player : MonoBehaviour
     public KeyCode fallKey = KeyCode.S;
     public KeyCode move1Key = KeyCode.Space;
 
-
-    // Start is called before the first frame update
-    void Start()
+    void Awake() 
     {
         //set relevant game objects as instance variables for performant access
         rb = GetComponent<Rigidbody2D>();
@@ -64,9 +60,16 @@ public class Player : MonoBehaviour
         rb.freezeRotation = true;
 
         //instantiate moves on player creation
-        move1 = Instantiate<Move>(move, transform.position + new Vector3(1,0,0), Quaternion.identity, transform);
-        
+        move1 = Instantiate<Move>(move, transform.position + new Vector3(1, 0, 0), Quaternion.identity, transform);
+
     }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
  
     // Decide on State and then apply corresponding policies to said state
     void Update()
@@ -119,7 +122,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(move1Key)) { performMove(); }
+        if (Input.GetKeyDown(move1Key)) { performMove(move1); }
     }
 
     /**A player, from air, can:
@@ -137,7 +140,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(move1Key)) { performMove(); }
+        if (Input.GetKeyDown(move1Key)) { performMove(move1); }
 
     }
 
@@ -203,39 +206,50 @@ public class Player : MonoBehaviour
     private void moveRight() 
     {
         rb.velocity = new Vector2(velocity, rb.velocity.y);
-        sr.flipX = !defaultSpriteDirection;
+        if (transform.localScale.x < 0) 
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
     }
 
     private void moveLeft()
     {
         rb.velocity = new Vector2(-velocity, rb.velocity.y);
-        sr.flipX = defaultSpriteDirection;
+        if (transform.localScale.x > 0)
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+
     }
 
-    private void performMove() 
+    private void performMove(Move move) 
     {
-        StartCoroutine(MoveCoroutine());  
+        StartCoroutine(MoveCoroutine(move));  
     }
 
     void updateLanding() { }
     void updateStun() { }
 
 
-    IEnumerator MoveCoroutine() 
+    IEnumerator MoveCoroutine(Move move) 
     {
-        print("Move Coroutine activated.");
+        
         state = PlayerState.warmUp;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(move.warmUpDuration);
+
         state = PlayerState.attack;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(move.executionDuration);
+
         state = PlayerState.coolDown;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(move.coolDownDuration);
+
         state = PlayerState.idle;
     }
 
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
     {
+        
         if (collision.gameObject.CompareTag("Floor"))
         {
             isGrounded = true;
@@ -244,6 +258,27 @@ public class Player : MonoBehaviour
             {
                 state = PlayerState.idle;
             }
+        }
+
+    }
+
+    void applyKnockback(Vector2 direction, float scalar) 
+    {
+        rb.velocity += (scalar) * (direction) * (damage * .1f);//TODO: make hardcoded float a constant for the game generator
+    }
+
+    void OnTriggerEnter2D(Collider2D collision) 
+    {
+        //print(collision.gameObject.ToString());
+        if (collision.gameObject.CompareTag("Attack")) 
+        {
+            Move tempMove = collision.gameObject.GetComponent<Move>();
+            Vector2 knockbackDir = (transform.position - collision.gameObject.transform.position).normalized;
+            applyKnockback(knockbackDir, tempMove.knockbackScalar);
+            damage += tempMove.damageGiven;
+            print("Damage: " + damage);
+            //TODO make direction flip
+
         }
     }
 
