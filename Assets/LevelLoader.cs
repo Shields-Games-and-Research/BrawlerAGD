@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 using UnityEngine;
+using System.IO;
 
 public class LevelLoader : MonoBehaviour
 {
@@ -16,14 +17,18 @@ public class LevelLoader : MonoBehaviour
     public Tile Z;
     public Tile X;
     public Tile C;
+    public GameGenerator gamegen;
 
     // Start is called before the first frame update
     void Start()
     {
         var tilemap = GetComponentInChildren<Tilemap>();
         Debug.Log(tilemap.cellBounds);
-        var b = new BoundsInt(-8, -5, 0, 16, 4, 1);
-        MakePlatform(tilemap, b);
+        foreach (var platform in gamegen.platforms.platformList)
+        {
+            //TODO: mirroring
+            MakePlatform(tilemap, platform.ToBounds());
+        }
     }
 
     private void MakePlatform(Tilemap tilemap, BoundsInt bounds)
