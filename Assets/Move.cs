@@ -26,10 +26,14 @@ public class Move : MonoBehaviour
     public float damageGiven = 10;
 
     //additional directional base knockback
-    public Vector2 knockbackDirection = new Vector2(1f, 1f);
+    //applied in the direction of the player
+    public Vector2 knockbackDirection = new Vector2(1f, 1f).normalized;
 
     //Determines knockback intensity
     public float knockbackScalar = 5;
+
+    //Determines hitstun duration
+    public float hitstunDuration = 0.3f;
 
 
     // Start is called before the first frame update

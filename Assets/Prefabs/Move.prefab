@@ -104,8 +104,9 @@ MonoBehaviour:
   executionDuration: 0.3
   coolDownDuration: 0.1
   damageGiven: 10
-  knockbackDirection: {x: 1, y: 100}
+  knockbackDirection: {x: 1, y: 1}
   knockbackScalar: 5
+  hitstunDuration: 0.3
 --- !u!58 &1235602595456767869
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -119,6 +120,6 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.0012333393}
+  m_Offset: {x: 0, y: 0.0040177107}
   serializedVersion: 2
-  m_Radius: 0.6492423
+  m_Radius: 0.34855032

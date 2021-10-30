@@ -50,6 +50,9 @@ MonoBehaviour:
   velocity: 3
   groundJumpForce: 3
   airJumpForce: 3
+  respawnLoc: {x: 0, y: 0}
+  stocks: 3
+  hitstunDamageScalar: 0.001
   move1: {fileID: 0}
   state: 0
   leftKey: 97
@@ -76,7 +79,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!212 &9002358621052085748
 SpriteRenderer:
