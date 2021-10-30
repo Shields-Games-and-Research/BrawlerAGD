@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool jumpsExhausted;
     private float damage = 0;
+    //Shows initial UI
+    public Text playerDetails;
+    //Player Name
+    public string playerName = "Lorem";
 
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
     public enum PlayerState
@@ -83,6 +88,7 @@ public class Player : MonoBehaviour
     // Decide on State and then apply corresponding policies to said state
     void Update()
     {
+        updatePlayerHUD();
         switch (state) {
             case PlayerState.idle:
                 updateIdle();
@@ -112,8 +118,15 @@ public class Player : MonoBehaviour
                 state = PlayerState.idle;
                 break;
         }
+    }
 
-
+    void updatePlayerHUD() 
+    {
+        playerDetails.text =
+            playerName + "\n" +
+            "Damage: " + damage + "%\n" +
+            "Stocks: " + stocks + "\n" +
+            "State: " + state;
     }
 
     /**A player, from idle, can:
