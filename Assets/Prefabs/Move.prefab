@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6085442222757995883}
   - component: {fileID: 1539125409374822326}
   - component: {fileID: 1235602595456767869}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Move
   m_TagString: Attack
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ MonoBehaviour:
   executionDuration: 0.3
   coolDownDuration: 0.1
   damageGiven: 10
-  damageTaken: 10
+  knockbackDirection: {x: 1, y: 100}
   knockbackScalar: 5
 --- !u!58 &1235602595456767869
 CircleCollider2D:

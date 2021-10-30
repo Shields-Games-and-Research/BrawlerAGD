@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9002358621052085749}
   - component: {fileID: 9002358621052085748}
   - component: {fileID: 9002358621052085746}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -50,7 +50,6 @@ MonoBehaviour:
   velocity: 3
   groundJumpForce: 3
   airJumpForce: 3
-  defaultSpriteDirection: 1
   move1: {fileID: 0}
   state: 0
   leftKey: 97

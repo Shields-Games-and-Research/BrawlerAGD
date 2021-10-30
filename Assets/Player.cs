@@ -22,6 +22,12 @@ public class Player : MonoBehaviour
     //force applied to each air jump
     public float airJumpForce = 3;
 
+    //respawn location
+    public Vector2 respawnLoc = new Vector2(0, 0);
+
+    //stocks
+    public float stocks = 3f;
+
     /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move1;
 
@@ -262,23 +268,32 @@ public class Player : MonoBehaviour
 
     }
 
-    void applyKnockback(Vector2 direction, float scalar) 
+    void applyKnockback(Vector2 collisionDirection, float moveScalar, Vector2 moveDirection) 
     {
-        rb.velocity += (scalar) * (direction) * (damage * .1f);//TODO: make hardcoded float a constant for the game generator
+        Vector2 appliedKnockback = (collisionDirection + moveDirection).normalized;
+        appliedKnockback = (appliedKnockback) * (moveScalar) * (damage * .1f);       
+        rb.velocity += appliedKnockback;
+    }
+
+    void OnTriggerExit2D(Collider2D collision) 
+    {
+        //Player has left the arena
+        if (collision.gameObject.CompareTag("Arena"))
+        {
+            print("Exit Arena Triggered");
+            this.respawn();
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision) 
     {
-        //print(collision.gameObject.ToString());
+        //Player has been hit by a move
         if (collision.gameObject.CompareTag("Attack")) 
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
-            Vector2 knockbackDir = (transform.position - collision.gameObject.transform.position).normalized;
-            applyKnockback(knockbackDir, tempMove.knockbackScalar);
-            damage += tempMove.damageGiven;
-            print("Damage: " + damage);
-            //TODO make direction flip
-
+            this.damage += tempMove.damageGiven;
+            Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position).normalized;
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection);        
         }
     }
 
@@ -289,6 +304,23 @@ public class Player : MonoBehaviour
         {
             isGrounded = false;
         }
+    }
+
+    public void respawn() 
+    {
+        if (stocks == 0)
+        {
+            //TODO: Gameover Animation
+            print("Game Over! No more respawns.");
+        }
+        else 
+        {
+            this.stocks--;
+            //TODO: Constant for velocity reset
+            rb.velocity = new Vector2(0f, 0f);
+            this.transform.position = new Vector2(0f, 0f);
+        }
+        
     }
 
 

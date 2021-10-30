@@ -6,7 +6,7 @@ TagManager:
   tags:
   - Floor
   - Attack
-  - HurtBox
+  - Arena
   layers:
   - Default
   - TransparentFX
@@ -16,10 +16,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Attack
+  - Arena
+  - Floor
   - 
   - 
   - 

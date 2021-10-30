@@ -25,10 +25,8 @@ public class Move : MonoBehaviour
     //damage applied from hitting with the move
     public float damageGiven = 10;
 
-    //TODO: damage recieved from executing the move
-    public float damageTaken = 10;
-
-    //TODO: additional directional base knockback
+    //additional directional base knockback
+    public Vector2 knockbackDirection = new Vector2(1f, 1f);
 
     //Determines knockback intensity
     public float knockbackScalar = 5;

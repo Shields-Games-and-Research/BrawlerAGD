@@ -23,7 +23,7 @@ public class LevelLoader : MonoBehaviour
     void Start()
     {
         var tilemap = GetComponentInChildren<Tilemap>();
-        Debug.Log(tilemap.cellBounds);
+        //Debug.Log(tilemap.cellBounds);
         foreach (var platform in gamegen.platforms.platformList)
         {
             //TODO: mirroring
@@ -36,7 +36,7 @@ public class LevelLoader : MonoBehaviour
         foreach (var p in bounds.allPositionsWithin)
         {
             var tile = GetTile(p, bounds);
-            Debug.Log(p);
+            //Debug.Log(p);
             //Debug.Log(tile);
             tilemap.SetTile(p, tile);
         }
