@@ -6,7 +6,9 @@ TagManager:
   tags:
   - Floor
   - Attack
-  - HurtBox
+  - Arena
+  - p1HUD
+  - p2HUD
   layers:
   - Default
   - TransparentFX
@@ -16,10 +18,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Attack
+  - Arena
+  - Floor
   - 
   - 
   - 

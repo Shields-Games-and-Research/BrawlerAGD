@@ -25,13 +25,15 @@ public class Move : MonoBehaviour
     //damage applied from hitting with the move
     public float damageGiven = 10;
 
-    //TODO: damage recieved from executing the move
-    public float damageTaken = 10;
-
-    //TODO: additional directional base knockback
+    //additional directional base knockback
+    //applied in the direction of the player
+    public Vector2 knockbackDirection = new Vector2(1f, 1f).normalized;
 
     //Determines knockback intensity
     public float knockbackScalar = 5;
+
+    //Determines hitstun duration
+    public float hitstunDuration = 0.3f;
 
 
     // Start is called before the first frame update

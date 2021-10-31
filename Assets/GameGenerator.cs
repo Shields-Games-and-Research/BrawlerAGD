@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Random = System.Random;
 using System.Linq;
+using UnityEngine.UI;
 
 [Serializable]
 public class Platform
@@ -59,29 +60,14 @@ public class Platforms
 
 public class GameGenerator : MonoBehaviour
 {
-    /** Player 1 Constants:
-     *  SPAWN_LOCATION_P1 = ; // where the first spawn of the first player is
-     *  LEFT_KEY_P1 = left; //left key movement
-     *  RIGHT_KEY_P1 = right; //right key movement
-     *  JUMP_KEY_P1 = jump; //jump key
-     *  FALL_KEY_P1 = fall; //fall key (TODO)
-     *  MOVE_1_KEY_P1 = move1Key; //attack key
-     *  
-     *  Player 1 Move 1 Constants:
-     *  
-     *  
-     *  Player 2 Constants:
-     *  SPAWN_LOCATION_P2 = ; // where the first spawn of the second player is
-     *  LEFT_KEY_P2 = ; //left key movement
-     *  RIGHT_KEY_P2 = ; //right key movement
-     *  JUMP_KEY_P2 = ; //jump key
-     *  FALL_KEY_P2 = ; //fall key (TODO)
-     *  MOVE_1_KEY_P2 = ; //attack key
-     */
 
     public Player player;
     public Platforms platforms;
     private static string level_path = "Assets\\Game\\level.json";
+
+    //UI components for each player
+    public GameObject p1HUD;
+    public GameObject p2HUD;
 
     // Start is called before the first frame update
     void Start()
@@ -134,6 +120,9 @@ public class GameGenerator : MonoBehaviour
         player1.move1Key = KeyCode.Space;
         //player 1 Move 1 Definition
         player1.move1.center = player1.transform.position + new Vector3(-1, 0, 0);
+        //TODO: Update UI to be dynamic, for now, hardcode
+        player1.playerName = "Player 1";
+        player1.playerDetails = p1HUD.GetComponent<Text>();
         
 
         //Player 2 Instantiation
@@ -146,6 +135,9 @@ public class GameGenerator : MonoBehaviour
         player2.fallKey = KeyCode.K;
         player2.move1Key = KeyCode.Return;
 
+        player2.playerName = "Player 2";
+        player2.playerDetails = p2HUD.GetComponent<Text>();
+        
         // Generate / Load constants for each player
 
         // Generate / Load constants for the player's moves 

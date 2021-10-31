@@ -35,7 +35,7 @@ public class LevelLoader : MonoBehaviour
         foreach (var p in bounds.allPositionsWithin)
         {
             var tile = GetTile(p, bounds);
-            Debug.Log(p);
+            //Debug.Log(p);
             //Debug.Log(tile);
             tilemap.SetTile(p, tile);
         }

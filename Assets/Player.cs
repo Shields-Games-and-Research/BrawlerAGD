@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Player : MonoBehaviour
     public Move move;
 
     /**PLAYER MECHANICS: These track the characteristics of a specific character instance at any given point. Changing these parameters will alter the movement abilities of players. */
-    
+
     //velocity applied while a key is depressed.
     public float velocity = 3;
 
@@ -22,6 +23,15 @@ public class Player : MonoBehaviour
     //force applied to each air jump
     public float airJumpForce = 3;
 
+    //respawn location
+    public Vector2 respawnLoc = new Vector2(0, 0);
+
+    //stocks a player starts with - must be an integer, must be positive
+    public float stocks = 3f;
+
+    //the scalar for the hitstun applied to a player based on their damage
+    public float hitstunDamageScalar = 0.1f;
+
     /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move1;
 
@@ -29,9 +39,13 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool jumpsExhausted;
     private float damage = 0;
+    //Shows initial UI
+    public Text playerDetails;
+    //Player Name
+    public string playerName = "Lorem";
 
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
-    public enum PlayerState 
+    public enum PlayerState
     {
         idle,
         air,
@@ -52,7 +66,7 @@ public class Player : MonoBehaviour
     public KeyCode fallKey = KeyCode.S;
     public KeyCode move1Key = KeyCode.Space;
 
-    void Awake() 
+    void Awake()
     {
         //set relevant game objects as instance variables for performant access
         rb = GetComponent<Rigidbody2D>();
@@ -70,10 +84,11 @@ public class Player : MonoBehaviour
 
     }
 
- 
+
     // Decide on State and then apply corresponding policies to said state
     void Update()
     {
+        updatePlayerHUD();
         switch (state) {
             case PlayerState.idle:
                 updateIdle();
@@ -103,8 +118,15 @@ public class Player : MonoBehaviour
                 state = PlayerState.idle;
                 break;
         }
+    }
 
-
+    void updatePlayerHUD() 
+    {
+        playerDetails.text =
+            playerName + "\n" +
+            "Damage: " + damage + "%\n" +
+            "Stocks: " + stocks + "\n" +
+            "State: " + state;
     }
 
     /**A player, from idle, can:
@@ -113,7 +135,7 @@ public class Player : MonoBehaviour
      * attack
      * be attacked
      */
-    void updateIdle() 
+    void updateIdle()
     {
         sr.color = Color.white;
 
@@ -131,7 +153,7 @@ public class Player : MonoBehaviour
      * attack
      * be attacked
      */
-    void updateAir() 
+    void updateAir()
     {
         sr.color = Color.green;
 
@@ -147,7 +169,7 @@ public class Player : MonoBehaviour
     /**A player, from air jumps exhausted, can:
      * move
      */
-    void updateAirJumpsExhausted() 
+    void updateAirJumpsExhausted()
     {
         sr.color = Color.grey;
         if (Input.GetKey(rightKey)) { moveRight(); }
@@ -155,96 +177,45 @@ public class Player : MonoBehaviour
     }
 
     /**A player, from warm up, can:
-     * 
+     * move
      */
-    void updateWarmUp() 
+    void updateWarmUp()
     {
         sr.color = Color.yellow;
-    
+        if (Input.GetKey(rightKey)) { moveRight(); }
+        if (Input.GetKey(leftKey)) { moveLeft(); }
     }
 
     /**A player, from attack, can:
      * 
      */
-    void updateAttack() 
+    void updateAttack()
     {
         sr.color = Color.red;
         move1.SetActive();
     }
-    
+
     /**A player, from cool down, can:
      *
      */
-    void updateCoolDown() 
+    void updateCoolDown()
     {
         sr.color = Color.blue;
         move1.SetInactive();
     }
 
-    /**PLAYER ACTIONS
-     * 
-     * 
-     * 
-     * 
+    /**A player, from stun, can:
+     *  
      */
-
-    private void jump() 
+    void updateStun()
     {
-        if (isGrounded)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, groundJumpForce);
-            state = PlayerState.air;
-        }
-        else if (!jumpsExhausted)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, airJumpForce);
-            jumpsExhausted = true;
-            state = PlayerState.airJumpsExhausted;
-        }
-    }
-
-    private void moveRight() 
-    {
-        rb.velocity = new Vector2(velocity, rb.velocity.y);
-        if (transform.localScale.x < 0) 
-        {
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-    }
-
-    private void moveLeft()
-    {
-        rb.velocity = new Vector2(-velocity, rb.velocity.y);
-        if (transform.localScale.x > 0)
-        {
-            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        }
-
-    }
-
-    private void performMove(Move move) 
-    {
-        StartCoroutine(MoveCoroutine(move));  
+        sr.color = Color.magenta;
     }
 
     void updateLanding() { }
-    void updateStun() { }
+    
 
 
-    IEnumerator MoveCoroutine(Move move) 
-    {
-        
-        state = PlayerState.warmUp;
-        yield return new WaitForSeconds(move.warmUpDuration);
-
-        state = PlayerState.attack;
-        yield return new WaitForSeconds(move.executionDuration);
-
-        state = PlayerState.coolDown;
-        yield return new WaitForSeconds(move.coolDownDuration);
-
-        state = PlayerState.idle;
-    }
 
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
@@ -262,23 +233,25 @@ public class Player : MonoBehaviour
 
     }
 
-    void applyKnockback(Vector2 direction, float scalar) 
+    void OnTriggerExit2D(Collider2D collision) 
     {
-        rb.velocity += (scalar) * (direction) * (damage * .1f);//TODO: make hardcoded float a constant for the game generator
+        //Player has left the arena
+        if (collision.gameObject.CompareTag("Arena"))
+        {
+            print("Exit Arena Triggered");
+            this.respawn();
+        }
     }
 
     void OnTriggerEnter2D(Collider2D collision) 
     {
-        //print(collision.gameObject.ToString());
+        //Player has been hit by a move
         if (collision.gameObject.CompareTag("Attack")) 
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
-            Vector2 knockbackDir = (transform.position - collision.gameObject.transform.position).normalized;
-            applyKnockback(knockbackDir, tempMove.knockbackScalar);
-            damage += tempMove.damageGiven;
-            print("Damage: " + damage);
-            //TODO make direction flip
-
+            this.damage += tempMove.damageGiven;
+            Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);        
         }
     }
 
@@ -291,5 +264,118 @@ public class Player : MonoBehaviour
         }
     }
 
+    /**PLAYER ACTIONS
+ * 
+ * 
+ * 
+ * 
+ */
+
+    private void jump()
+    {
+        if (isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, groundJumpForce);
+            state = PlayerState.air;
+        }
+        else if (!jumpsExhausted)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, airJumpForce);
+            jumpsExhausted = true;
+            state = PlayerState.airJumpsExhausted;
+        }
+    }
+
+    private void moveRight()
+    {
+        rb.velocity = new Vector2(velocity, rb.velocity.y);
+        if (transform.localScale.x < 0)
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+    }
+
+    private void moveLeft()
+    {
+        rb.velocity = new Vector2(-velocity, rb.velocity.y);
+        if (transform.localScale.x > 0)
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
+
+    }
+
+    private void performMove(Move move)
+    {
+        StartCoroutine(MoveCoroutine(move));
+    }
+
+
+    void applyKnockback(Vector2 collisionDirection, float moveScalar, Vector2 moveDirection, float hitstunDuration)
+    {
+        Vector2 transformedMoveDirection = moveDirection;
+
+        //flip move knockback over x axis if the player is facing left
+        if (transform.localScale.x < 0)
+        {
+            transformedMoveDirection = new Vector2(-moveDirection.x, moveDirection.y);
+        }
+        else 
+        {
+            transformedMoveDirection = new Vector2(moveDirection.x, moveDirection.y);
+        }
+        Vector2 appliedKnockback = (collisionDirection + transformedMoveDirection);
+        print("Collision Direction: " + collisionDirection);
+        print("TransformedMoveDirection: " + transformedMoveDirection);
+        appliedKnockback = (appliedKnockback) * (moveScalar) * (damage * .1f);
+        print("AppliedKnockback: " + appliedKnockback);
+        rb.velocity += appliedKnockback;
+        StartCoroutine(HitstunCoroutine(hitstunDuration));
+    }
+
+    public void respawn() 
+    {
+        if (stocks == 0)
+        {
+            //TODO: Gameover Animation
+            print("Game Over! No more respawns.");
+        }
+        else 
+        {
+            this.stocks--;
+            //TODO: Constant for damage reset
+            this.damage = 0f;
+            //TODO: Constant for velocity reset
+            rb.velocity = new Vector2(0f, 0f);
+            this.transform.position = new Vector2(0f, 0f);
+        }
+        
+    }
+
+    IEnumerator MoveCoroutine(Move move)
+    {
+
+        state = PlayerState.warmUp;
+        yield return new WaitForSeconds(move.warmUpDuration);
+
+        state = PlayerState.attack;
+        yield return new WaitForSeconds(move.executionDuration);
+
+        state = PlayerState.coolDown;
+        yield return new WaitForSeconds(move.coolDownDuration);
+
+        state = PlayerState.idle;
+    }
+
+    /**Takes a hitstun duration from a move, scales it to the player's current damage, and then sets that player to that state for that amount of time
+     */
+    IEnumerator HitstunCoroutine(float hitstunDuration) 
+    {
+        this.state = PlayerState.stun;
+        float scaledHitstunDuration = hitstunDuration * damage * hitstunDamageScalar;
+        yield return new WaitForSeconds(scaledHitstunDuration);
+        this.state = PlayerState.idle;
+
+    }
 
 }
