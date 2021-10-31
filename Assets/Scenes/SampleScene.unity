@@ -600,6 +600,7 @@ MonoBehaviour:
   Z: {fileID: 11400000, guid: 8e873c77afb00c34e8a356541231ffd9, type: 2}
   X: {fileID: 11400000, guid: 62ed186a072976745a870095d5bfa120, type: 2}
   C: {fileID: 11400000, guid: b90302b5c320ae04eb2c1c012c111dac, type: 2}
+  gamegen: {fileID: 1661193751}
 --- !u!1 &1661193750
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,6 +631,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 9002358621052085747, guid: dfceabb6f98685e438d2e46bd210070e, type: 3}
+  platforms:
+    platformList: []
 --- !u!4 &1661193752
 Transform:
   m_ObjectHideFlags: 0
