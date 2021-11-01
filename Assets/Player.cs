@@ -347,7 +347,7 @@ public class Player : MonoBehaviour
             this.damage = 0f;
             //TODO: Constant for velocity reset
             rb.velocity = new Vector2(0f, 0f);
-            this.transform.position = new Vector2(0f, 0f);
+            this.transform.position = this.respawnLoc;
         }
         
     }

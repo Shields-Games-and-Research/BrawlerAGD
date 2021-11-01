@@ -76,14 +76,6 @@ public class GameGenerator : MonoBehaviour
         Random rand = new Random();
 
         // Generate / Load Map
-        Platform platform1 = new Platform(-8, -5, 8, 4);
-        List<Platform> platformList = new List<Platform>()
-        {
-            platform1,
-            platform1.xMirror()
-        };
-        //platforms = new Platforms(platformList);
-
         MapGenerator mapGen = new MapGenerator(2, 2, 3, 6, rand);
         platforms = mapGen.generate();
         //Debug.Log(platforms.platformList[0].x);
@@ -91,8 +83,6 @@ public class GameGenerator : MonoBehaviour
         // Write to file
         if (!File.Exists(level_path))
         {
-            var test = JsonUtility.ToJson(platform1);
-            Debug.Log(test);
             var level_string = JsonUtility.ToJson(platforms);
             Debug.Log(platforms);
             Debug.Log(level_string);
@@ -123,6 +113,7 @@ public class GameGenerator : MonoBehaviour
         //TODO: Update UI to be dynamic, for now, hardcode
         player1.playerName = "Player 1";
         player1.playerDetails = p1HUD.GetComponent<Text>();
+        player1.respawnLoc = new Vector2(platforms.player1x, platforms.player1y);
         
 
         //Player 2 Instantiation
@@ -137,6 +128,7 @@ public class GameGenerator : MonoBehaviour
 
         player2.playerName = "Player 2";
         player2.playerDetails = p2HUD.GetComponent<Text>();
+        player2.respawnLoc = new Vector2(platforms.player2x, platforms.player2y);
         
         // Generate / Load constants for each player
 
@@ -175,13 +167,33 @@ public class MapGenerator
     public Platforms generate()
     {
         List<Platform> allPlatforms = new List<Platform>();
-        List<Platform> stack = new List<Platform>();
+        Stack<Platform> stack = new Stack<Platform>();
         // Create initial platform
-        Platform initialPlatform = initial();
+        Platform initialPlatform = Initial();
         allPlatforms.Add(initialPlatform);
-        stack.Add(initialPlatform);
+        stack.Push(initialPlatform);
         // For each platform, create 0-2 children
         // Stop when the length reaches nPlatforms
+        while (allPlatforms.Count < nPlatforms)
+        {
+            if (stack.Count == 0)
+            {
+                break;
+            }
+            Platform top = stack.Pop();
+            if (rand.Next(0, 2) == 1)
+            {
+                Platform leftPlatform = Left(top);
+                stack.Push(leftPlatform);
+                allPlatforms.Add(leftPlatform);
+            }
+            if (rand.Next(0, 2) == 1)
+            {
+                Platform abovePlatform = Above(top);
+                stack.Push(abovePlatform);
+                allPlatforms.Add(abovePlatform);
+            }
+        }
         // Mirror everything around y = 0
         List<Platform> mirrorPlatforms = new List<Platform>();
         foreach (Platform platform in allPlatforms)
@@ -198,33 +210,63 @@ public class MapGenerator
         return new Platforms(allPlatforms, p1x, p1y, p2x, p2y);
     }
 
-    public Platform initial()
+    public Platform Initial()
     {
         int y = initialY;
         int ySize = rand.Next(minWidth, maxWidth + 1);
-        int x = rand.Next(-maxPlatformSize, -1);
+        int x = rand.Next(-maxPlatformSize - 1, -2);
         int midGap = jumpLength / 2;
         int xSize = -x + rand.Next(-midGap, 0);
+        Debug.Log("initial");
+        Debug.Log(x);
+        Debug.Log(y);
+        Debug.Log(xSize);
+        Debug.Log(ySize);
         return new Platform(x, y, xSize, ySize);
     }
 
-    public Platform above(Platform platform)
+    public Platform Above(Platform platform)
     {
         // Generate y values
-        int yMin = platform.y + 1;
-        int yMax = platform.y + jumpHeight;
-        int y = rand.Next(yMin, yMax + 1);
-        int ySize = rand.Next(minWidth, maxWidth + 1);
+        int yMin = 2;
+        int yMax = jumpHeight;
+        int platformTop = platform.y + platform.ySize;
+        int y = platformTop + rand.Next(yMin, yMax + 1);
+        Debug.Log(minWidth);
+        Debug.Log(maxWidth + 1);
+        int ySize = rand.Next(minWidth, Math.Min(maxWidth, y - platformTop));
+        //Math.Min(rand.Next(minWidth, maxWidth + 1), y - platform.y);
         // Generate x values
         int xMin = platform.x + 1;
         int xMax = platform.x + platform.xSize;
         int x = rand.Next(xMin, xMax);
-        int xSize = rand.Next(1, platform.xSize - x + 1);
-        return new Platform(x, y, ySize, xSize);
+        int xSize = rand.Next(2, platform.xSize - x + 1);
+        Debug.Log("above");
+        Debug.Log(yMin);
+        Debug.Log(yMax);
+        Debug.Log(x);
+        Debug.Log(y);
+        Debug.Log(xSize);
+        Debug.Log(ySize);
+        return new Platform(x, y, xSize, ySize);
     }
 
-    public Platform left(Platform platform)
+    public Platform Left(Platform platform)
     {
-        return null;
+        // Generate y values
+        int yMin = platform.y - jumpHeight;
+        int yMax = platform.y + jumpHeight;
+        int y = rand.Next(yMin, yMax + 1);
+        int ySize = rand.Next(minWidth, maxWidth + 1);
+        // Generate x values
+        int xSize = rand.Next(2, maxPlatformSize);
+        int xRight = rand.Next(1, jumpLength);
+        int x = platform.x - xRight - xSize;
+        Debug.Log("left");
+        Debug.Log(x);
+        Debug.Log(y);
+        Debug.Log(xSize);
+        Debug.Log(ySize);
+        return new Platform(x, y, xSize, ySize);
     }
 }
