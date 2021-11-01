@@ -3,32 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
+using Random = System.Random;
+using System.Linq;
 using UnityEngine.UI;
-
 
 [Serializable]
 public class Platform
 {
-    public int v1;
-    public int v2;
-    public int v3;
-    public int v4;
-    public int v5;
-    public int v6;
+    public int x;
+    public int y;
+    public int xSize;
+    public int ySize;
 
-    public Platform(int av1, int av2, int av3, int av4, int av5, int av6)
+    // 2d Platform
+    public static int z = 0;
+    public static int zSize = 1;
+
+    public Platform(int av1, int av2, int av3, int av4)
     {
-        v1 = av1;
-        v2 = av2;
-        v3 = av3;
-        v4 = av4;
-        v5 = av5;
-        v6 = av6;
+        x = av1;
+        y = av2;
+        xSize = av3;
+        ySize = av4;
     }
 
     public BoundsInt ToBounds()
     {
-        return new BoundsInt(v1, v2, v3, v4, v5, v6);
+        return new BoundsInt(x, y, z, xSize, ySize, zSize);
+    }
+
+    public Platform xMirror()
+    {
+        int newX = -x - xSize;
+        return new Platform(newX, y, xSize, ySize);
     }
 }
 
@@ -36,10 +43,18 @@ public class Platform
 public class Platforms
 {
     public List<Platform> platformList;
+    public int player1x;
+    public int player1y;
+    public int player2x;
+    public int player2y;
 
-    public Platforms(List<Platform> l)
+    public Platforms(List<Platform> l, int p1x, int p1y, int p2x, int p2y)
     {
         platformList = l;
+        player1x = p1x;
+        player1y = p1y;
+        player2x = p2x;
+        player2y = p2y;
     }
 }
 
@@ -112,13 +127,21 @@ public class GameGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Initialize RNG
+        Random rand = new Random();
+
         // Generate / Load Map
-        Platform platform1 = new Platform(-8, -5, 0, 16, 4, 1);
+        Platform platform1 = new Platform(-8, -5, 8, 4);
         List<Platform> platformList = new List<Platform>()
         {
-            platform1
+            platform1,
+            platform1.xMirror()
         };
-        platforms = new Platforms(platformList);
+        //platforms = new Platforms(platformList);
+
+        MapGenerator mapGen = new MapGenerator(2, 2, 3, 6, rand);
+        platforms = mapGen.generate();
+        //Debug.Log(platforms.platformList[0].x);
 
         // Write to file
         if (!File.Exists(level_path))
@@ -135,7 +158,8 @@ public class GameGenerator : MonoBehaviour
         else
         {
             var inputString = File.ReadAllText(level_path);
-            platforms = JsonUtility.FromJson<Platforms>(inputString);
+            //TODO: Temporarily disabled for ease of iteration.
+            //platforms = JsonUtility.FromJson<Platforms>(inputString);
         }
 
         //Serialized Player 1 Setup
@@ -172,9 +196,9 @@ public class GameGenerator : MonoBehaviour
         serializedMove1Player1.knockbackModX = 0f;
         serializedMove1Player1.knockbackModY = 1f;
         serializedMove1Player1.hitstunDuration = 1f;
-
-        //Player 1 Instantiation and Initialization
-        Vector2 spawnLocationP1 = new Vector3(-2, 0);
+        
+        //Player 1 Instantiation
+        Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
         player1.playerDetails = p1HUD.GetComponent<Text>();
         InitializePlayerFromSerializedObj(serializedPlayer1, player1);
@@ -216,7 +240,7 @@ public class GameGenerator : MonoBehaviour
         serializedMove1Player2.hitstunDuration = 0.8f;
 
         //Player 2 Instantiation
-        Vector3 spawnLocationP2 = new Vector3(2, 0, 0);
+        Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         player2.playerDetails = p2HUD.GetComponent<Text>();
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
@@ -303,5 +327,78 @@ public class SerializedMove
 
 public class MapGenerator
 {
-    //
+    public int jumpHeight;
+    public int jumpLength;
+    public int nPlatforms;
+    public int maxPlatformSize;
+    Random rand;
+
+    public static int minWidth = 1;
+    public static int maxWidth = 2;
+    public static int initialY = -3;
+
+    public MapGenerator(int _jumpHeight, int _jumpLength, int _nPlatforms, int _maxPlatformSize, Random _rand)
+    {
+        jumpHeight = _jumpHeight;
+        jumpLength = _jumpLength;
+        nPlatforms = _nPlatforms;
+        maxPlatformSize = _maxPlatformSize;
+        rand = _rand;
+    }
+
+    public Platforms generate()
+    {
+        List<Platform> allPlatforms = new List<Platform>();
+        List<Platform> stack = new List<Platform>();
+        // Create initial platform
+        Platform initialPlatform = initial();
+        allPlatforms.Add(initialPlatform);
+        stack.Add(initialPlatform);
+        // For each platform, create 0-2 children
+        // Stop when the length reaches nPlatforms
+        // Mirror everything around y = 0
+        List<Platform> mirrorPlatforms = new List<Platform>();
+        foreach (Platform platform in allPlatforms)
+        {
+            mirrorPlatforms.Add(platform.xMirror());
+        }
+        allPlatforms = allPlatforms.Concat(mirrorPlatforms).ToList();
+        // Player 1 spawns on the initial platform
+        int p1x = rand.Next(initialPlatform.x, initialPlatform.x + initialPlatform.xSize + 1);
+        int p1y = initialY + initialPlatform.ySize + 1;
+        // Mirror Player 2's spawn relative to Player 1's
+        int p2x = -p1x;
+        int p2y = p1y;
+        return new Platforms(allPlatforms, p1x, p1y, p2x, p2y);
+    }
+
+    public Platform initial()
+    {
+        int y = initialY;
+        int ySize = rand.Next(minWidth, maxWidth + 1);
+        int x = rand.Next(-maxPlatformSize, -1);
+        int midGap = jumpLength / 2;
+        int xSize = -x + rand.Next(-midGap, 0);
+        return new Platform(x, y, xSize, ySize);
+    }
+
+    public Platform above(Platform platform)
+    {
+        // Generate y values
+        int yMin = platform.y + 1;
+        int yMax = platform.y + jumpHeight;
+        int y = rand.Next(yMin, yMax + 1);
+        int ySize = rand.Next(minWidth, maxWidth + 1);
+        // Generate x values
+        int xMin = platform.x + 1;
+        int xMax = platform.x + platform.xSize;
+        int x = rand.Next(xMin, xMax);
+        int xSize = rand.Next(1, platform.xSize - x + 1);
+        return new Platform(x, y, ySize, xSize);
+    }
+
+    public Platform left(Platform platform)
+    {
+        return null;
+    }
 }

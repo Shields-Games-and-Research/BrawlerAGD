@@ -23,7 +23,6 @@ public class LevelLoader : MonoBehaviour
     void Start()
     {
         var tilemap = GetComponentInChildren<Tilemap>();
-        //Debug.Log(tilemap.cellBounds);
         foreach (var platform in gamegen.platforms.platformList)
         {
             //TODO: mirroring
