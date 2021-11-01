@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class Player : MonoBehaviour
 {
     /**COMPONENT DECLARATION*/
-    Rigidbody2D rb;
-    SpriteRenderer sr;
+    public Rigidbody2D rb;
+    public SpriteRenderer sr;
 
     /**PREFAB DECLARATION */
     public Move move;
