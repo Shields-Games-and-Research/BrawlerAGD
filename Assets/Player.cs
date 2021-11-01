@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Player : MonoBehaviour
 {
@@ -68,14 +69,20 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+        int playerSprite = Random.Range(0, playerSprites.Length);
+
         //set relevant game objects as instance variables for performant access
         rb = GetComponent<Rigidbody2D>();
+        
         sr = GetComponent<SpriteRenderer>();
+        sr.sprite = playerSprites[playerSprite];
+
         rb.freezeRotation = true;
 
         //instantiate moves on player creation
         move1 = Instantiate<Move>(move, transform.position + new Vector3(1, 0, 0), Quaternion.identity, transform);
-
+        
     }
 
     // Start is called before the first frame update

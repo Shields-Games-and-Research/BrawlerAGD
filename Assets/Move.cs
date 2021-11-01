@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Move : MonoBehaviour
 {
-    SpriteRenderer sr;
-    CircleCollider2D cc;
+    public SpriteRenderer sr;
+    public CircleCollider2D cc;
     /**GENERATOR PARAMETERS: Intended to be created by generator
      * 
      * 
@@ -39,6 +39,12 @@ public class Move : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        sr = GetComponent<SpriteRenderer>();
+        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+        int moveSprite = Random.Range(0, moveSprites.Length);
+        sr.sprite = moveSprites[moveSprite];
+
+
         cc = GetComponent<CircleCollider2D>();
         sr = GetComponent<SpriteRenderer>();
         SetInactive();
