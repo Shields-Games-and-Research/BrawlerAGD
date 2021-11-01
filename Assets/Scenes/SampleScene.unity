@@ -817,6 +817,10 @@ MonoBehaviour:
   player: {fileID: 9002358621052085747, guid: dfceabb6f98685e438d2e46bd210070e, type: 3}
   platforms:
     platformList: []
+    player1x: 0
+    player1y: 0
+    player2x: 0
+    player2y: 0
   p1HUD: {fileID: 1642781192}
   p2HUD: {fileID: 1759345128}
 --- !u!4 &1661193752
