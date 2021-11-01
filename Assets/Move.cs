@@ -11,29 +11,29 @@ public class Move : MonoBehaviour
      * 
      */
 
-    public Vector3 center = new Vector3(1, 0, 0);
-    public float xScale = 1;
-    public float yScale = 1;
+    public Vector3 center;
+    public float xScale;
+    public float yScale;
     
     public float zRotation = 0;
 
     //determines execution of the move
-    public float warmUpDuration = 0.1f;
-    public float executionDuration = 0.3f;
-    public float coolDownDuration = 0.1f;
+    public float warmUpDuration;
+    public float executionDuration;
+    public float coolDownDuration;
 
     //damage applied from hitting with the move
-    public float damageGiven = 10;
+    public float damageGiven;
 
     //additional directional base knockback
     //applied in the direction of the player
-    public Vector2 knockbackDirection = new Vector2(1f, 1f).normalized;
+    public Vector2 knockbackDirection;
 
     //Determines knockback intensity
-    public float knockbackScalar = 5;
+    public float knockbackScalar;
 
     //Determines hitstun duration
-    public float hitstunDuration = 0.3f;
+    public float hitstunDuration;
 
 
     // Start is called before the first frame update

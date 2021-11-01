@@ -81,7 +81,7 @@ public class Player : MonoBehaviour
         rb.freezeRotation = true;
 
         //instantiate moves on player creation
-        move1 = Instantiate<Move>(move, transform.position + new Vector3(1, 0, 0), Quaternion.identity, transform);
+        move1 = Instantiate<Move>(move, transform.position + move.center, Quaternion.identity, transform);
         
     }
 
@@ -332,10 +332,10 @@ public class Player : MonoBehaviour
             transformedMoveDirection = new Vector2(moveDirection.x, moveDirection.y);
         }
         Vector2 appliedKnockback = (collisionDirection + transformedMoveDirection);
-        print("Collision Direction: " + collisionDirection);
-        print("TransformedMoveDirection: " + transformedMoveDirection);
+        //print("Collision Direction: " + collisionDirection);
+        //print("TransformedMoveDirection: " + transformedMoveDirection);
         appliedKnockback = (appliedKnockback) * (moveScalar) * (damage * .1f);
-        print("AppliedKnockback: " + appliedKnockback);
+        //print("AppliedKnockback: " + appliedKnockback);
         rb.velocity += appliedKnockback;
         StartCoroutine(HitstunCoroutine(hitstunDuration));
     }
@@ -355,6 +355,7 @@ public class Player : MonoBehaviour
             //TODO: Constant for velocity reset
             rb.velocity = new Vector2(0f, 0f);
             this.transform.position = this.respawnLoc;
+            this.state = PlayerState.idle;
         }
         
     }

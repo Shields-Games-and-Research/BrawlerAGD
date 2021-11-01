@@ -250,7 +250,7 @@ public class SerializedPlayer
         stocks = 3;
         velocity = 2f + 8 * (float) rand.NextDouble();
         float totalJumpForce = 4f + 12 * (float) rand.NextDouble();
-        float jumpRatio = (float) rand.NextDouble();
+        float jumpRatio = 0.1f + (float) rand.NextDouble();
         groundJumpForce = totalJumpForce * jumpRatio;
         airJumpForce = totalJumpForce * (1 - jumpRatio);
         mass = 0.5f + 2 * (float) rand.NextDouble();
@@ -292,8 +292,10 @@ public class SerializedMove
 
     public SerializedMove(Random rand)
     {
-        moveLocX = -1f;
-        moveLocY = 0f;
+        float moveDist = 0.8f + 0.7f * (float) rand.NextDouble();
+        float moveAngle = (float) (2 * Math.PI * rand.NextDouble());
+        moveLocX = moveDist * (float) Math.Cos(moveAngle);
+        moveLocY = moveDist * (float) Math.Sin(moveAngle);
         widthScalar = 0.5f + (float) rand.NextDouble();
         heightScalar = 0.5f + (float) rand.NextDouble();
         warmUpDuration = 0.1f + 0.5f *(float) rand.NextDouble();
@@ -301,9 +303,10 @@ public class SerializedMove
         coolDownDuration = 0.1f + 0.5f * (float) rand.NextDouble();
         damageGiven = 5 + (warmUpDuration + executionDuration + coolDownDuration) * (float) rand.NextDouble() * 10f;
         knockbackScalar = 1f + 15f * (float) rand.NextDouble();
-        knockbackModX = 0f;
-        knockbackModY = 1f;
-        hitstunDuration = 1f;
+        // TODO: Move direction and move knockback chosen from some arc in the direction
+        knockbackModX = -1f + (float) rand.NextDouble();
+        knockbackModY = -1f + (float) rand.NextDouble();
+        hitstunDuration = (float) rand.NextDouble();
     }
 }
 
