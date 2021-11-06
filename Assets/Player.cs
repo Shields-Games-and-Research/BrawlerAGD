@@ -45,6 +45,8 @@ public class Player : MonoBehaviour
     //Player Name
     public string playerName = "Lorem";
 
+    public Controller controller;
+
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
     public enum PlayerState
     {
@@ -96,35 +98,46 @@ public class Player : MonoBehaviour
     void Update()
     {
         updatePlayerHUD();
-        switch (state) {
-            case PlayerState.idle:
-                updateIdle();
-                break;
-            case PlayerState.air:
-                updateAir();
-                break;
-            case PlayerState.airJumpsExhausted:
-                updateAirJumpsExhausted();
-                break;
-            case PlayerState.warmUp:
-                updateWarmUp();
-                break;
-            case PlayerState.attack:
-                updateAttack();
-                break;
-            case PlayerState.coolDown:
-                updateCoolDown();
-                break;
-            case PlayerState.landing:
-                updateLanding();
-                break;
-            case PlayerState.stun:
-                updateStun();
-                break;
-            default:
-                state = PlayerState.idle;
-                break;
+
+        //check if controller has a behavior or not
+        if (this.controller.controllerBehavior is null)
+        {
+            switch (state)
+            {
+                case PlayerState.idle:
+                    updateIdle();
+                    break;
+                case PlayerState.air:
+                    updateAir();
+                    break;
+                case PlayerState.airJumpsExhausted:
+                    updateAirJumpsExhausted();
+                    break;
+                case PlayerState.warmUp:
+                    updateWarmUp();
+                    break;
+                case PlayerState.attack:
+                    updateAttack();
+                    break;
+                case PlayerState.coolDown:
+                    updateCoolDown();
+                    break;
+                case PlayerState.landing:
+                    updateLanding();
+                    break;
+                case PlayerState.stun:
+                    updateStun();
+                    break;
+                default:
+                    state = PlayerState.idle;
+                    break;
+            }
         }
+        else 
+        {
+            this.controller.controllerBehavior.Update();
+        }
+
     }
 
     void updatePlayerHUD() 
@@ -146,12 +159,12 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.white;
 
-        if (Input.GetKey(rightKey)) { moveRight(); }
-        else if (Input.GetKey(leftKey)) { moveLeft(); }
+        if (Input.GetKey(controller.rightKey)) { moveRight(); }
+        else if (Input.GetKey(controller.leftKey)) { moveLeft(); }
 
-        if (Input.GetKeyDown(jumpKey)) { jump(); }
+        if (Input.GetKeyDown(controller.jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(move1Key)) { performMove(move1); }
+        if (Input.GetKeyDown(controller.move1Key)) { performMove(move1); }
     }
 
     /**A player, from air, can:
@@ -164,12 +177,12 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.green;
 
-        if (Input.GetKey(rightKey)) { moveRight(); }
-        else if (Input.GetKey(leftKey)) { moveLeft(); }
+        if (Input.GetKey(controller.rightKey)) { moveRight(); }
+        else if (Input.GetKey(controller.leftKey)) { moveLeft(); }
 
-        if (Input.GetKeyDown(jumpKey)) { jump(); }
+        if (Input.GetKeyDown(controller.jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(move1Key)) { performMove(move1); }
+        if (Input.GetKeyDown(controller.move1Key)) { performMove(move1); }
 
     }
 
@@ -179,8 +192,8 @@ public class Player : MonoBehaviour
     void updateAirJumpsExhausted()
     {
         sr.color = Color.grey;
-        if (Input.GetKey(rightKey)) { moveRight(); }
-        if (Input.GetKey(leftKey)) { moveLeft(); }
+        if (Input.GetKey(controller.rightKey)) { moveRight(); }
+        if (Input.GetKey(controller.leftKey)) { moveLeft(); }
     }
 
     /**A player, from warm up, can:
@@ -189,8 +202,8 @@ public class Player : MonoBehaviour
     void updateWarmUp()
     {
         sr.color = Color.yellow;
-        if (Input.GetKey(rightKey)) { moveRight(); }
-        if (Input.GetKey(leftKey)) { moveLeft(); }
+        if (Input.GetKey(controller.rightKey)) { moveRight(); }
+        if (Input.GetKey(controller.leftKey)) { moveLeft(); }
     }
 
     /**A player, from attack, can:
@@ -278,7 +291,7 @@ public class Player : MonoBehaviour
  * 
  */
 
-    private void jump()
+    public void jump()
     {
         if (isGrounded)
         {
@@ -293,7 +306,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void moveRight()
+    public void moveRight()
     {
         rb.velocity = new Vector2(velocity, rb.velocity.y);
         if (transform.localScale.x < 0)
@@ -302,7 +315,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void moveLeft()
+    public void moveLeft()
     {
         rb.velocity = new Vector2(-velocity, rb.velocity.y);
         if (transform.localScale.x > 0)
@@ -312,7 +325,7 @@ public class Player : MonoBehaviour
 
     }
 
-    private void performMove(Move move)
+    public void performMove(Move move)
     {
         StartCoroutine(MoveCoroutine(move));
     }
@@ -386,4 +399,48 @@ public class Player : MonoBehaviour
 
     }
 
+}
+
+public class Controller 
+{
+    public KeyCode leftKey;
+    public KeyCode rightKey;
+    public KeyCode jumpKey;
+    public KeyCode pauseKey;
+    public KeyCode move1Key;
+
+    public Player player;
+
+    public ControllerBehavior controllerBehavior;
+
+    public Controller(Player player)
+    {
+        //Assign linked player
+        this.player = player;
+
+        //Defaults
+        this.leftKey = KeyCode.A;
+        this.rightKey = KeyCode.D;
+        this.jumpKey = KeyCode.W;
+        this.move1Key = KeyCode.S;
+    }
+}
+
+public class ControllerBehavior
+{
+    public Controller controller;
+    public Player player;
+
+    public ControllerBehavior(Controller controller) 
+    {
+        //Assign linked player and controller
+        this.controller = controller;
+        this.player = controller.player;
+    }
+
+    public void Update() 
+    {
+        player.moveLeft();
+    }
+   
 }

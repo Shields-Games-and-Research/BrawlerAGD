@@ -153,6 +153,13 @@ public class GameGenerator : MonoBehaviour
         //Player 1 Instantiation
         Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
+        //Player 1 Controller/Agent Controller Assignment
+        player1.controller = new Controller(player1);
+        player1.controller.leftKey = KeyCode.A;
+        player1.controller.rightKey = KeyCode.D;
+        player1.controller.jumpKey = KeyCode.W;
+        player1.controller.move1Key = KeyCode.S;
+        //Player 1 Heads Up Display
         player1.playerDetails = p1HUD.GetComponent<Text>();
 
         InitializePlayerFromSerializedObj(serializedPlayer1, player1);
@@ -171,6 +178,17 @@ public class GameGenerator : MonoBehaviour
         //Player 2 Instantiation
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
+        player2.controller = new Controller(player2);
+        player2.controller.controllerBehavior = new ControllerBehavior(player2.controller);
+        //Player 2 Controller/Agent Controller Assignment
+        /**player2.controller = new Controller(player2);
+        player2.controller.leftKey = KeyCode.J;
+        player2.controller.rightKey = KeyCode.L;
+        player2.controller.jumpKey = KeyCode.I;
+        player2.controller.move1Key = KeyCode.K;
+        */
+        
+        //Player 2 Heads Up Display
         player2.playerDetails = p2HUD.GetComponent<Text>();
 
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
