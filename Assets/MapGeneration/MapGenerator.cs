@@ -80,11 +80,6 @@ public class MapGenerator
         int x = rand.Next(-maxPlatformSize - 1, -2);
         int midGap = jumpLength / 2;
         int xSize = -x + rand.Next(-midGap, 0);
-        Debug.Log("initial");
-        Debug.Log(x);
-        Debug.Log(y);
-        Debug.Log(xSize);
-        Debug.Log(ySize);
         return new Platform(x, y, xSize, ySize);
     }
 
@@ -95,8 +90,6 @@ public class MapGenerator
         int yMax = jumpHeight;
         int platformTop = platform.y + platform.ySize;
         int y = platformTop + rand.Next(yMin, yMax + 1);
-        Debug.Log(minWidth);
-        Debug.Log(maxWidth + 1);
         int ySize = rand.Next(minWidth, Math.Min(maxWidth, y - platformTop));
         //Math.Min(rand.Next(minWidth, maxWidth + 1), y - platform.y);
         // Generate x values
@@ -104,13 +97,6 @@ public class MapGenerator
         int xMax = platform.x + platform.xSize;
         int x = rand.Next(xMin, xMax);
         int xSize = rand.Next(2, platform.xSize - x + 1);
-        Debug.Log("above");
-        Debug.Log(yMin);
-        Debug.Log(yMax);
-        Debug.Log(x);
-        Debug.Log(y);
-        Debug.Log(xSize);
-        Debug.Log(ySize);
         return new Platform(x, y, xSize, ySize);
     }
 
@@ -125,11 +111,6 @@ public class MapGenerator
         int xSize = rand.Next(2, maxPlatformSize);
         int xRight = rand.Next(1, jumpLength);
         int x = platform.x - xRight - xSize;
-        Debug.Log("left");
-        Debug.Log(x);
-        Debug.Log(y);
-        Debug.Log(xSize);
-        Debug.Log(ySize);
         return new Platform(x, y, xSize, ySize);
     }
 }

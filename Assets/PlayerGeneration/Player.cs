@@ -262,6 +262,16 @@ public class Player : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision) 
     {
+        print("Reached trigger exit");
+        //Player has been hit by a move and is not currently invincible
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
+        {
+            Move tempMove = collision.gameObject.GetComponent<Move>();
+            this.damage += tempMove.damageGiven;
+            Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
+            StartCoroutine(InvincibilityCoroutine(0.1f));
+        }
         //Player has left the arena
         if (collision.gameObject.CompareTag("Arena"))
         {
@@ -272,8 +282,23 @@ public class Player : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D collision) 
     {
+        print("reached trigger stay");
         //Player has been hit by a move and is not currently invincible
         if (collision.gameObject.CompareTag("Attack") && !this.isInvincible) 
+        {
+            Move tempMove = collision.gameObject.GetComponent<Move>();
+            this.damage += tempMove.damageGiven;
+            Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
+            StartCoroutine(InvincibilityCoroutine(0.1f));
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision) 
+    {
+        print("reached trigger enter");
+        //Player has been hit by a move and is not currently invincible
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
@@ -447,7 +472,7 @@ public class Player : MonoBehaviour
 
         state = PlayerState.coolDown;
         yield return new WaitForSeconds(move.coolDownDuration);
-
+        //TODO branch depending on air/ground
         state = PlayerState.idle;
     }
 
@@ -465,10 +490,10 @@ public class Player : MonoBehaviour
     IEnumerator InvincibilityCoroutine(float invincibilityDuration)
     {
         this.isInvincible = true;
-        sr.color -= new Color(0, 0, 0, 100f);
+        sr.color -= new Color(0, 0, 0, 200f);
         yield return new WaitForSeconds(invincibilityDuration);
         this.isInvincible = false;
-        sr.color += new Color(0, 0, 0, 100f);
+        sr.color += new Color(0, 0, 0, 200f);
     }
 
 }

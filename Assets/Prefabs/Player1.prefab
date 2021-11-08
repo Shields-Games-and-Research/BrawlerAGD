@@ -49,9 +49,8 @@ MonoBehaviour:
   rb: {fileID: 0}
   sr: {fileID: 0}
   move: {fileID: 1539125409374822326, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
-  velocity: 3
-  groundAccelleration: 2
-  airAccelleration: 1
+  groundAcceleration: 2
+  airAcceleration: 1
   maxGroundSpeed: 4
   maxAirSpeed: 2
   groundJumpForce: 3
@@ -86,8 +85,8 @@ Rigidbody2D:
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_SleepingMode: 0
+  m_CollisionDetection: 0
   m_Constraints: 0
 --- !u!212 &9002358621052085748
 SpriteRenderer:

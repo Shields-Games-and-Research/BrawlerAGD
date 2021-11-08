@@ -5,7 +5,7 @@ using UnityEngine;
 public class Move : MonoBehaviour
 {
     public SpriteRenderer sr;
-    public CircleCollider2D cc;
+    public BoxCollider2D bc;
     /**GENERATOR PARAMETERS: Intended to be created by generator
      * 
      * 
@@ -45,7 +45,7 @@ public class Move : MonoBehaviour
         sr.sprite = moveSprites[moveSprite];
 
 
-        cc = GetComponent<CircleCollider2D>();
+        bc = GetComponent<BoxCollider2D>();
         sr = GetComponent<SpriteRenderer>();
         SetInactive();
     }
@@ -58,12 +58,14 @@ public class Move : MonoBehaviour
 
     public void SetInactive() 
     {
-        transform.gameObject.SetActive(false);
+        bc.enabled = false;
+        sr.enabled = false;
     }
 
     public void SetActive() 
     {
-        transform.gameObject.SetActive(true);
+        bc.enabled = true;
+        sr.enabled = true;
     }
 
     void OnCollisionEnter2D(Collision2D collision) 
