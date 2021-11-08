@@ -22,6 +22,9 @@ public class GameGenerator : MonoBehaviour
     public GameObject p1HUD;
     public GameObject p2HUD;
 
+    //UI components for notifications
+    public GameObject notifications;
+
     /** Assignment of values from the Serialized Object. TODO: Static evaluators
      */
     public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Player player)
@@ -116,6 +119,7 @@ public class GameGenerator : MonoBehaviour
         player1.controller.move1Key = KeyCode.S;
         //Player 1 Heads Up Display
         player1.playerDetails = p1HUD.GetComponent<Text>();
+        player1.notifications = notifications.GetComponent<Text>();
 
         InitializePlayerFromSerializedObj(serializedPlayer1, player1);
         InitializeMoveFromSerializedObj(serializedMove1Player1, player1.move1, player1);
@@ -145,10 +149,12 @@ public class GameGenerator : MonoBehaviour
         
         //Player 2 Heads Up Display
         player2.playerDetails = p2HUD.GetComponent<Text>();
+        player2.notifications = notifications.GetComponent<Text>();
 
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
         InitializeMoveFromSerializedObj(serializedMove1Player2, player2.move1, player2);
 
+        StartCoroutine(player1.NotificationCoroutine("FIGHT!"));
 }
 
     // Update is called once per frame

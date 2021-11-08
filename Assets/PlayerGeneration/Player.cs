@@ -49,6 +49,8 @@ public class Player : MonoBehaviour
     private bool isInvincible = false;
     //Shows initial UI
     public Text playerDetails;
+    //Reference to notifications board
+    public Text notifications;
     //Player Name
     public string playerName = "Lorem";
 
@@ -97,6 +99,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
 
     }
 
@@ -154,6 +157,11 @@ public class Player : MonoBehaviour
             "Damage: " + damage + "%\n" +
             "Stocks: " + stocks + "\n" +
             "State: " + state;
+    }
+
+    void updateNotifications(string message) 
+    {
+        notifications.text = message;
     }
 
     /**A player, from idle, can:
@@ -445,8 +453,7 @@ public class Player : MonoBehaviour
     {
         if (stocks == 0)
         {
-            //TODO: Gameover Animation
-            print("Game Over! No more respawns.");
+            StartCoroutine(NotificationCoroutine(this.playerName + " HAS LOST THE GAME"));
         }
         else 
         {
@@ -457,6 +464,7 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector2(0f, 0f);
             this.transform.position = this.respawnLoc;
             this.state = PlayerState.idle;
+            StartCoroutine(NotificationCoroutine(this.playerName + " HAS LOST A STOCK"));
         }
         
     }
@@ -494,6 +502,13 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(invincibilityDuration);
         this.isInvincible = false;
         sr.color += new Color(0, 0, 0, 200f);
+    }
+
+    public IEnumerator NotificationCoroutine(string message) 
+    {
+        updateNotifications(message);
+        yield return new WaitForSeconds(5f);
+        updateNotifications("");
     }
 
 }
