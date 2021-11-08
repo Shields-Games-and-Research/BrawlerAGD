@@ -35,8 +35,14 @@ public class GameGenerator : MonoBehaviour
         player.playerName = serializedPlayer.playerName;
         //Starting Lives
         player.stocks = serializedPlayer.stocks;
-        //Speed applied on left/right
-        player.velocity = serializedPlayer.velocity;
+        //self-applied accelleration on ground
+        player.groundAcceleration = serializedPlayer.groundAcceleration;
+        //self-applied accelleration in air
+        player.airAcceleration = serializedPlayer.airAcceleration;
+        //Maximum self-applied speed on ground
+        player.maxGroundSpeed = serializedPlayer.maxGroundSpeed;
+        //Maximum self-applied speed in air
+        player.maxAirSpeed = serializedPlayer.maxAirSpeed;
         //Force applied on initial jump
         player.groundJumpForce = serializedPlayer.groundJumpForce;
         //Force applied on a second jump
@@ -127,15 +133,15 @@ public class GameGenerator : MonoBehaviour
         //Player 2 Instantiation
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
-        player2.controller = new Controller(player2);
-        player2.controller.controllerBehavior = new ControllerBehavior(player2.controller);
+        //player2.controller = new Controller(player2);
+        //player2.controller.controllerBehavior = new ControllerBehavior(player2.controller);
         //Player 2 Controller/Agent Controller Assignment
-        /**player2.controller = new Controller(player2);
+        player2.controller = new Controller(player2);
         player2.controller.leftKey = KeyCode.J;
         player2.controller.rightKey = KeyCode.L;
         player2.controller.jumpKey = KeyCode.I;
         player2.controller.move1Key = KeyCode.K;
-        */
+        
         
         //Player 2 Heads Up Display
         player2.playerDetails = p2HUD.GetComponent<Text>();

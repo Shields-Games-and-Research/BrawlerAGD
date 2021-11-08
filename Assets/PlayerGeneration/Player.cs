@@ -15,8 +15,14 @@ public class Player : MonoBehaviour
 
     /**PLAYER MECHANICS: These track the characteristics of a specific character instance at any given point. Changing these parameters will alter the movement abilities of players. */
 
-    //velocity applied while a key is depressed.
-    public float velocity = 3;
+    //Determines how quickly a player reaches max speed on the ground.
+    public float groundAcceleration = 2;
+    //Determines how quickly a player reaches max speed in the air.
+    public float airAcceleration = 1;
+
+    //Determines maximum speed a player can move by themselves.
+    public float maxGroundSpeed = 4;
+    public float maxAirSpeed = 2;
 
     //force applied to each jump 
     public float groundJumpForce = 3;
@@ -40,6 +46,7 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool jumpsExhausted;
     private float damage = 0;
+    private bool isInvincible = false;
     //Shows initial UI
     public Text playerDetails;
     //Player Name
@@ -263,15 +270,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collision) 
+    void OnTriggerStay2D(Collider2D collision) 
     {
-        //Player has been hit by a move
-        if (collision.gameObject.CompareTag("Attack")) 
+        //Player has been hit by a move and is not currently invincible
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible) 
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
-            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);        
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
+            StartCoroutine(InvincibilityCoroutine(0.1f));
         }
     }
 
@@ -308,7 +316,36 @@ public class Player : MonoBehaviour
 
     public void moveRight()
     {
-        rb.velocity = new Vector2(velocity, rb.velocity.y);
+        //is the character on the ground
+        if (isGrounded)
+        {
+            //will adding an accelleration exceed max self-applied speed
+            if (Mathf.Abs(rb.velocity.x) + groundAcceleration >= maxGroundSpeed)
+            {
+                //go max speed
+                rb.velocity = new Vector2(maxGroundSpeed, rb.velocity.y);
+            }
+            else 
+            {
+                //add accelleration vector if not
+                rb.velocity += new Vector2(groundAcceleration, 0);
+            }
+        }
+        else 
+        {
+            //will adding an accelleration exceed max self-applied air speed
+            if (Mathf.Abs(rb.velocity.x) + airAcceleration >= maxAirSpeed)
+            {
+                //go max speed
+                rb.velocity = new Vector2(maxAirSpeed, rb.velocity.y);
+            }
+            else 
+            {
+                //add accelleration air vector if not
+                rb.velocity += new Vector2(airAcceleration, 0);
+            }
+        }
+        //change direction if appropriate
         if (transform.localScale.x < 0)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -317,7 +354,36 @@ public class Player : MonoBehaviour
 
     public void moveLeft()
     {
-        rb.velocity = new Vector2(-velocity, rb.velocity.y);
+        //is the character on the ground
+        if (isGrounded)
+        {
+            //will adding an accelleration exceed max self-applied speed
+            if (Mathf.Abs(rb.velocity.x) + groundAcceleration >= maxGroundSpeed)
+            {
+                //go max speed
+                rb.velocity = new Vector2(-maxGroundSpeed, rb.velocity.y);
+            }
+            else 
+            {
+                //add accelleration vector if not
+                rb.velocity -= new Vector2(groundAcceleration, 0);
+            }
+        }
+        else
+        {
+            //will adding an accelleration exceed max self-applied speed
+            if (Mathf.Abs(rb.velocity.x) + airAcceleration >= maxAirSpeed)
+            {
+                //go max speed
+                rb.velocity = new Vector2(-maxAirSpeed, rb.velocity.y);
+            }
+            else
+            {
+                //add accelleration vector if not
+                rb.velocity -= new Vector2(airAcceleration, 0);
+            }
+        }
+        //change direction if appropriate
         if (transform.localScale.x > 0)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -330,7 +396,7 @@ public class Player : MonoBehaviour
         StartCoroutine(MoveCoroutine(move));
     }
 
-
+    //TODO: prevent player-facing KB
     void applyKnockback(Vector2 collisionDirection, float moveScalar, Vector2 moveDirection, float hitstunDuration)
     {
         Vector2 transformedMoveDirection = moveDirection;
@@ -345,10 +411,7 @@ public class Player : MonoBehaviour
             transformedMoveDirection = new Vector2(moveDirection.x, moveDirection.y);
         }
         Vector2 appliedKnockback = (collisionDirection + transformedMoveDirection);
-        //print("Collision Direction: " + collisionDirection);
-        //print("TransformedMoveDirection: " + transformedMoveDirection);
         appliedKnockback = (appliedKnockback) * (moveScalar) * (damage * .1f);
-        //print("AppliedKnockback: " + appliedKnockback);
         rb.velocity += appliedKnockback;
         StartCoroutine(HitstunCoroutine(hitstunDuration));
     }
@@ -397,6 +460,15 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(scaledHitstunDuration);
         this.state = PlayerState.idle;
 
+    }
+
+    IEnumerator InvincibilityCoroutine(float invincibilityDuration)
+    {
+        this.isInvincible = true;
+        sr.color -= new Color(0, 0, 0, 100f);
+        yield return new WaitForSeconds(invincibilityDuration);
+        this.isInvincible = false;
+        sr.color += new Color(0, 0, 0, 100f);
     }
 
 }

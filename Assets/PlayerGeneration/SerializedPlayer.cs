@@ -16,8 +16,14 @@ public class SerializedPlayer
     public KeyCode attackKey;
     //Stocks
     public int stocks;
-    //Velocity
-    public float velocity;
+    //Accelleration of players on the ground
+    public float groundAcceleration;
+    //Accelleration of players in the air
+    public float airAcceleration;
+    //Maximum self-applied speed from movement on the ground
+    public float maxGroundSpeed;
+    //Maximum self-applied speed from movement in the air
+    public float maxAirSpeed;
     //Ground Jump Force
     public float groundJumpForce;
     //Air Jump Force
@@ -46,7 +52,10 @@ public class SerializedPlayer
         rightKey = _right;
         attackKey = _attack;
         stocks = 3;
-        velocity = 2f + 8 * (float)rand.NextDouble();
+        maxGroundSpeed = 2f + 8 * (float)rand.NextDouble();
+        maxAirSpeed = 2f + 8 * (float)rand.NextDouble();
+        groundAcceleration = maxGroundSpeed * (float)rand.NextDouble();
+        airAcceleration = maxAirSpeed * (float)rand.NextDouble();
         float totalJumpForce = 4f + 12 * (float)rand.NextDouble();
         float jumpRatio = 0.1f + (float)rand.NextDouble();
         groundJumpForce = totalJumpForce * jumpRatio;

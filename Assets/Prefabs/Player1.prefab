@@ -43,17 +43,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 9002358621052085751}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08bd2c67808b75c4a95ce5ab24871525, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cbf4613d3f0e32439daa56e2fe4e440, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 0}
+  sr: {fileID: 0}
   move: {fileID: 1539125409374822326, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
   velocity: 3
+  groundAccelleration: 2
+  airAccelleration: 1
+  maxGroundSpeed: 4
+  maxAirSpeed: 2
   groundJumpForce: 3
   airJumpForce: 3
   respawnLoc: {x: 0, y: 0}
   stocks: 3
-  hitstunDamageScalar: 0.001
+  hitstunDamageScalar: 0.1
   move1: {fileID: 0}
+  playerDetails: {fileID: 0}
+  playerName: Lorem
   state: 0
   leftKey: 97
   rightKey: 100
