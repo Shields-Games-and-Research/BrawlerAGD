@@ -110,44 +110,37 @@ public class Player : MonoBehaviour
         updatePlayerHUD();
 
         //check if controller has a behavior or not
-        if (this.controller.controllerBehavior is null)
+        this.controller.Update();
+        switch (state)
         {
-            switch (state)
-            {
-                case PlayerState.idle:
-                    updateIdle();
-                    break;
-                case PlayerState.air:
-                    updateAir();
-                    break;
-                case PlayerState.airJumpsExhausted:
-                    updateAirJumpsExhausted();
-                    break;
-                case PlayerState.warmUp:
-                    updateWarmUp();
-                    break;
-                case PlayerState.attack:
-                    updateAttack();
-                    break;
-                case PlayerState.coolDown:
-                    updateCoolDown();
-                    break;
-                case PlayerState.landing:
-                    updateLanding();
-                    break;
-                case PlayerState.stun:
-                    updateStun();
-                    break;
-                default:
-                    state = PlayerState.idle;
-                    break;
-            }
+            case PlayerState.idle:
+                updateIdle();
+                break;
+            case PlayerState.air:
+                updateAir();
+                break;
+            case PlayerState.airJumpsExhausted:
+                updateAirJumpsExhausted();
+                break;
+            case PlayerState.warmUp:
+                updateWarmUp();
+                break;
+            case PlayerState.attack:
+                updateAttack();
+                break;
+            case PlayerState.coolDown:
+                updateCoolDown();
+                break;
+            case PlayerState.landing:
+                updateLanding();
+                break;
+            case PlayerState.stun:
+                updateStun();
+                break;
+            default:
+                state = PlayerState.idle;
+                break;
         }
-        else 
-        {
-            this.controller.controllerBehavior.Update();
-        }
-
     }
 
     void updatePlayerHUD() 
@@ -174,12 +167,12 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.white;
 
-        if (Input.GetKey(controller.rightKey)) { moveRight(); }
-        else if (Input.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        else if (controller.GetKey(controller.leftKey)) { moveLeft(); }
 
-        if (Input.GetKeyDown(controller.jumpKey)) { jump(); }
+        if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(controller.move1Key)) { performMove(move1); }
+        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
     }
 
     /**A player, from air, can:
@@ -192,12 +185,12 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.green;
 
-        if (Input.GetKey(controller.rightKey)) { moveRight(); }
-        else if (Input.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        else if (controller.GetKey(controller.leftKey)) { moveLeft(); }
 
-        if (Input.GetKeyDown(controller.jumpKey)) { jump(); }
+        if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
-        if (Input.GetKeyDown(controller.move1Key)) { performMove(move1); }
+        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
 
     }
 
@@ -207,8 +200,8 @@ public class Player : MonoBehaviour
     void updateAirJumpsExhausted()
     {
         sr.color = Color.grey;
-        if (Input.GetKey(controller.rightKey)) { moveRight(); }
-        if (Input.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        if (controller.GetKey(controller.leftKey)) { moveLeft(); }
     }
 
     /**A player, from warm up, can:
@@ -217,8 +210,8 @@ public class Player : MonoBehaviour
     void updateWarmUp()
     {
         sr.color = Color.yellow;
-        if (Input.GetKey(controller.rightKey)) { moveRight(); }
-        if (Input.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        if (controller.GetKey(controller.leftKey)) { moveLeft(); }
     }
 
     /**A player, from attack, can:
