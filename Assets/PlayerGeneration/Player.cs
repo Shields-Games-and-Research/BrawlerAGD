@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     /**COMPONENT DECLARATION*/
     public Rigidbody2D rb;
     public SpriteRenderer sr;
+    public BoxCollider2D bc;
 
     /**PREFAB DECLARATION */
     public Move move;
@@ -263,7 +264,6 @@ public class Player : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collision) 
     {
-        print("Reached trigger exit");
         //Player has been hit by a move and is not currently invincible
         if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
         {
@@ -276,14 +276,12 @@ public class Player : MonoBehaviour
         //Player has left the arena
         if (collision.gameObject.CompareTag("Arena"))
         {
-            print("Exit Arena Triggered");
             this.respawn();
         }
     }
 
     void OnTriggerStay2D(Collider2D collision) 
     {
-        print("reached trigger stay");
         //Player has been hit by a move and is not currently invincible
         if (collision.gameObject.CompareTag("Attack") && !this.isInvincible) 
         {
@@ -297,7 +295,6 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision) 
     {
-        print("reached trigger enter");
         //Player has been hit by a move and is not currently invincible
         if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
         {

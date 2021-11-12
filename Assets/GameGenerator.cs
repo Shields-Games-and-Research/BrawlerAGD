@@ -25,6 +25,9 @@ public class GameGenerator : MonoBehaviour
     //UI components for notifications
     public GameObject notifications;
 
+    //Game Data Singleton for Agent Usage
+    public GameData gameData;
+
     /** Assignment of values from the Serialized Object. TODO: Static evaluators
      */
     public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Player player)
@@ -123,6 +126,8 @@ public class GameGenerator : MonoBehaviour
 
         InitializePlayerFromSerializedObj(serializedPlayer1, player1);
         InitializeMoveFromSerializedObj(serializedMove1Player1, player1.move1, player1);
+        //Add Player 1 reference to GameData
+        gameData.players.Add(player1);
 
         //Serialized Player 2 Setup
         SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
@@ -138,7 +143,7 @@ public class GameGenerator : MonoBehaviour
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         //Player 2 Controller/Agent Controller Assignment
-        player2.controller = new HoldLeft(player2);
+        player2.controller = new AI(player2);
         //player2.controller = new Controller(player2);
         //player2.controller.leftKey = KeyCode.J;
         //player2.controller.rightKey = KeyCode.L;
@@ -152,6 +157,9 @@ public class GameGenerator : MonoBehaviour
 
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
         InitializeMoveFromSerializedObj(serializedMove1Player2, player2.move1, player2);
+
+        //Add Player 2 reference to GAmeData
+        gameData.players.Add(player2);
 
         StartCoroutine(player1.NotificationCoroutine("FIGHT!"));
 }
