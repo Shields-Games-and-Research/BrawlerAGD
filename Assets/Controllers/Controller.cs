@@ -13,17 +13,28 @@ public class Controller
     public KeyCode move1Key;
 
     public Player player;
+    public Player opponent;
 
-    public Controller(Player player)
+    public Transform playerTransform;
+    public LayerMask mask;
+
+    //TODO: Brainstorm implementation that scales beyond 2 players
+    public Controller(Player player, Player opponent)
     {
         //Assign linked player
         this.player = player;
+
+        //Assign opponent player
+        this.opponent = opponent;
 
         //Defaults
         this.leftKey = KeyCode.A;
         this.rightKey = KeyCode.D;
         this.jumpKey = KeyCode.W;
         this.move1Key = KeyCode.S;
+
+        this.playerTransform = player.gameObject.transform;
+        this.mask = LayerMask.GetMask("Floor");
     }
 
     public virtual void Update()
@@ -40,13 +51,42 @@ public class Controller
     {
         return Input.GetKeyDown(code);
     }
+
+    public bool OverPit() 
+    {
+        RaycastHit2D platformHit = Physics2D.Raycast(this.playerTransform.position, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
+        return (platformHit.collider == null);
+    }
+
+    //TODO: allow for checking of different moves the player has
+    public bool PlayerInRangeOfMove()
+    {
+        return opponent.sr.bounds.Intersects(player.move1.sr.bounds);
+    }
+
+    public bool OpponentAbove() 
+    {
+        return opponent.gameObject.transform.position.y > player.gameObject.transform.position.y;
+    }
+
+    public bool OpponentRight() 
+    {
+        return opponent.gameObject.transform.position.x > player.gameObject.transform.position.x;
+    }
+
+    public bool ApproachingEdge()
+    { 
+        
+    }
+
+    
 }
 
 
 public class HoldLeft : Controller
 {
 
-    public HoldLeft(Player player) : base (player)
+    public HoldLeft(Player player, Player opponent) : base (player, opponent)
     {
 
     }
@@ -74,21 +114,13 @@ public class HoldLeft : Controller
             return false;
         }
     }
+
 }
 
 public class AI : Controller
 {
 
-    Transform playerTransform;
     ColliderDistance2D closestDistance;
-
-    bool overPit;
-    LayerMask mask;
-
-
-    //bool aboveNearestPlatform;
-    //bool inOpponentAttackRange;
-    //bool opponentInAttackRange;
 
     //AI States
     public enum AIState
@@ -99,18 +131,9 @@ public class AI : Controller
 
     public AIState state = AIState.pursue;
 
-    public AI(Player player) : base(player)
+    public AI(Player player, Player opponent) : base(player, opponent)
     {
-        /**
-         * Get references to:
-         * Players, Moves, Platform locations
-         * 
-         * Above Pit?
-         * Below Nearest Platform?
-         */
-
-        playerTransform = player.gameObject.transform;
-        this.mask = LayerMask.GetMask("Floor");
+        
         //Get collider distance object for closest platform point
         
         List<Collider2D> platforms = new List<Collider2D>();
@@ -134,9 +157,19 @@ public class AI : Controller
     }
 
     public override void Update()
-    { 
-        RaycastHit2D platformHit = Physics2D.Raycast(playerTransform.position, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
-        this.overPit = (platformHit.collider == null);
+    {
+        //Debug.Log("Over Pit: " + this.OverPit());
+        //Debug.Log("In Range: " + this.PlayerInRangeOfMove());
+        //Debug.Log("Opponent Above: " + this.OpponentAbove());
+        //Debug.Log("Opponent Right: " + this.OpponentRight());
+        /**TODO:
+         * - Where the current player's move will land at tick x
+         * - Player Above
+         * - Player to Right
+         * - Platform Edge Detection
+         * - Are you in range of opponents 
+         * - Overpit
+         */
 
         switch (state) 
         {
