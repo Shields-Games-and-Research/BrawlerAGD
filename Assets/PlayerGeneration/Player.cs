@@ -92,9 +92,6 @@ public class Player : MonoBehaviour
         sr.sprite = playerSprites[playerSprite];
 
         rb.freezeRotation = true;
-
-        //instantiate moves on player creation
-        //move1 = Instantiate<Move>(move, transform.position + move.center, Quaternion.identity, transform);
         
     }
 

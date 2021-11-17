@@ -134,6 +134,16 @@ public class AI : Controller
         RaycastHit2D platformHit = Physics2D.Raycast(playerTransform.position, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
         this.overPit = (platformHit.collider == null);
 
+        switch (state) 
+        {
+            case AIState.pursue:
+                break;
+            case AIState.recover:
+                break;
+            default:
+                break;
+        }
+
     }
 
     public override bool GetKey(KeyCode code)
