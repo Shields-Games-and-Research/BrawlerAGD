@@ -94,7 +94,7 @@ public class Player : MonoBehaviour
         rb.freezeRotation = true;
 
         //instantiate moves on player creation
-        move1 = Instantiate<Move>(move, transform.position + move.center, Quaternion.identity, transform);
+        //move1 = Instantiate<Move>(move, transform.position + move.center, Quaternion.identity, transform);
         
     }
 

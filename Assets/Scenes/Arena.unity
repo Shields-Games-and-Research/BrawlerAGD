@@ -948,6 +948,7 @@ MonoBehaviour:
   p2HUD: {fileID: 1759345128}
   notifications: {fileID: 6167194}
   gameData: {fileID: 575851010}
+  move: {fileID: 1539125409374822326, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
 --- !u!4 &1661193752
 Transform:
   m_ObjectHideFlags: 0

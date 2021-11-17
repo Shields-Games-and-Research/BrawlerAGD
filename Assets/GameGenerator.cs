@@ -28,6 +28,9 @@ public class GameGenerator : MonoBehaviour
     //Game Data Singleton for Agent Usage
     public GameData gameData;
 
+    //Prefab Declaration
+    public Move move;
+
     /** Assignment of values from the Serialized Object. TODO: Static evaluators
      */
     public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Player player)
@@ -67,12 +70,16 @@ public class GameGenerator : MonoBehaviour
 
     /** Assignment of values from the Serialized Object. Requires a player as a parameter as a dependency
      */
-    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove, Move move, Player player) 
+    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove, Player player) 
     {
-        //assigns move to a player
-        player.move1 = move;
+        //first find center for instantiation
+        Vector2 center = player.transform.position + new Vector3(serializedMove.moveLocX, serializedMove.moveLocY);
+
+        //instantiates a move to a player
+        player.move1 = Instantiate<Move>(move, center, Quaternion.identity, player.transform);
+
         //sets location relative to assigned player
-        player.move1.center = player.transform.position + new Vector3(serializedMove.moveLocX, serializedMove.moveLocY);
+        player.move1.center = center;
         //Sets width and height of move
         player.move1.transform.localScale = new Vector2(serializedMove.widthScalar, serializedMove.heightScalar);
         //Move Phase Durations
@@ -125,7 +132,7 @@ public class GameGenerator : MonoBehaviour
         player1.notifications = notifications.GetComponent<Text>();
 
         InitializePlayerFromSerializedObj(serializedPlayer1, player1);
-        InitializeMoveFromSerializedObj(serializedMove1Player1, player1.move1, player1);
+        InitializeMoveFromSerializedObj(serializedMove1Player1, player1);
         //Add Player 1 reference to GameData
         gameData.players.Add(player1);
 
@@ -156,7 +163,7 @@ public class GameGenerator : MonoBehaviour
         player2.notifications = notifications.GetComponent<Text>();
 
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
-        InitializeMoveFromSerializedObj(serializedMove1Player2, player2.move1, player2);
+        InitializeMoveFromSerializedObj(serializedMove1Player2, player2);
 
         //Add Player 2 reference to GAmeData
         gameData.players.Add(player2);

@@ -80,14 +80,20 @@ public class AI : Controller
 {
 
     Transform playerTransform;
-
-    //ColliderDistance2D closestPoint;
+    ColliderDistance2D closestDistance;
 
     bool overPit;
     LayerMask mask;
     //bool aboveNearestPlatform;
     //bool inOpponentAttackRange;
     //bool opponentInAttackRange;
+
+    //AI States
+    public enum AIState
+    {
+        pursue,
+        recover
+    }
 
     public AI(Player player) : base(player)
     {
@@ -109,7 +115,7 @@ public class AI : Controller
         player.bc.OverlapCollider(platformFilter, platforms);
         if (platforms.Count > 0) 
         {
-            ColliderDistance2D closestDistance = player.bc.Distance(platforms[0]); 
+            this.closestDistance = player.bc.Distance(platforms[0]); 
         }
         /** ColliderDistance2D properties
             distance    Gets the distance between two colliders.
@@ -124,14 +130,10 @@ public class AI : Controller
     }
 
     public override void Update()
-    {
-      
+    { 
         RaycastHit2D platformHit = Physics2D.Raycast(playerTransform.position, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
-
         this.overPit = (platformHit.collider == null);
-        Debug.Log(this.overPit);
 
-        //Debug.Log("closest point: " + this.closestPoint.distance);
     }
 
     public override bool GetKey(KeyCode code)
