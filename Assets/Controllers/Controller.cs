@@ -84,6 +84,8 @@ public class AI : Controller
 
     bool overPit;
     LayerMask mask;
+
+
     //bool aboveNearestPlatform;
     //bool inOpponentAttackRange;
     //bool opponentInAttackRange;
@@ -94,6 +96,8 @@ public class AI : Controller
         pursue,
         recover
     }
+
+    public AIState state = AIState.pursue;
 
     public AI(Player player) : base(player)
     {
