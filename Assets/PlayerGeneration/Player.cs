@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
     public Rigidbody2D rb;
     public SpriteRenderer sr;
     public BoxCollider2D bc;
+    public CapsuleCollider2D cc;
 
     /**PREFAB DECLARATION */
     public Move move;

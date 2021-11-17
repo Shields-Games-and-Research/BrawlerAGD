@@ -81,6 +81,14 @@ public class AI : Controller
 
     Transform playerTransform;
 
+    //ColliderDistance2D closestPoint;
+
+    bool overPit;
+    LayerMask mask;
+    //bool aboveNearestPlatform;
+    //bool inOpponentAttackRange;
+    //bool opponentInAttackRange;
+
     public AI(Player player) : base(player)
     {
         /**
@@ -90,32 +98,40 @@ public class AI : Controller
          * Above Pit?
          * Below Nearest Platform?
          */
+
         playerTransform = player.gameObject.transform;
+        this.mask = LayerMask.GetMask("Floor");
+        //Get collider distance object for closest platform point
+        
+        List<Collider2D> platforms = new List<Collider2D>();
+        ContactFilter2D platformFilter = new ContactFilter2D();
+        platformFilter.SetLayerMask(mask);
+        player.bc.OverlapCollider(platformFilter, platforms);
+        if (platforms.Count > 0) 
+        {
+            ColliderDistance2D closestDistance = player.bc.Distance(platforms[0]); 
+        }
+        /** ColliderDistance2D properties
+            distance    Gets the distance between two colliders.
+            isOverlapped Gets whether the distance represents an overlap or not.
+            isValid Gets whether the distance is valid or not.
+            normal A normalized vector that points from pointB to pointA.
+            pointA A point on a Collider2D that is a specific distance away from pointB.
+            pointB A point on a Collider2D that is a specific distance away from pointA.
+        */
+        //this.closestPoint = player.bc.Distance(closestPlatformTest);
 
     }
 
     public override void Update()
     {
-        //TODO: Finish writing "Over Platform" check
-        RaycastHit hit;
-        LayerMask mask = LayerMask.GetMask("Floor");
-        RaycastHit2D platformHit = Physics2D.Raycast(playerTransform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
-       
-        if (platformHit.collider != null)
-        {
+      
+        RaycastHit2D platformHit = Physics2D.Raycast(playerTransform.position, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
 
-            Debug.Log("Over Platform" + platformHit.collider.gameObject.name);
-        }
-        else
-        {
-            Debug.Log("Over Pit ");
-        }
+        this.overPit = (platformHit.collider == null);
+        Debug.Log(this.overPit);
 
-        List<Collider2D> platforms = new List<Collider2D>();
-        ContactFilter2D platformFilter = new ContactFilter2D();
-        platformFilter.SetLayerMask(mask);
-        player.bc.OverlapCollider(platformFilter, platforms);
-        Debug.Log("Num Platforms: " + platforms.Count);
+        //Debug.Log("closest point: " + this.closestPoint.distance);
     }
 
     public override bool GetKey(KeyCode code)

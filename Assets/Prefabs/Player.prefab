@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 9002358621052085748}
   - component: {fileID: 9002358621052085746}
   m_Layer: 8
-  m_Name: Player1
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,6 +107,7 @@ MonoBehaviour:
   rb: {fileID: 9002358621052085749}
   sr: {fileID: 9002358621052085748}
   bc: {fileID: 3342850564509609767}
+  cc: {fileID: 9002358621052085746}
   move: {fileID: 1539125409374822326, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
   groundAcceleration: 2
   airAcceleration: 1
