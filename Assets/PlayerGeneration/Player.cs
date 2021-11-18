@@ -247,7 +247,7 @@ public class Player : MonoBehaviour
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
     {
-        
+
         if (collision.gameObject.CompareTag("Floor"))
         {
             isGrounded = true;
@@ -310,6 +310,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Floor"))
         {
             isGrounded = false;
+            state = PlayerState.air;
         }
     }
 
@@ -469,7 +470,22 @@ public class Player : MonoBehaviour
         state = PlayerState.coolDown;
         yield return new WaitForSeconds(move.coolDownDuration);
         //TODO branch depending on air/ground
-        state = PlayerState.idle;
+        if (this.isGrounded)
+        {
+            state = PlayerState.idle;
+        }
+        else 
+        {
+            if (!this.jumpsExhausted)
+            {
+                state = PlayerState.air;
+            }
+            else 
+            {
+                state = PlayerState.airJumpsExhausted;
+            }
+        }
+       
     }
 
     /**Takes a hitstun duration from a move, scales it to the player's current damage, and then sets that player to that state for that amount of time
@@ -479,7 +495,21 @@ public class Player : MonoBehaviour
         this.state = PlayerState.stun;
         float scaledHitstunDuration = hitstunDuration * damage * hitstunDamageScalar;
         yield return new WaitForSeconds(scaledHitstunDuration);
-        this.state = PlayerState.idle;
+        if (this.isGrounded)
+        {
+            state = PlayerState.idle;
+        }
+        else
+        {
+            if (!this.jumpsExhausted)
+            {
+                state = PlayerState.air;
+            }
+            else
+            {
+                state = PlayerState.airJumpsExhausted;
+            }
+        }
 
     }
 

@@ -51,7 +51,7 @@ public class Controller
 
     public virtual void Update()
     {
-        Debug.Log(this.GetClosestPlatformDirection());
+        //Debug.Log(this.GetClosestPlatformDirection());
     }
 
     public Vector2 GetClosestPlatformDirection() 
@@ -201,15 +201,7 @@ public class AI : Controller
         //Debug.Log("Opponent Above: " + this.OpponentAbove());
         //Debug.Log("Opponent Right: " + this.OpponentRight());
         //Debug.Log("Approaching Edge: " + this.ApproachingEdge());
-        /**TODO:
-         * - Where the current player's move will land at tick x
-         * - Player Above
-         * - Player to Right
-         * - Platform Edge Detection
-         * - Are you in range of opponents 
-         * - Overpit
-         */
-        Debug.Log(OverPit());
+       
         // Update recovery timer
         if (OverPit())
         {
@@ -276,8 +268,6 @@ public class AI : Controller
     public void UpdateRecover()
     {
         Vector2 platformDirection = GetClosestPlatformDirection();
-        Debug.Log(OverPit());
-        Debug.Log(platformDirection);
         if (OverPit() && platformDirection.y <= 0)
         {
             pressJump = true;
