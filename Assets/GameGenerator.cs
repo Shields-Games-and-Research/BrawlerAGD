@@ -150,6 +150,7 @@ public class GameGenerator : MonoBehaviour
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         //Player 2 Controller/Agent Controller Assignment
+        //player1.controller = new AI(player1, player2);
         player2.controller = new AI(player2, player1);
         //player2.controller = new Controller(player2);
         //player2.controller.leftKey = KeyCode.J;

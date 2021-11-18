@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
     public Move move1;
 
     /**PRIVATE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
-    private bool isGrounded;
+    public bool isGrounded;
     private bool jumpsExhausted;
     private float damage = 0;
     private bool isInvincible = false;

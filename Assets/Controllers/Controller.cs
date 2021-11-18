@@ -181,11 +181,17 @@ public class AI : Controller
     }
 
     public AIState state = AIState.pursue;
+    public bool pressLeft;
+    public bool pressRight;
+    public bool pressJump;
+    public bool pressMove1;
+    public int recoveryTime;
+    public int recoveryTimeLimit;
 
     public AI(Player player, Player opponent) : base(player, opponent)
     {
-
-
+        recoveryTimeLimit = 120;
+        recoveryTime = 0;
     }
 
     public override void Update()
@@ -203,12 +209,33 @@ public class AI : Controller
          * - Are you in range of opponents 
          * - Overpit
          */
+        Debug.Log(OverPit());
+        // Update recovery timer
+        if (OverPit())
+        {
+            recoveryTime++;
+        }
+        else
+        {
+            recoveryTime = 0;
+        }
+        // Change state
+        if (recoveryTime > recoveryTimeLimit)
+        {
+            state = AIState.recover;
+        }
+        else
+        {
+            state = AIState.pursue;
+        }
 
-        switch (state) 
+        switch (state)
         {
             case AIState.pursue:
+                UpdatePursue();
                 break;
             case AIState.recover:
+                UpdateRecover();
                 break;
             default:
                 break;
@@ -216,14 +243,89 @@ public class AI : Controller
 
     }
 
+    public void UpdatePursue()
+    {
+        if (this.PlayerInRangeOfMove())
+        {
+            pressMove1 = true;
+        }
+        else
+        {
+            pressMove1 = false;
+            if ((OpponentAbove() && player.isGrounded) || ApproachingEdge())
+            {
+                pressJump = true;
+            }
+            else
+            {
+                pressJump = false;
+            }
+            if (OpponentRight())
+            {
+                pressRight = true;
+                pressLeft = true;
+            }
+            else
+            {
+                pressLeft = true;
+                pressRight = false;
+            }
+        }
+    }
+
+    public void UpdateRecover()
+    {
+        Vector2 platformDirection = GetClosestPlatformDirection();
+        Debug.Log(OverPit());
+        Debug.Log(platformDirection);
+        if (OverPit() && platformDirection.y <= 0)
+        {
+            pressJump = true;
+        }
+        else
+        {
+            pressJump = false;
+        }
+        if (platformDirection.x > 0)
+        {
+            pressRight = true;
+            pressLeft = false;
+        }
+        else
+        {
+            pressRight = false;
+            pressLeft = false;
+        }
+        pressMove1 = false;
+    }
+
     public override bool GetKey(KeyCode code)
     {
-        return false;
+        if (code == this.leftKey)
+        {
+            return pressLeft;
+        }
+        else if (code == this.rightKey)
+        {
+            return pressRight;
+        }
+        else if (code == this.jumpKey)
+        {
+            return pressJump;
+        }
+        else if (code == this.move1Key)
+        {
+            return pressMove1;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public override bool GetKeyDown(KeyCode code)
     {
-        return false;
+        return this.GetKey(code);
     }
 
     
