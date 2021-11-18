@@ -122,11 +122,11 @@ public class GameGenerator : MonoBehaviour
         Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
         //Player 1 Controller/Agent Controller Assignment
-        player1.controller = new Controller(player1, null);
-        player1.controller.leftKey = KeyCode.A;
-        player1.controller.rightKey = KeyCode.D;
-        player1.controller.jumpKey = KeyCode.W;
-        player1.controller.move1Key = KeyCode.S;
+        //player1.controller = new Controller(player1, null);
+        //player1.controller.leftKey = KeyCode.A;
+        //player1.controller.rightKey = KeyCode.D;
+        //player1.controller.jumpKey = KeyCode.W;
+        //player1.controller.move1Key = KeyCode.S;
         //Player 1 Heads Up Display
         player1.playerDetails = p1HUD.GetComponent<Text>();
         player1.notifications = notifications.GetComponent<Text>();
@@ -150,7 +150,7 @@ public class GameGenerator : MonoBehaviour
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         //Player 2 Controller/Agent Controller Assignment
-        //player1.controller = new AI(player1, player2);
+        player1.controller = new AI(player1, player2);
         player2.controller = new AI(player2, player1);
         //player2.controller = new Controller(player2);
         //player2.controller.leftKey = KeyCode.J;

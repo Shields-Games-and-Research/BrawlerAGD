@@ -56,8 +56,8 @@ public class SerializedPlayer
         maxAirSpeed = 2f + 8 * (float)rand.NextDouble();
         groundAcceleration = maxGroundSpeed * (float)rand.NextDouble();
         airAcceleration = maxAirSpeed * (float)rand.NextDouble();
-        float totalJumpForce = 4f + 12 * (float)rand.NextDouble();
-        float jumpRatio = 0.1f + (float)rand.NextDouble();
+        float totalJumpForce = 5f + 12 * (float)rand.NextDouble();
+        float jumpRatio = 0.2f + (float)rand.NextDouble();
         groundJumpForce = totalJumpForce * jumpRatio;
         airJumpForce = totalJumpForce * (1 - jumpRatio);
         mass = 0.5f + 2 * (float)rand.NextDouble();

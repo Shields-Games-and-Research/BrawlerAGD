@@ -51,7 +51,6 @@ public class Controller
 
     public virtual void Update()
     {
-        Debug.Log(this.GetClosestPlatformDirection());
     }
 
     public Vector2 GetClosestPlatformDirection() 
@@ -127,7 +126,7 @@ public class Controller
     public bool ApproachingEdge()
     {
         //Assumes that grid base unit is 1 and that positive transform is direction player is facing
-        return OverPit(new Vector2(1, 0)) && !OverPit(); 
+        return OverPit(new Vector2(0.2f, 0)) && !OverPit(); 
     }
 
     
@@ -187,11 +186,16 @@ public class AI : Controller
     public bool pressMove1;
     public int recoveryTime;
     public int recoveryTimeLimit;
+    public Vector2 targetMod;
+    public int targetTimeLimit;
+    public int targetTime;
 
     public AI(Player player, Player opponent) : base(player, opponent)
     {
-        recoveryTimeLimit = 120;
+        recoveryTimeLimit = 90;
         recoveryTime = 0;
+        targetTimeLimit = 40;
+        targetMod = new Vector2(0, 0);
     }
 
     public override void Update()
@@ -209,7 +213,14 @@ public class AI : Controller
          * - Are you in range of opponents 
          * - Overpit
          */
-        Debug.Log(OverPit());
+        // Update target timer and change target modification
+        targetTime++;
+        if (targetTime > targetTimeLimit)
+        {
+            targetTime = 0;
+            targetMod.x = Random.Range(-1f, 1f);
+            targetMod.y = Random.Range(-0.2f, 0.2f);
+        }
         // Update recovery timer
         if (OverPit())
         {
@@ -245,6 +256,14 @@ public class AI : Controller
 
     public void UpdatePursue()
     {
+        Vector2 movePosition = player.move1.gameObject.transform.position;
+        Vector2 relMovePosition = Vector2.Scale((movePosition - (Vector2) player.gameObject.transform.position), new Vector2(1.2f, 1.2f));
+        Vector2 targetPosition = (Vector2) opponent.gameObject.transform.position - relMovePosition;
+        targetPosition = targetPosition + targetMod;
+        //Debug.Log(opponent.gameObject.transform.position);
+        //Debug.Log(player.move.center);
+        //Debug.Log(relMovePosition);
+        //Debug.Log(targetPosition);
         if (this.PlayerInRangeOfMove())
         {
             pressMove1 = true;
@@ -252,7 +271,7 @@ public class AI : Controller
         else
         {
             pressMove1 = false;
-            if ((OpponentAbove() && player.isGrounded) || ApproachingEdge())
+            if (((targetPosition.y > 0) && player.isGrounded) || ApproachingEdge())
             {
                 pressJump = true;
             }
@@ -260,10 +279,10 @@ public class AI : Controller
             {
                 pressJump = false;
             }
-            if (OpponentRight())
+            if (targetPosition.x > player.gameObject.transform.position.x)
             {
                 pressRight = true;
-                pressLeft = true;
+                pressLeft = false;
             }
             else
             {
@@ -276,9 +295,7 @@ public class AI : Controller
     public void UpdateRecover()
     {
         Vector2 platformDirection = GetClosestPlatformDirection();
-        Debug.Log(OverPit());
-        Debug.Log(platformDirection);
-        if (OverPit() && platformDirection.y <= 0)
+        if (OverPit() && platformDirection.y <= 0.1)
         {
             pressJump = true;
         }
@@ -294,7 +311,7 @@ public class AI : Controller
         else
         {
             pressRight = false;
-            pressLeft = false;
+            pressLeft = true;
         }
         pressMove1 = false;
     }
