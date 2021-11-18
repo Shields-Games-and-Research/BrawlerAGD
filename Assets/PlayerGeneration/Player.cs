@@ -247,8 +247,11 @@ public class Player : MonoBehaviour
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
     {
-
-        if (collision.gameObject.CompareTag("Floor"))
+        LayerMask mask = LayerMask.GetMask("Floor");
+        RaycastHit2D platformHit = Physics2D.Raycast(this.transform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
+        
+        //if the player is touching a tile, the raycast is reasonably within the player's height, and is not null...
+        if (collision.gameObject.CompareTag("Floor") && platformHit.distance <= this.sr.bounds.size.y && platformHit.collider != null)
         {
             isGrounded = true;
             jumpsExhausted = false;
@@ -310,7 +313,14 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Floor"))
         {
             isGrounded = false;
-            state = PlayerState.air;
+            if (this.jumpsExhausted)
+            {
+                this.state = PlayerState.airJumpsExhausted;
+            }
+            else
+            {
+                this.state = PlayerState.air;
+            }
         }
     }
 
@@ -325,14 +335,14 @@ public class Player : MonoBehaviour
     {
         if (isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, groundJumpForce);
-            state = PlayerState.air;
+            this.rb.velocity = new Vector2(rb.velocity.x, groundJumpForce);
+            this.state = PlayerState.air;
         }
-        else if (!jumpsExhausted)
+        else if (!this.jumpsExhausted)
         {
-            rb.velocity = new Vector2(rb.velocity.x, airJumpForce);
-            jumpsExhausted = true;
-            state = PlayerState.airJumpsExhausted;
+            this.rb.velocity = new Vector2(rb.velocity.x, airJumpForce);
+            this.jumpsExhausted = true;
+            this.state = PlayerState.airJumpsExhausted;
         }
     }
 
@@ -510,7 +520,6 @@ public class Player : MonoBehaviour
                 state = PlayerState.airJumpsExhausted;
             }
         }
-
     }
 
     IEnumerator InvincibilityCoroutine(float invincibilityDuration)
