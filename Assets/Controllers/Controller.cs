@@ -35,11 +35,55 @@ public class Controller
 
         this.playerTransform = player.gameObject.transform;
         this.mask = LayerMask.GetMask("Floor");
+
+        
+
+        /** ColliderDistance2D properties
+            distance    Gets the distance between two colliders.
+            isOverlapped Gets whether the distance represents an overlap or not.
+            isValid Gets whether the distance is valid or not.
+            normal A normalized vector that points from pointB to pointA.
+            pointA A point on a Collider2D that is a specific distance away from pointB.
+            pointB A point on a Collider2D that is a specific distance away from pointA.
+        */
+        
     }
 
     public virtual void Update()
     {
+        Debug.Log(this.GetClosestPlatformDirection());
+    }
 
+    public Vector2 GetClosestPlatformDirection() 
+    {
+        //Initialize empty list for checking for platforms
+        List<Collider2D> platforms = new List<Collider2D>();
+        //Create a filter to only check for "floor"
+        ContactFilter2D platformFilter = new ContactFilter2D();
+        platformFilter.SetLayerMask(this.mask);
+        //Check for all platforms within a reasonable range of player
+        this.player.bc.OverlapCollider(platformFilter, platforms);
+        //Return value that points to the nearest platform.
+        Vector2 nearestPlatformPoint = new Vector2(0, 0);
+        //Has at least one platform been detected
+        if (platforms.Count > 0)
+        {
+            float minPlatformDist = float.PositiveInfinity;
+            //Check for the closest platform, find the closest point on that platform
+            foreach (Collider2D platform in platforms)
+            {
+                Vector2 tempVector = platform.ClosestPoint(playerTransform.position);
+                float tempDist = Vector2.Distance(playerTransform.position, tempVector);
+
+                if (tempDist < minPlatformDist)
+                {
+                    minPlatformDist = tempDist;
+                    nearestPlatformPoint = tempVector;
+                }
+            }
+        }
+        //Returns the direction vector from the closest point on a platform to the player
+        return nearestPlatformPoint - (Vector2)playerTransform.position;
     }
 
     public virtual bool GetKey(KeyCode code)
@@ -52,10 +96,16 @@ public class Controller
         return Input.GetKeyDown(code);
     }
 
-    public bool OverPit() 
+    public bool OverPit(Vector2 offset) 
     {
-        RaycastHit2D platformHit = Physics2D.Raycast(this.playerTransform.position, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
+        Vector3 vector3Offset = new Vector3(offset.x * this.playerTransform.localScale.x, offset.y, 0);
+        RaycastHit2D platformHit = Physics2D.Raycast(this.playerTransform.position + vector3Offset, -Vector2.up, Mathf.Infinity, this.mask, -Mathf.Infinity, Mathf.Infinity);
         return (platformHit.collider == null);
+    }
+
+    public bool OverPit()
+    {
+        return OverPit(new Vector2(0,0));
     }
 
     //TODO: allow for checking of different moves the player has
@@ -75,8 +125,9 @@ public class Controller
     }
 
     public bool ApproachingEdge()
-    { 
-        
+    {
+        //Assumes that grid base unit is 1 and that positive transform is direction player is facing
+        return OverPit(new Vector2(1, 0)) && !OverPit(); 
     }
 
     
@@ -120,7 +171,7 @@ public class HoldLeft : Controller
 public class AI : Controller
 {
 
-    ColliderDistance2D closestDistance;
+
 
     //AI States
     public enum AIState
@@ -133,26 +184,7 @@ public class AI : Controller
 
     public AI(Player player, Player opponent) : base(player, opponent)
     {
-        
-        //Get collider distance object for closest platform point
-        
-        List<Collider2D> platforms = new List<Collider2D>();
-        ContactFilter2D platformFilter = new ContactFilter2D();
-        platformFilter.SetLayerMask(mask);
-        player.bc.OverlapCollider(platformFilter, platforms);
-        if (platforms.Count > 0) 
-        {
-            this.closestDistance = player.bc.Distance(platforms[0]); 
-        }
-        /** ColliderDistance2D properties
-            distance    Gets the distance between two colliders.
-            isOverlapped Gets whether the distance represents an overlap or not.
-            isValid Gets whether the distance is valid or not.
-            normal A normalized vector that points from pointB to pointA.
-            pointA A point on a Collider2D that is a specific distance away from pointB.
-            pointB A point on a Collider2D that is a specific distance away from pointA.
-        */
-        //this.closestPoint = player.bc.Distance(closestPlatformTest);
+
 
     }
 
@@ -162,6 +194,7 @@ public class AI : Controller
         //Debug.Log("In Range: " + this.PlayerInRangeOfMove());
         //Debug.Log("Opponent Above: " + this.OpponentAbove());
         //Debug.Log("Opponent Right: " + this.OpponentRight());
+        //Debug.Log("Approaching Edge: " + this.ApproachingEdge());
         /**TODO:
          * - Where the current player's move will land at tick x
          * - Player Above
@@ -192,6 +225,8 @@ public class AI : Controller
     {
         return false;
     }
+
+    
 
 
 }
