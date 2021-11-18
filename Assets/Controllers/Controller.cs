@@ -205,14 +205,6 @@ public class AI : Controller
         //Debug.Log("Opponent Above: " + this.OpponentAbove());
         //Debug.Log("Opponent Right: " + this.OpponentRight());
         //Debug.Log("Approaching Edge: " + this.ApproachingEdge());
-        /**TODO:
-         * - Where the current player's move will land at tick x
-         * - Player Above
-         * - Player to Right
-         * - Platform Edge Detection
-         * - Are you in range of opponents 
-         * - Overpit
-         */
         // Update target timer and change target modification
         targetTime++;
         if (targetTime > targetTimeLimit)
