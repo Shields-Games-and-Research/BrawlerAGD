@@ -133,8 +133,6 @@ public class GameGenerator : MonoBehaviour
 
         InitializePlayerFromSerializedObj(serializedPlayer1, player1);
         InitializeMoveFromSerializedObj(serializedMove1Player1, player1);
-        //Add Player 1 reference to GameData
-        gameData.players.Add(player1);
 
         //Serialized Player 2 Setup
         SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
@@ -166,11 +164,11 @@ public class GameGenerator : MonoBehaviour
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
         InitializeMoveFromSerializedObj(serializedMove1Player2, player2);
 
-        //Add Player 2 reference to GAmeData
-        gameData.players.Add(player2);
-
         StartCoroutine(player1.NotificationCoroutine("FIGHT!"));
-}
+
+        Time.timeScale = 1.0f;
+        Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
+    }
 
     // Update is called once per frame
     void Update()

@@ -225,6 +225,7 @@ public class AI : Controller
         // Change state
         if (recoveryTime > recoveryTimeLimit)
         {
+            this.player.totalRecoveryStateTransition++;
             state = AIState.recover;
         }
         else

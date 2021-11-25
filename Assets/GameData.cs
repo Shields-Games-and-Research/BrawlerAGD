@@ -5,8 +5,9 @@ using UnityEngine;
 public class GameData : MonoBehaviour
 {
     public static GameData instance = null;
-    //Player data
-    public List<Player> players = new List<Player>();
+
+    //Game Length
+    //Player has: number of hits, total damage, number of recovery
 
     void Awake() 
     {
@@ -27,9 +28,29 @@ public class GameData : MonoBehaviour
         
     }
 
+    //add num hits
+
+    //addnumrecovery
+
+    //add damage
+
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    //
+    public void resetGameData() 
+    {
+        
+    }
+
+    public void EndGame() 
+    {
+        Time.timeScale = 0f;
+        Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
+
+        //TODO: output game data
     }
 }

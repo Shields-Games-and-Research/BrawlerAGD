@@ -56,6 +56,15 @@ public class Player : MonoBehaviour
     //Player Name
     public string playerName = "Lorem";
 
+    /**TRACKING NUMBERS FOR EVALUATION*
+     * Number of Hits Received
+     * Total Damage Taken
+     * Number of Recovery Transitions
+     */
+    public float totalDamage = 0;
+    public float totalRecoveryStateTransition = 0;
+    public float totalHitsReceived = 0;
+
     public Controller controller;
 
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
@@ -301,6 +310,8 @@ public class Player : MonoBehaviour
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
+            this.totalDamage += tempMove.damageGiven;
+            this.totalHitsReceived++;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
@@ -453,6 +464,7 @@ public class Player : MonoBehaviour
         if (stocks == 0)
         {
             StartCoroutine(NotificationCoroutine(this.playerName + " HAS LOST THE GAME"));
+            GameData.instance.EndGame();
         }
         else 
         {
