@@ -6,6 +6,9 @@ using System.Linq;
 
 public class Player : MonoBehaviour
 {
+    /**ARENA MANAGEMENT REFERENCE*/
+    public ArenaManager arenaManager;
+
     /**COMPONENT DECLARATION*/
     public Rigidbody2D rb;
     public SpriteRenderer sr;
@@ -115,7 +118,10 @@ public class Player : MonoBehaviour
     // Decide on State and then apply corresponding policies to said state
     void Update()
     {
-        updatePlayerHUD();
+        if (arenaManager.UIEnabled) 
+        {
+            updatePlayerHUD();
+        }
 
         //check if controller has a behavior or not
         this.controller.Update();
@@ -153,16 +159,23 @@ public class Player : MonoBehaviour
 
     void updatePlayerHUD() 
     {
-        playerDetails.text =
-            playerName + "\n" +
-            "Damage: " + damage + "%\n" +
-            "Stocks: " + stocks + "\n" +
-            "State: " + state;
+        if (arenaManager.UIEnabled) 
+        {
+            playerDetails.text =
+                playerName + "\n" +
+                "Damage: " + damage + "%\n" +
+                "Stocks: " + stocks + "\n" +
+                "State: " + state;
+        }
+        
     }
 
     void updateNotifications(string message) 
     {
-        notifications.text = message;
+        if (arenaManager.UIEnabled) 
+        {
+            arenaManager.UpdateNotifications(message);
+        }
     }
 
     /**A player, from idle, can:
@@ -250,9 +263,6 @@ public class Player : MonoBehaviour
 
     void updateLanding() { }
     
-
-
-
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -463,7 +473,7 @@ public class Player : MonoBehaviour
     {
         if (stocks == 0)
         {
-            StartCoroutine(NotificationCoroutine(this.playerName + " HAS LOST THE GAME"));
+            StartCoroutine(arenaManager.NotificationCoroutine(this.playerName + " HAS LOST THE GAME"));
         }
         else 
         {
@@ -474,7 +484,7 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector2(0f, 0f);
             this.transform.position = this.respawnLoc;
             this.state = PlayerState.idle;
-            StartCoroutine(NotificationCoroutine(this.playerName + " HAS LOST A STOCK"));
+            StartCoroutine(arenaManager.NotificationCoroutine(this.playerName + " HAS LOST A STOCK"));
         }
         
     }
@@ -533,6 +543,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //TODO
     IEnumerator InvincibilityCoroutine(float invincibilityDuration)
     {
         this.isInvincible = true;
@@ -540,13 +551,6 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(invincibilityDuration);
         this.isInvincible = false;
         sr.color += new Color(0, 0, 0, 200f);
-    }
-
-    public IEnumerator NotificationCoroutine(string message) 
-    {
-        updateNotifications(message);
-        yield return new WaitForSeconds(5f);
-        updateNotifications("");
     }
 
 }

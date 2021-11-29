@@ -18,24 +18,40 @@ public class ArenaManager : MonoBehaviour
 
     //UI components for each player
     public GameObject p1HUD;
+    public Text p1HUDText;
     public GameObject p2HUD;
+    public Text p2HUDText;
 
     //UI components for notifications
     public GameObject notifications;
+    public Text notificationsText;
 
     //Prefab Declaration
     public Move move;
     public Player player;
     public Platforms platforms;
 
+    //Player references for this game
+    public Player player1;
+    public Player player2;
+
+    //Settings parameters for game
+    public bool p1Playable;
+    public bool p2Playable;
+    public bool UIEnabled;
+
     // Start is called before the first frame update
     void Start()
     {
-        this.InitializeGame(true, true);
+        this.InitializeGame(true, true, true);
     }
 
-    public void InitializeGame(bool p1Playable, bool p2Playable)
+    public void InitializeGame(bool p1Playable, bool p2Playable, bool UIEnabled)
     {
+        this.p1Playable = p1Playable;
+        this.p2Playable = p2Playable;
+        this.UIEnabled = UIEnabled;
+
         // Initialize RNG
         Random rand = new Random();
 
@@ -59,10 +75,7 @@ public class ArenaManager : MonoBehaviour
         //Player 1 Instantiation
         Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
-
-        //Player 1 Heads Up Display
-        player1.playerDetails = p1HUD.GetComponent<Text>();
-        player1.notifications = notifications.GetComponent<Text>();
+        player1.arenaManager = this;
 
         //Serialized Player 2 Setup
         SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
@@ -77,11 +90,27 @@ public class ArenaManager : MonoBehaviour
         //Player 2 Instantiation
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
+        player2.arenaManager = this;
 
 
-        //Player 2 Heads Up Display
-        player2.playerDetails = p2HUD.GetComponent<Text>();
-        player2.notifications = notifications.GetComponent<Text>();
+
+        if (UIEnabled)
+        {
+            //Player 1 Heads Up Display
+            p1HUDText = p1HUD.GetComponent<Text>();
+            player1.playerDetails = p1HUDText;
+            //Player 2 Heads Up Display
+            p2HUDText = p2HUD.GetComponent<Text>();
+            player2.playerDetails = p2HUDText;
+            //notifications
+            notificationsText = notifications.GetComponent<Text>();
+        }
+        else 
+        {
+            Destroy(p1HUD);
+            Destroy(p2HUD);
+            Destroy(notifications);
+        }
 
         //Player Controller or Agent Assignment
         if (p1Playable)
@@ -116,10 +145,11 @@ public class ArenaManager : MonoBehaviour
         InitializeMoveFromSerializedObj(serializedMove1Player2, player2);
 
         //TODO: move notification to arena manager
-        StartCoroutine(player1.NotificationCoroutine("FIGHT!"));
+        StartCoroutine(NotificationCoroutine("FIGHT!"));
 
-        Time.timeScale = 1.0f;
-        Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
+        //TODO: TimeScale Adjustment
+        //Time.timeScale = 1.0f;
+        //Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
     }
 
     // Update is called once per frame
@@ -198,19 +228,28 @@ public class ArenaManager : MonoBehaviour
         player.move1.hitstunDuration = serializedMove.hitstunDuration;
     }
 
-
-
-    public void BeginGame() 
-    { 
-    
-    }
-
-    public void EndGame() 
+    //UI Control for this game
+    public void UpdateNotifications(string message) 
     {
-        //send results to Evolution Manager
-        //GameResult result = new GameResult();
-    
+        if (UIEnabled)
+        {
+            notificationsText.text = message;
+        }
     }
 
+    public void ClearNotifications() 
+    {
+        if (UIEnabled)
+        {
+            notificationsText.text = "";
+        }
+    }
+
+    public IEnumerator NotificationCoroutine(string message) 
+    {
+        UpdateNotifications(message);
+        yield return new WaitForSeconds(5f);
+        ClearNotifications();
+    }
    
 }
