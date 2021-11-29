@@ -17,7 +17,7 @@ public class LevelLoader : MonoBehaviour
     public Tile Z;
     public Tile X;
     public Tile C;
-    public GameGenerator gamegen;
+    public ArenaManager gamegen;
 
     // Start is called before the first frame update
     void Start()
