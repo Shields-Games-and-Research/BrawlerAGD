@@ -474,6 +474,7 @@ public class Player : MonoBehaviour
         if (stocks == 0)
         {
             StartCoroutine(arenaManager.NotificationCoroutine(this.playerName + " HAS LOST THE GAME"));
+            arenaManager.EndGame();
         }
         else 
         {

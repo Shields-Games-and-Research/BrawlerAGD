@@ -6,6 +6,9 @@ using System.IO;
 using Random = System.Random;
 using System.Linq;
 using UnityEngine.UI;
+using static GameResult;
+
+
 
 public class ArenaManager : MonoBehaviour
 {
@@ -40,10 +43,38 @@ public class ArenaManager : MonoBehaviour
     public bool p2Playable;
     public bool UIEnabled;
 
+    public GameResult result;
+
     // Start is called before the first frame update
     void Start()
     {
         this.InitializeGame(true, true, true);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    public void EndGame() 
+    {
+        //record game scores
+        this.result.totalDamageP1 = this.player1.totalDamage;
+        this.result.totalRecoveryStateTransitionP1 = this.player1.totalRecoveryStateTransition;
+        this.result.totalHitsReceivedP1 = this.player1.totalHitsReceived;
+        this.result.totalDamageP2 = this.player2.totalDamage;
+        this.result.totalRecoveryStateTransitionP2 = this.player2.totalRecoveryStateTransition;
+        this.result.totalHitsReceivedP2 = this.player2.totalHitsReceived;
+
+        //send to evolution manager
+        EvolutionManager.instance.AddResultFromGame(this.result);
+
+        //destroy all objects
+        Destroy(this.player1);
+        Destroy(this.player2);
+
+        //TODO: Platforms/other objects
     }
 
     public void InitializeGame(bool p1Playable, bool p2Playable, bool UIEnabled)
@@ -51,6 +82,8 @@ public class ArenaManager : MonoBehaviour
         this.p1Playable = p1Playable;
         this.p2Playable = p2Playable;
         this.UIEnabled = UIEnabled;
+
+        this.result = new GameResult();
 
         // Initialize RNG
         Random rand = new Random();
@@ -62,37 +95,37 @@ public class ArenaManager : MonoBehaviour
         // Load from or write to file
         platforms = ReadJson<Platforms>(levelPath, platforms);
 
-        //Serialized Player 1 Setup
+        // Serialized Player 1 Setup
         SerializedPlayer serializedPlayer1 = new SerializedPlayer("Player 1", KeyCode.W, KeyCode.A, KeyCode.D, KeyCode.S, rand);
         serializedPlayer1 = ReadJson<SerializedPlayer>(player1Path, serializedPlayer1);
         serializedPlayer1.respawnX = platforms.player1x;
         serializedPlayer1.respawnY = platforms.player1y;
 
-        //Serialized Player 1, Move 1 Setup
+        // Serialized Player 1, Move 1 Setup
         SerializedMove serializedMove1Player1 = new SerializedMove(rand);
         serializedMove1Player1 = ReadJson<SerializedMove>(player1Move1Path, serializedMove1Player1);
 
-        //Player 1 Instantiation
+        // Player 1 Instantiation
         Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
         player1.arenaManager = this;
+        this.player1 = player1;
 
-        //Serialized Player 2 Setup
+        // Serialized Player 2 Setup
         SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
         serializedPlayer2 = ReadJson<SerializedPlayer>(player2Path, serializedPlayer2);
         serializedPlayer2.respawnX = platforms.player2x;
         serializedPlayer2.respawnY = platforms.player2y;
 
-        //Serialized Player 2 Move 1 Setup
+        // Serialized Player 2 Move 1 Setup
         SerializedMove serializedMove1Player2 = new SerializedMove(rand);
         serializedMove1Player2 = ReadJson<SerializedMove>(player2Move1Path, serializedMove1Player2);
 
-        //Player 2 Instantiation
+        // Player 2 Instantiation
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         player2.arenaManager = this;
-
-
+        this.player2 = player2;
 
         if (UIEnabled)
         {
@@ -150,12 +183,6 @@ public class ArenaManager : MonoBehaviour
         //TODO: TimeScale Adjustment
         //Time.timeScale = 1.0f;
         //Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     T ReadJson<T>(string filename, T ifFileMissing)
