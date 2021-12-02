@@ -52,6 +52,8 @@ public class Player : MonoBehaviour
     public bool jumpsExhausted;
     public float damage = 0;
     public bool isInvincible = false;
+    public int spriteIndex = 0;
+    
     //Shows initial UI
     public Text playerDetails;
     //Reference to notifications board
@@ -94,14 +96,14 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
-        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
-        int playerSprite = Random.Range(0, playerSprites.Length);
+        //Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+        //this.playerSpriteIndex = Random.Range(0, playerSprites.Length);
 
         //set relevant game objects as instance variables for performant access
         rb = GetComponent<Rigidbody2D>();
         
         sr = GetComponent<SpriteRenderer>();
-        sr.sprite = playerSprites[playerSprite];
+        //sr.sprite = playerSprites[playerSpriteIndex];
 
         rb.freezeRotation = true;
         

@@ -29,6 +29,8 @@ public class SerializedMove
     public float knockbackModY;
     //Base Hitstun duration
     public float hitstunDuration;
+    //Move sprite index (where the sprite is in the folder)
+    public int spriteIndex;
 
     public SerializedMove(Random rand)
     {
@@ -47,5 +49,7 @@ public class SerializedMove
         knockbackModX = -1f + (float)rand.NextDouble();
         knockbackModY = -1f + (float)rand.NextDouble();
         hitstunDuration = (float)rand.NextDouble();
+        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+        this.spriteIndex = -1;
     }
 }

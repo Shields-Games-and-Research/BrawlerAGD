@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using static GameResult;
 using UnityEngine.SceneManagement;
 using static EvolutionManager;
+using static UnityEngine.Random;
 
 
 
@@ -51,7 +52,6 @@ public class ArenaManager : MonoBehaviour
     void Start()
     {
         this.InitializeGame(false, false, true);
-        print(SceneManager.GetActiveScene().name);
         
     }
 
@@ -74,11 +74,16 @@ public class ArenaManager : MonoBehaviour
         //send to evolution manager
         EvolutionManager.instance.AddResultFromGame(this.result);
 
-        //destroy all objects
+        //destroy objects to preserve score - all other objects unloaded by unloading scene
         this.player1.destroy();
         this.player2.destroy();
 
-        //TODO: Platforms/other objects
+        //if (SceneManager.GetActiveScene().name == "EvolutionaryArenaManager")
+        //{
+            //Do specific Evolutionary Alg stuff here if necessary
+        //}
+
+
     }
 
     public void InitializeGame(bool p1Playable, bool p2Playable, bool UIEnabled)
@@ -253,6 +258,18 @@ public class ArenaManager : MonoBehaviour
         player.rb.gravityScale = serializedPlayer.gravityScalar;
         player.rb.mass = serializedPlayer.mass;
         player.rb.drag = serializedPlayer.drag;
+        //sprite initialization
+        if (serializedPlayer.spriteIndex >= 0)
+        {
+            player.spriteIndex = serializedPlayer.spriteIndex;
+        }
+        else 
+        {
+            Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+            int randomPlayerSpriteIndex = UnityEngine.Random.Range(0, playerSprites.Length);
+            player.spriteIndex = randomPlayerSpriteIndex;
+            player.sr.sprite = playerSprites[player.spriteIndex];
+        }
     }
 
     /** Assignment of values from the Serialized Object. Requires a player as a parameter as a dependency
@@ -275,6 +292,18 @@ public class ArenaManager : MonoBehaviour
         player.move1.knockbackScalar = serializedMove.knockbackScalar;
         player.move1.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
         player.move1.hitstunDuration = serializedMove.hitstunDuration;
+        if (serializedMove.spriteIndex >= 0)
+        {
+            player.move1.spriteIndex = serializedMove.spriteIndex;
+        }
+        else
+        {
+            Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+            int randomMoveSpriteIndex = UnityEngine.Random.Range(0, moveSprites.Length);
+            player.move1.spriteIndex = randomMoveSpriteIndex;
+            player.move1.sr.sprite = moveSprites[player.move1.spriteIndex];
+        }
+
     }
 
     //UI Control for this game

@@ -35,18 +35,20 @@ public class Move : MonoBehaviour
     //Determines hitstun duration
     public float hitstunDuration;
 
+    //index of fetched move sprite
+    public int spriteIndex = 0;
+
 
     // Start is called before the first frame update
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
-        int moveSprite = Random.Range(0, moveSprites.Length);
-        sr.sprite = moveSprites[moveSprite];
+        //Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+        //this.moveSpriteIndex = Random.Range(0, moveSprites.Length);
+        //sr.sprite = moveSprites[this.moveSpriteIndex];
 
 
         bc = GetComponent<BoxCollider2D>();
-        sr = GetComponent<SpriteRenderer>();
         SetInactive();
     }
 

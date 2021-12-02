@@ -43,6 +43,8 @@ public class SerializedPlayer
     public float respawnY;
     //Hit Stun Scalar
     public float hitstunDamageScalar;
+    //Player Sprite index (where the sprite is in the folder)
+    public int spriteIndex;
 
     public SerializedPlayer(String _name, KeyCode _jump, KeyCode _left, KeyCode _right, KeyCode _attack, Random rand)
     {
@@ -68,5 +70,7 @@ public class SerializedPlayer
         hitstunDamageScalar = 0.1f + 0.2f * (float)rand.NextDouble();
         respawnX = 0f;
         respawnY = 0f;
+        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+        this.spriteIndex = -1;
     }
 }
