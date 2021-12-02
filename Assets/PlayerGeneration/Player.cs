@@ -491,6 +491,11 @@ public class Player : MonoBehaviour
         
     }
 
+    public void destroy()
+    {
+        Destroy(this.gameObject);
+    }
+
     IEnumerator MoveCoroutine(Move move)
     {
 

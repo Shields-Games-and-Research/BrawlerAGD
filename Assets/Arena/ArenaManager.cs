@@ -8,6 +8,7 @@ using System.Linq;
 using UnityEngine.UI;
 using static GameResult;
 using UnityEngine.SceneManagement;
+using static EvolutionManager;
 
 
 
@@ -74,8 +75,8 @@ public class ArenaManager : MonoBehaviour
         EvolutionManager.instance.AddResultFromGame(this.result);
 
         //destroy all objects
-        Destroy(this.player1);
-        Destroy(this.player2);
+        this.player1.destroy();
+        this.player2.destroy();
 
         //TODO: Platforms/other objects
     }
