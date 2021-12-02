@@ -10,6 +10,7 @@ TagManager:
   - p1HUD
   - p2HUD
   - OverlapDetector
+  - ArenaCamera
   layers:
   - Default
   - TransparentFX

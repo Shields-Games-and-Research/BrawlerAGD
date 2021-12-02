@@ -129,6 +129,11 @@ public class Controller
         return OverPit(new Vector2(0.2f, 0)) && !OverPit(); 
     }
 
+    public bool JumpsExhausted()
+    {
+        return this.player.jumpsExhausted;
+    }
+
     
 }
 
@@ -192,7 +197,7 @@ public class AI : Controller
 
     public AI(Player player, Player opponent) : base(player, opponent)
     {
-        recoveryTimeLimit = 90;
+        recoveryTimeLimit = 300;
         recoveryTime = 0;
         targetTimeLimit = 40;
         targetMod = new Vector2(0, 0);
@@ -222,12 +227,20 @@ public class AI : Controller
         {
             recoveryTime = 0;
         }
-        // Change state
+        // Change state if the player is over a pit long enough
         if (recoveryTime > recoveryTimeLimit)
         {
             this.player.totalRecoveryStateTransition++;
             state = AIState.recover;
         }
+        // Change state if the player has their jumps exhausted; because it disables their attacks
+        //if (this.JumpsExhausted())
+        //{
+        //    this.player.totalRecoveryStateTransition++;
+        //    state = AIState.recover;
+        //}
+
+
         else
         {
             state = AIState.pursue;

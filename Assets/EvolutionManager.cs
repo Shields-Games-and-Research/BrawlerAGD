@@ -27,8 +27,9 @@ public class EvolutionManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-        StartCoroutine(testCoroutine());
+
+        //StartCoroutine(testCoroutine());
+        SceneManager.LoadSceneAsync("Arena", LoadSceneMode.Additive);
     }
 
     // Update is called once per frame

@@ -7,6 +7,7 @@ using Random = System.Random;
 using System.Linq;
 using UnityEngine.UI;
 using static GameResult;
+using UnityEngine.SceneManagement;
 
 
 
@@ -44,11 +45,13 @@ public class ArenaManager : MonoBehaviour
     public bool UIEnabled;
 
     public GameResult result;
-
+    
     // Start is called before the first frame update
     void Start()
     {
-        this.InitializeGame(true, true, true);
+        this.InitializeGame(false, false, true);
+        print(SceneManager.GetActiveScene().name);
+        
     }
 
     // Update is called once per frame
@@ -177,12 +180,12 @@ public class ArenaManager : MonoBehaviour
         InitializePlayerFromSerializedObj(serializedPlayer2, player2);
         InitializeMoveFromSerializedObj(serializedMove1Player2, player2);
 
-        //TODO: move notification to arena manager
         StartCoroutine(NotificationCoroutine("FIGHT!"));
 
         //TODO: TimeScale Adjustment
         //Time.timeScale = 1.0f;
         //Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
+        
     }
 
     T ReadJson<T>(string filename, T ifFileMissing)
@@ -205,6 +208,24 @@ public class ArenaManager : MonoBehaviour
             return ifFileMissing;
         }
     }
+
+    //T WriteJSON<T>() 
+    //{ 
+        
+    //}
+
+/*    T WriteJSON<T>() 
+    {
+        //find what folder it should be in
+        //string tempFolderPath = "Assets\\Game\\game" + this.gameData.gameID + "\\";
+        string tempLevelPath = tempFolderPath + "level.json";
+        string tempPlayer1Path = tempFolderPath + "player1.json";
+        string tempPlayer2Path = tempFolderPath + "player2.json";
+        string tempPlayer1Move1Path = tempFolderPath + "p1move1.json";
+        string tempPlayer2Move1Path = tempFolderPath + "p2move1.json";
+        string tempGameResult = tempFolderPath + "gameresult.json";
+        
+    }*/
 
     /** Assignment of values from the Serialized Object. TODO: Static evaluators
      * See player object for detailed field information

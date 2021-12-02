@@ -47,11 +47,11 @@ public class Player : MonoBehaviour
     /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move1;
 
-    /**PRIVATE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
+    /**ENGINE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
     public bool isGrounded;
-    private bool jumpsExhausted;
-    private float damage = 0;
-    private bool isInvincible = false;
+    public bool jumpsExhausted;
+    public float damage = 0;
+    public bool isInvincible = false;
     //Shows initial UI
     public Text playerDetails;
     //Reference to notifications board
@@ -269,8 +269,9 @@ public class Player : MonoBehaviour
         LayerMask mask = LayerMask.GetMask("Floor");
         RaycastHit2D platformHit = Physics2D.Raycast(this.transform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
         
-        //if the player is touching a tile, the raycast is reasonably within the player's height, and is not null...
-        if (collision.gameObject.CompareTag("Floor") && platformHit.distance <= this.sr.bounds.size.y && platformHit.collider != null)
+        //if the player is touching a tile, the raycast is reasonably within the player's height, and is not null... 
+        //Magic number is to try and make sure that we correctly recover regardless of character size.
+        if (collision.gameObject.CompareTag("Floor") && platformHit.distance <= this.sr.bounds.size.y*2 && platformHit.collider != null)
         {
             isGrounded = true;
             jumpsExhausted = false;
