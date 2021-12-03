@@ -40,7 +40,12 @@ public class ArenaManager : MonoBehaviour
 
     //Player references for this game
     public Player player1;
+    public SerializedPlayer serializedPlayer1;
+    public SerializedMove serializedMove1Player1;
+    
     public Player player2;
+    public SerializedPlayer serializedPlayer2;
+    public SerializedMove serializedMove1Player2;
 
     //Settings parameters for game
     public bool p1Playable;
@@ -79,6 +84,7 @@ public class ArenaManager : MonoBehaviour
         this.player1.destroy();
         this.player2.destroy();
 
+        this.SaveGameJSON(1);
         
 
         //if (SceneManager.GetActiveScene().name == "EvolutionaryArenaManager")
@@ -108,36 +114,34 @@ public class ArenaManager : MonoBehaviour
         platforms = ReadJson<Platforms>(levelPath, platforms);
 
         // Serialized Player 1 Setup
-        SerializedPlayer serializedPlayer1 = new SerializedPlayer("Player 1", KeyCode.W, KeyCode.A, KeyCode.D, KeyCode.S, rand);
-        serializedPlayer1 = ReadJson<SerializedPlayer>(player1Path, serializedPlayer1);
-        serializedPlayer1.respawnX = platforms.player1x;
-        serializedPlayer1.respawnY = platforms.player1y;
+        this.serializedPlayer1 = new SerializedPlayer("Player 1", KeyCode.W, KeyCode.A, KeyCode.D, KeyCode.S, rand);
+        this.serializedPlayer1 = ReadJson<SerializedPlayer>(player1Path, serializedPlayer1);
+        this.serializedPlayer1.respawnX = platforms.player1x;
+        this.serializedPlayer1.respawnY = platforms.player1y;
 
         // Serialized Player 1, Move 1 Setup
-        SerializedMove serializedMove1Player1 = new SerializedMove(rand);
-        serializedMove1Player1 = ReadJson<SerializedMove>(player1Move1Path, serializedMove1Player1);
+        this.serializedMove1Player1 = new SerializedMove(rand);
+        this.serializedMove1Player1 = ReadJson<SerializedMove>(player1Move1Path, serializedMove1Player1);
 
         // Player 1 Instantiation
         Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
-        Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
+        this.player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
         player1.arenaManager = this;
-        this.player1 = player1;
 
         // Serialized Player 2 Setup
-        SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
-        serializedPlayer2 = ReadJson<SerializedPlayer>(player2Path, serializedPlayer2);
-        serializedPlayer2.respawnX = platforms.player2x;
-        serializedPlayer2.respawnY = platforms.player2y;
+        this.serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
+        this.serializedPlayer2 = ReadJson<SerializedPlayer>(player2Path, serializedPlayer2);
+        this.serializedPlayer2.respawnX = platforms.player2x;
+        this.serializedPlayer2.respawnY = platforms.player2y;
 
         // Serialized Player 2 Move 1 Setup
-        SerializedMove serializedMove1Player2 = new SerializedMove(rand);
-        serializedMove1Player2 = ReadJson<SerializedMove>(player2Move1Path, serializedMove1Player2);
+        this.serializedMove1Player2 = new SerializedMove(rand);
+        this.serializedMove1Player2 = ReadJson<SerializedMove>(player2Move1Path, serializedMove1Player2);
 
         // Player 2 Instantiation
         Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
-        Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
+        this.player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         player2.arenaManager = this;
-        this.player2 = player2;
 
         if (UIEnabled)
         {
@@ -198,15 +202,14 @@ public class ArenaManager : MonoBehaviour
         
     }
 
-    //TODO: comment purpose of ifFileMissing, looks like the serialized type up above but idk
+    /** checks to see if a file exists, if it doesn't, creates it and generates randomly
+     */
     T ReadJson<T>(string filename, T ifFileMissing)
     {
         // Write to file
         if (!File.Exists(filename))
         {
-            var objStr = JsonUtility.ToJson(ifFileMissing);
-            File.Create(filename).Dispose();
-            File.WriteAllText(filename, objStr);
+            WriteJson<T>(filename, ifFileMissing);
             return ifFileMissing;
         }
         // If the file exists, read from it
@@ -221,11 +224,12 @@ public class ArenaManager : MonoBehaviour
     }
 
 
-    T WriteJson<T>(string filename, T ifFileMissing) 
+    public void WriteJson<T>(string filename, T serializedObj) 
     {
-        // Write to file, overwriting the last
-        return ifFileMissing;
-
+        string serializedJSON = JsonUtility.ToJson(serializedObj);
+        File.Create(filename).Dispose();
+        File.WriteAllText(filename, serializedJSON);
+        Debug.Log("File Saved: " + filename);
     }
 
     /**Saves the current arena's settings to JSON files according to the gameID in gameData
@@ -240,18 +244,45 @@ public class ArenaManager : MonoBehaviour
      */
     public bool SaveGameJSON(int gameID)
     {
-        string tempFolderPath = "Assets\\Game\\game" + gameID + "\\";
+        string tempDirectoryPath = "Assets\\Game\\game" + gameID + "\\";
+        if (!File.Exists(tempDirectoryPath)) 
+        {
+            Directory.CreateDirectory(tempDirectoryPath);
+        }
 
         //write level JSON to  
-        string tempLevelPath = tempFolderPath + "level.json";
+        string tempLevelPath = tempDirectoryPath + "level.json";        
+
+
+        string tempPlayer1Path = tempDirectoryPath + "player1.json";
+        if (!File.Exists(tempPlayer1Path))
+        {
+            this.WriteJson<SerializedPlayer>(tempPlayer1Path, this.serializedPlayer1);
+        }
+
+        string tempPlayer2Path = tempDirectoryPath + "player2.json";
+        if (!File.Exists(tempPlayer2Path)) 
+        {
+            this.WriteJson<SerializedPlayer>(tempPlayer2Path, this.serializedPlayer2);
+        }
+
+        string tempPlayer1Move1Path = tempDirectoryPath + "p1move1.json";
+        if (!File.Exists(tempPlayer1Move1Path)) 
+        {
+            this.WriteJson<SerializedMove>(tempPlayer1Move1Path, this.serializedMove1Player1);
+        }
+
+        string tempPlayer2Move1Path = tempDirectoryPath + "p2move1.json";
+        if (!File.Exists(tempPlayer2Move1Path)) 
+        {
+            this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
+        }
         
-
-
-        string tempPlayer1Path = tempFolderPath + "player1.json";
-        string tempPlayer2Path = tempFolderPath + "player2.json";
-        string tempPlayer1Move1Path = tempFolderPath + "p1move1.json";
-        string tempPlayer2Move1Path = tempFolderPath + "p2move1.json";
-        string tempGameResult = tempFolderPath + "gameresult.json";
+        string tempGameResultPath = tempDirectoryPath + "gameresult.json";
+        if (!File.Exists(tempGameResultPath)) 
+        {
+            this.WriteJson<GameResult>(tempGameResultPath, this.result);
+        }
 
 
 
