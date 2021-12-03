@@ -78,6 +78,8 @@ public class ArenaManager : MonoBehaviour
         this.player1.destroy();
         this.player2.destroy();
 
+        
+
         //if (SceneManager.GetActiveScene().name == "EvolutionaryArenaManager")
         //{
             //Do specific Evolutionary Alg stuff here if necessary
@@ -194,6 +196,7 @@ public class ArenaManager : MonoBehaviour
         
     }
 
+    //TODO: comment purpose of ifFileMissing, looks like the serialized type up above but idk
     T ReadJson<T>(string filename, T ifFileMissing)
     {
         // Write to file
@@ -215,23 +218,37 @@ public class ArenaManager : MonoBehaviour
         }
     }
 
-    //T WriteJSON<T>() 
-    //{ 
-        
-    //}
 
-/*    T WriteJSON<T>() 
+    T WriteJson<T>(string filename, T ifFileMissing) 
     {
-        //find what folder it should be in
-        //string tempFolderPath = "Assets\\Game\\game" + this.gameData.gameID + "\\";
+        // Write to file, overwriting the last
+        return ifFileMissing;
+
+    }
+
+    /**Saves the current arena's settings to JSON files according to the gameID in gameData
+     */
+    public bool SaveGameJSON() 
+    {
+        this.SaveGameJSON(this.result.gameID);
+        return false;
+    }
+
+    /**Saves the current game based on a parameter
+     */
+    public bool SaveGameJSON(int gameID)
+    {
+        
+        string tempFolderPath = "Assets\\Game\\game" + gameID + "\\";
         string tempLevelPath = tempFolderPath + "level.json";
         string tempPlayer1Path = tempFolderPath + "player1.json";
         string tempPlayer2Path = tempFolderPath + "player2.json";
         string tempPlayer1Move1Path = tempFolderPath + "p1move1.json";
         string tempPlayer2Move1Path = tempFolderPath + "p2move1.json";
         string tempGameResult = tempFolderPath + "gameresult.json";
+        return false;
         
-    }*/
+    }
 
     /** Assignment of values from the Serialized Object. TODO: Static evaluators
      * See player object for detailed field information
