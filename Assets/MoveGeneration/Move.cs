@@ -38,17 +38,16 @@ public class Move : MonoBehaviour
     //index of fetched move sprite
     public int spriteIndex = 0;
 
+    //parent player
+    public Player player;
+
 
     // Start is called before the first frame update
     void Start()
     {
         sr = GetComponent<SpriteRenderer>();
-        //Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
-        //this.moveSpriteIndex = Random.Range(0, moveSprites.Length);
-        //sr.sprite = moveSprites[this.moveSpriteIndex];
-
-
         bc = GetComponent<BoxCollider2D>();
+        //disable before starting play
         SetInactive();
     }
 
@@ -58,12 +57,14 @@ public class Move : MonoBehaviour
         
     }
 
+    //Keep move enabled, but disable collision and visuals
     public void SetInactive() 
     {
         bc.enabled = false;
         sr.enabled = false;
     }
 
+    //enable collision and visuals
     public void SetActive() 
     {
         bc.enabled = true;
@@ -78,6 +79,35 @@ public class Move : MonoBehaviour
     void OnCollisionExit2D(Collision2D collision) 
     { 
     
+    }
+
+    /** Assignment of values from the Serialized Object. Requires a player as a parameter as a dependency
+    *  See move definition for field information
+    */
+    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove)
+    {
+        //Sets width and height of move
+        this.transform.localScale = new Vector2(serializedMove.widthScalar, serializedMove.heightScalar);
+        //Move Parameter initialization
+        this.warmUpDuration = serializedMove.warmUpDuration;
+        this.executionDuration = serializedMove.executionDuration;
+        this.coolDownDuration = serializedMove.coolDownDuration;
+        this.damageGiven = serializedMove.damageGiven;
+        this.knockbackScalar = serializedMove.knockbackScalar;
+        this.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
+        this.hitstunDuration = serializedMove.hitstunDuration;
+        if (serializedMove.spriteIndex >= 0)
+        {
+            this.spriteIndex = serializedMove.spriteIndex;
+        }
+        else
+        {
+            Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+            int randomMoveSpriteIndex = UnityEngine.Random.Range(0, moveSprites.Length);
+            this.spriteIndex = randomMoveSpriteIndex;
+            this.sr.sprite = moveSprites[this.spriteIndex];
+        }
+
     }
 
 

@@ -33,6 +33,7 @@ public class ArenaManager : MonoBehaviour
     public Text notificationsText;
 
     //Prefab Declaration
+    //TODO: Match Prefab naming style "movePrefab"
     public Move move;
     public Player player;
     public Platforms platforms;
@@ -183,10 +184,11 @@ public class ArenaManager : MonoBehaviour
         }
 
         //update gameobjects instantiated into the scene with values from JSON
-        InitializePlayerFromSerializedObj(serializedPlayer1, player1);
-        InitializeMoveFromSerializedObj(serializedMove1Player1, player1);
-        InitializePlayerFromSerializedObj(serializedPlayer2, player2);
-        InitializeMoveFromSerializedObj(serializedMove1Player2, player2);
+        
+        player1.InitializePlayerFromSerializedObj(serializedPlayer1);
+        player1.InitializeMoveFromSerializedObj(serializedMove1Player1);
+        player2.InitializePlayerFromSerializedObj(serializedPlayer2);
+        player2.InitializeMoveFromSerializedObj(serializedMove1Player2);
 
         StartCoroutine(NotificationCoroutine("FIGHT!"));
 
@@ -238,89 +240,23 @@ public class ArenaManager : MonoBehaviour
      */
     public bool SaveGameJSON(int gameID)
     {
-        
         string tempFolderPath = "Assets\\Game\\game" + gameID + "\\";
+
+        //write level JSON to  
         string tempLevelPath = tempFolderPath + "level.json";
+        
+
+
         string tempPlayer1Path = tempFolderPath + "player1.json";
         string tempPlayer2Path = tempFolderPath + "player2.json";
         string tempPlayer1Move1Path = tempFolderPath + "p1move1.json";
         string tempPlayer2Move1Path = tempFolderPath + "p2move1.json";
         string tempGameResult = tempFolderPath + "gameresult.json";
+
+
+
         return false;
         
-    }
-
-    /** Assignment of values from the Serialized Object. TODO: Static evaluators
-     * See player object for detailed field information
- */
-    public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Player player)
-    {
-        //assigns controls of player
-        player.leftKey = serializedPlayer.leftKey;
-        player.rightKey = serializedPlayer.rightKey;
-        player.jumpKey = serializedPlayer.jumpKey;
-        player.move1Key = serializedPlayer.attackKey;
-        //Player parameter initialization
-        player.playerName = serializedPlayer.playerName;
-        player.stocks = serializedPlayer.stocks;
-        player.groundAcceleration = serializedPlayer.groundAcceleration;
-        player.airAcceleration = serializedPlayer.airAcceleration;
-        player.maxGroundSpeed = serializedPlayer.maxGroundSpeed;
-        player.maxAirSpeed = serializedPlayer.maxAirSpeed;
-        player.groundJumpForce = serializedPlayer.groundJumpForce;
-        player.airJumpForce = serializedPlayer.airJumpForce;
-        player.hitstunDamageScalar = serializedPlayer.hitstunDamageScalar;
-        player.respawnLoc = new Vector2(serializedPlayer.respawnX, serializedPlayer.respawnY);
-        player.transform.localScale = new Vector2(serializedPlayer.widthScalar, serializedPlayer.heightScalar);
-        player.rb.gravityScale = serializedPlayer.gravityScalar;
-        player.rb.mass = serializedPlayer.mass;
-        player.rb.drag = serializedPlayer.drag;
-        //sprite initialization
-        if (serializedPlayer.spriteIndex >= 0)
-        {
-            player.spriteIndex = serializedPlayer.spriteIndex;
-        }
-        else 
-        {
-            Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
-            int randomPlayerSpriteIndex = UnityEngine.Random.Range(0, playerSprites.Length);
-            player.spriteIndex = randomPlayerSpriteIndex;
-            player.sr.sprite = playerSprites[player.spriteIndex];
-        }
-    }
-
-    /** Assignment of values from the Serialized Object. Requires a player as a parameter as a dependency
-     *  See move definition for field information
-     */
-    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove, Player player)
-    {
-        //first find center for instantiation
-        Vector2 center = player.transform.position + new Vector3(serializedMove.moveLocX, serializedMove.moveLocY);
-        //instantiates a move to a player and sets location relative to the player
-        player.move1 = Instantiate<Move>(move, center, Quaternion.identity, player.transform);
-        player.move1.center = center;
-        //Sets width and height of move
-        player.move1.transform.localScale = new Vector2(serializedMove.widthScalar, serializedMove.heightScalar);
-        //Move Parameter initialization
-        player.move1.warmUpDuration = serializedMove.warmUpDuration;
-        player.move1.executionDuration = serializedMove.executionDuration;
-        player.move1.coolDownDuration = serializedMove.coolDownDuration;
-        player.move1.damageGiven = serializedMove.damageGiven;
-        player.move1.knockbackScalar = serializedMove.knockbackScalar;
-        player.move1.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
-        player.move1.hitstunDuration = serializedMove.hitstunDuration;
-        if (serializedMove.spriteIndex >= 0)
-        {
-            player.move1.spriteIndex = serializedMove.spriteIndex;
-        }
-        else
-        {
-            Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
-            int randomMoveSpriteIndex = UnityEngine.Random.Range(0, moveSprites.Length);
-            player.move1.spriteIndex = randomMoveSpriteIndex;
-            player.move1.sr.sprite = moveSprites[player.move1.spriteIndex];
-        }
-
     }
 
     //UI Control for this game
