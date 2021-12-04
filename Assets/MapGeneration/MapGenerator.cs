@@ -64,13 +64,7 @@ public class MapGenerator
             mirrorPlatforms.Add(platform.xMirror());
         }
         allPlatforms = allPlatforms.Concat(mirrorPlatforms).ToList();
-        // Player 1 spawns on the initial platform
-        int p1x = rand.Next(initialPlatform.x, initialPlatform.x + initialPlatform.xSize + 1);
-        int p1y = initialY + initialPlatform.ySize + 1;
-        // Mirror Player 2's spawn relative to Player 1's
-        int p2x = -p1x;
-        int p2y = p1y;
-        return new Platforms(allPlatforms, p1x, p1y, p2x, p2y);
+        return new Platforms(allPlatforms);
     }
 
     public Platform Initial()

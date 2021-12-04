@@ -52,7 +52,6 @@ public class ArenaManager : MonoBehaviour
     void Start()
     {
         this.InitializeGame(false, false, true);
-        
     }
 
     // Update is called once per frame
@@ -106,34 +105,42 @@ public class ArenaManager : MonoBehaviour
         // Load from or write to file
         platforms = ReadJson<Platforms>(levelPath, platforms);
 
+        // Compute spawn locations
+        // Player 1 spawns on the initial platform
+        Platform initialPlatform = platforms.platformList[0];
+        int player1Spawnx = (int) initialPlatform.x + (initialPlatform.xSize + 1) / 2;
+        Debug.Log(player1Spawnx);
+        int player1Spawny = initialPlatform.y + initialPlatform.ySize + 1;
+        Vector2 player1Spawn = new Vector2(player1Spawnx, player1Spawny);
+        // Mirror Player 2's spawn relative to Player 1's
+        int player2Spawnx = -player1Spawnx;
+        int player2Spawny = player1Spawny;
+        Vector2 player2Spawn = new Vector2(player2Spawnx, player2Spawny);
+
         // Serialized Player 1 Setup
-        SerializedPlayer serializedPlayer1 = new SerializedPlayer("Player 1", KeyCode.W, KeyCode.A, KeyCode.D, KeyCode.S, rand);
+        SerializedPlayer serializedPlayer1 = new SerializedPlayer("Player 1", rand);
         serializedPlayer1 = ReadJson<SerializedPlayer>(player1Path, serializedPlayer1);
-        serializedPlayer1.respawnX = platforms.player1x;
-        serializedPlayer1.respawnY = platforms.player1y;
 
         // Serialized Player 1, Move 1 Setup
         SerializedMove serializedMove1Player1 = new SerializedMove(rand);
         serializedMove1Player1 = ReadJson<SerializedMove>(player1Move1Path, serializedMove1Player1);
 
         // Player 1 Instantiation
-        Vector3 spawnLocationP1 = new Vector3(platforms.player1x, platforms.player1y, 0);
+        Vector3 spawnLocationP1 = new Vector3(player1Spawnx, player1Spawny, 0);
         Player player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
         player1.arenaManager = this;
         this.player1 = player1;
 
         // Serialized Player 2 Setup
-        SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", KeyCode.I, KeyCode.J, KeyCode.L, KeyCode.K, rand);
+        SerializedPlayer serializedPlayer2 = new SerializedPlayer("Player 2", rand);
         serializedPlayer2 = ReadJson<SerializedPlayer>(player2Path, serializedPlayer2);
-        serializedPlayer2.respawnX = platforms.player2x;
-        serializedPlayer2.respawnY = platforms.player2y;
 
         // Serialized Player 2 Move 1 Setup
         SerializedMove serializedMove1Player2 = new SerializedMove(rand);
         serializedMove1Player2 = ReadJson<SerializedMove>(player2Move1Path, serializedMove1Player2);
 
         // Player 2 Instantiation
-        Vector3 spawnLocationP2 = new Vector3(platforms.player2x, platforms.player2y, 0);
+        Vector3 spawnLocationP2 = new Vector3(player2Spawnx, player2Spawny, 0);
         Player player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
         player2.arenaManager = this;
         this.player2 = player2;
@@ -183,9 +190,9 @@ public class ArenaManager : MonoBehaviour
         }
 
         //update gameobjects instantiated into the scene with values from JSON
-        InitializePlayerFromSerializedObj(serializedPlayer1, player1);
+        InitializePlayerFromSerializedObj(serializedPlayer1, player1, player1Spawn);
         InitializeMoveFromSerializedObj(serializedMove1Player1, player1);
-        InitializePlayerFromSerializedObj(serializedPlayer2, player2);
+        InitializePlayerFromSerializedObj(serializedPlayer2, player2, player2Spawn);
         InitializeMoveFromSerializedObj(serializedMove1Player2, player2);
 
         StartCoroutine(NotificationCoroutine("FIGHT!"));
@@ -193,7 +200,6 @@ public class ArenaManager : MonoBehaviour
         //TODO: TimeScale Adjustment
         //Time.timeScale = 1.0f;
         //Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
-        
     }
 
     //TODO: comment purpose of ifFileMissing, looks like the serialized type up above but idk
@@ -223,7 +229,6 @@ public class ArenaManager : MonoBehaviour
     {
         // Write to file, overwriting the last
         return ifFileMissing;
-
     }
 
     /**Saves the current arena's settings to JSON files according to the gameID in gameData
@@ -252,15 +257,10 @@ public class ArenaManager : MonoBehaviour
 
     /** Assignment of values from the Serialized Object. TODO: Static evaluators
      * See player object for detailed field information
- */
-    public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Player player)
+    */
+    public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Player player, Vector2 respawnLoc)
     {
-        //assigns controls of player
-        player.leftKey = serializedPlayer.leftKey;
-        player.rightKey = serializedPlayer.rightKey;
-        player.jumpKey = serializedPlayer.jumpKey;
-        player.move1Key = serializedPlayer.attackKey;
-        //Player parameter initialization
+        // Player parameter initialization
         player.playerName = serializedPlayer.playerName;
         player.stocks = serializedPlayer.stocks;
         player.groundAcceleration = serializedPlayer.groundAcceleration;
@@ -270,23 +270,15 @@ public class ArenaManager : MonoBehaviour
         player.groundJumpForce = serializedPlayer.groundJumpForce;
         player.airJumpForce = serializedPlayer.airJumpForce;
         player.hitstunDamageScalar = serializedPlayer.hitstunDamageScalar;
-        player.respawnLoc = new Vector2(serializedPlayer.respawnX, serializedPlayer.respawnY);
+        player.respawnLoc = respawnLoc;
         player.transform.localScale = new Vector2(serializedPlayer.widthScalar, serializedPlayer.heightScalar);
         player.rb.gravityScale = serializedPlayer.gravityScalar;
         player.rb.mass = serializedPlayer.mass;
         player.rb.drag = serializedPlayer.drag;
-        //sprite initialization
-        if (serializedPlayer.spriteIndex >= 0)
-        {
-            player.spriteIndex = serializedPlayer.spriteIndex;
-        }
-        else 
-        {
-            Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
-            int randomPlayerSpriteIndex = UnityEngine.Random.Range(0, playerSprites.Length);
-            player.spriteIndex = randomPlayerSpriteIndex;
-            player.sr.sprite = playerSprites[player.spriteIndex];
-        }
+        // Sprite initialization
+        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+        player.spriteIndex = serializedPlayer.spriteIndex;
+        player.sr.sprite = playerSprites[player.spriteIndex];
     }
 
     /** Assignment of values from the Serialized Object. Requires a player as a parameter as a dependency
@@ -309,18 +301,10 @@ public class ArenaManager : MonoBehaviour
         player.move1.knockbackScalar = serializedMove.knockbackScalar;
         player.move1.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
         player.move1.hitstunDuration = serializedMove.hitstunDuration;
-        if (serializedMove.spriteIndex >= 0)
-        {
-            player.move1.spriteIndex = serializedMove.spriteIndex;
-        }
-        else
-        {
-            Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
-            int randomMoveSpriteIndex = UnityEngine.Random.Range(0, moveSprites.Length);
-            player.move1.spriteIndex = randomMoveSpriteIndex;
-            player.move1.sr.sprite = moveSprites[player.move1.spriteIndex];
-        }
-
+        // Sprite initialization
+        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+        player.move1.spriteIndex = serializedMove.spriteIndex;
+        player.move1.sr.sprite = moveSprites[player.move1.spriteIndex];
     }
 
     //UI Control for this game
