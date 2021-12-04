@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/**KNOWN BUGS:
+ * 1. Players refresh jumps if they have a platform both above and below them
+ * 
+ * 
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -496,6 +502,51 @@ public class Player : MonoBehaviour
     public void destroy()
     {
         Destroy(this.gameObject);
+    }
+
+    /** Assignment of values from the Serialized Object. TODO: Static evaluators
+ * See player object for detailed field information
+ * TODO: Move to player
+*/
+    public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Vector2 spawnLoc)
+    {
+        //assigns controls of player
+        this.leftKey = serializedPlayer.leftKey;
+        this.rightKey = serializedPlayer.rightKey;
+        this.jumpKey = serializedPlayer.jumpKey;
+        this.move1Key = serializedPlayer.attackKey;
+
+        //Player parameter initialization
+        this.playerName = serializedPlayer.playerName;
+        this.stocks = serializedPlayer.stocks;
+        this.groundAcceleration = serializedPlayer.groundAcceleration;
+        this.airAcceleration = serializedPlayer.airAcceleration;
+        this.maxGroundSpeed = serializedPlayer.maxGroundSpeed;
+        this.maxAirSpeed = serializedPlayer.maxAirSpeed;
+        this.groundJumpForce = serializedPlayer.groundJumpForce;
+        this.airJumpForce = serializedPlayer.airJumpForce;
+        this.hitstunDamageScalar = serializedPlayer.hitstunDamageScalar;
+        this.respawnLoc = spawnLoc;
+        this.transform.localScale = new Vector2(serializedPlayer.widthScalar, serializedPlayer.heightScalar);
+        this.rb.gravityScale = serializedPlayer.gravityScalar;
+        this.rb.mass = serializedPlayer.mass;
+        this.rb.drag = serializedPlayer.drag;
+        // Sprite initialization
+        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+        this.spriteIndex = serializedPlayer.spriteIndex;
+        this.sr.sprite = playerSprites[this.spriteIndex];
+    }
+
+    /**Creates a move object in the player according to the player's relative position, then calls move instantiate to complete
+     */
+    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove) 
+    {
+        //TODO: move instantiation to make object safe should be done in player awake/start, not here
+        Vector2 center = this.transform.position + new Vector3(serializedMove.moveLocX, serializedMove.moveLocY);
+        //instantiates a move to a player and sets location relative to the player
+        this.move1 = Instantiate<Move>(move, center, Quaternion.identity, this.transform);
+        this.move1.center = center;
+        this.move1.InitializeMoveFromSerializedObj(serializedMove);
     }
 
     IEnumerator MoveCoroutine(Move move)

@@ -43,6 +43,16 @@ public class EvolutionManager : MonoBehaviour
         this.results.Add(result);
     }
 
+    public void Evolve(int numGenerations, int popSize) 
+    {
+        int currGeneration = 0;
+        //loop through population numGenerations times
+        while (currGeneration < numGenerations) 
+        { 
+            //Read Json, initialize game by ID
+        }
+    }
+
     IEnumerator testCoroutine() 
     {
         AsyncOperation ao = SceneManager.LoadSceneAsync("Arena", LoadSceneMode.Additive);
