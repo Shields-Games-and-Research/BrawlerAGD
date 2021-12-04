@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿/**KNOWN BUGS:
+ * 1. Players refresh jumps if they have a platform both above and below them
+ * 
+ * 
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -509,6 +515,7 @@ public class Player : MonoBehaviour
         this.rightKey = serializedPlayer.rightKey;
         this.jumpKey = serializedPlayer.jumpKey;
         this.move1Key = serializedPlayer.attackKey;
+
         //Player parameter initialization
         this.playerName = serializedPlayer.playerName;
         this.stocks = serializedPlayer.stocks;
@@ -525,15 +532,17 @@ public class Player : MonoBehaviour
         this.rb.mass = serializedPlayer.mass;
         this.rb.drag = serializedPlayer.drag;
         //sprite initialization
+        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
         if (serializedPlayer.spriteIndex >= 0)
         {
             this.spriteIndex = serializedPlayer.spriteIndex;
+            this.sr.sprite = playerSprites[this.spriteIndex];
         }
         else
         {
-            Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
             int randomPlayerSpriteIndex = UnityEngine.Random.Range(0, playerSprites.Length);
             this.spriteIndex = randomPlayerSpriteIndex;
+            print(playerSprites);
             this.sr.sprite = playerSprites[this.spriteIndex];
         }
     }

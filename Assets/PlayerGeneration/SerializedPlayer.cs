@@ -71,6 +71,7 @@ public class SerializedPlayer
         respawnX = 0f;
         respawnY = 0f;
         Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
-        this.spriteIndex = -1;
+        spriteIndex = -1;
+
     }
 }

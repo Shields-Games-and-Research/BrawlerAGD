@@ -96,13 +96,14 @@ public class Move : MonoBehaviour
         this.knockbackScalar = serializedMove.knockbackScalar;
         this.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
         this.hitstunDuration = serializedMove.hitstunDuration;
+        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
         if (serializedMove.spriteIndex >= 0)
         {
             this.spriteIndex = serializedMove.spriteIndex;
+            this.sr.sprite = moveSprites[this.spriteIndex];
         }
         else
         {
-            Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
             int randomMoveSpriteIndex = UnityEngine.Random.Range(0, moveSprites.Length);
             this.spriteIndex = randomMoveSpriteIndex;
             this.sr.sprite = moveSprites[this.spriteIndex];
