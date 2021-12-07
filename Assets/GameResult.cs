@@ -7,8 +7,8 @@ using UnityEngine;
 public class GameResult
 {
     //file naming is game + numbered ID
-    public int gameID = 1;
-    public int generationNum = 0;
+    public int gameID;
+    public int generationNum;
 
     public float totalDamageP1;
     public float totalRecoveryStateTransitionP1;
@@ -18,6 +18,7 @@ public class GameResult
     public float totalRecoveryStateTransitionP2;
     public float totalHitsReceivedP2;
 
+    public float totalGameLength;
 
     public GameResult(
         int _gameID,
@@ -26,10 +27,12 @@ public class GameResult
         float totalHitsReceivedP1,
         float totalDamageP2,
         float totalRecoveryStateTransitionP2,
-        float totalHitsReceivedP2
+        float totalHitsReceivedP2,
+        float totalGameLength
         )
     {
         this.gameID = _gameID;
+        
         this.totalDamageP1 = totalDamageP1;
         this.totalRecoveryStateTransitionP1 = totalRecoveryStateTransitionP1;
         this.totalHitsReceivedP1 = totalHitsReceivedP1;
@@ -37,6 +40,8 @@ public class GameResult
         this.totalDamageP2 = totalDamageP2;
         this.totalRecoveryStateTransitionP2 = totalRecoveryStateTransitionP2;
         this.totalHitsReceivedP2 = totalHitsReceivedP2;
+
+        this.totalGameLength = totalGameLength;
     }
 
     public GameResult()
@@ -48,6 +53,8 @@ public class GameResult
         this.totalDamageP2 = 0;
         this.totalRecoveryStateTransitionP2 = 0;
         this.totalHitsReceivedP2 = 0;
+
+        this.totalGameLength = 0;
     }
 
     public float evaluate()

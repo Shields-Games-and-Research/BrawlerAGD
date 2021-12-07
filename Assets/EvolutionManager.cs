@@ -9,7 +9,7 @@ public class EvolutionManager : MonoBehaviour
 {
     // Make sure gamesFinished is the right length
     public int popSize = 2;
-    public int numGenerations = 5;
+    public int numGenerations = 1;
     public bool[] gamesFinished = new bool[2];
     public float dropoutRate = 0.5f;
     public double mutationRate = 0.1;
@@ -17,7 +17,7 @@ public class EvolutionManager : MonoBehaviour
     public float nInstances = 1;
     public int currentGameID = 0;
     public static EvolutionManager instance = null;
-    Random rand = new Random();
+    public Random rand = new Random();
     // Average fitness of all individuals
     public List<float> averageFitness = new List<float>();
     // Average fitness of non-dropped individuals
@@ -45,6 +45,8 @@ public class EvolutionManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(Evolve());
+        //Set timescale based on optimization needs
+        //this.SetTimeScale(2f);
     }
 
     // Update is called once per frame
@@ -58,6 +60,12 @@ public class EvolutionManager : MonoBehaviour
         this.results[result.gameID] = result;
         this.evals[result.gameID] = result.evaluate();
         this.gamesFinished[result.gameID] = true;
+    }
+
+    public void SetTimeScale(float timeScalar) 
+    {
+        Time.timeScale = timeScalar;
+        Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
     }
 
     public IEnumerator Evolve() 
@@ -83,7 +91,7 @@ public class EvolutionManager : MonoBehaviour
             {
                 Debug.Log("Running Game " + id);
                 gamesFinished[id] = false;
-                currentGameID = id;
+                this.currentGameID = id;
                 // Load the Arena scene
                 SceneManager.LoadSceneAsync("Arena", LoadSceneMode.Additive);   
                 // Wait for the game to finish
