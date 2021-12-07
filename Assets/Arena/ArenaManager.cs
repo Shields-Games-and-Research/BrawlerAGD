@@ -60,19 +60,34 @@ public class ArenaManager : MonoBehaviour
 
     //Result of game stored here
     public GameResult result;
+
+    //Game Time Management
+    public float startTime;
+
+    //Game length in seconds
+    public float gameLength;
     
     // Start is called before the first frame update
     void Start()
     {
         //Debug.Log("Loaded Game");
         //Debug.Log(EvolutionManager.instance.currentGameID);
+        Debug.Log("Arena initializing with GameID: " + EvolutionManager.instance.currentGameID);
         this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, false, false, true);
+        this.startTime = Time.time;
+ 
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        this.gameLength = Time.time - this.startTime;
+        //End if this arena has lasted longer than 60 seconds
+        if (gameLength >= 60f) 
+        {
+            Debug.Log("This game stinks because it's so long. Pass");
+            this.EndGame();
+        }
     }
 
     /** If there is a folder/file there, read it, if not, generate a new random instance for the game
@@ -86,7 +101,7 @@ public class ArenaManager : MonoBehaviour
             //Create new game if one does not exist
             Directory.CreateDirectory(tempDirectoryPath);
             this.GenerateGame();
-            this.SaveGameJSON();
+            this.SaveGameJSON(gameID);
         }
         //Read from file
         else
@@ -137,7 +152,7 @@ public class ArenaManager : MonoBehaviour
     public void GenerateGame()
     {
         // Initialize RNG
-        Random rand = new Random();
+        Random rand = EvolutionManager.instance.rand;
 
         // Generate / Load Map
         MapGenerator mapGen = new MapGenerator(2, 2, 3, 6, rand);
@@ -179,6 +194,7 @@ public class ArenaManager : MonoBehaviour
         this.result.totalDamageP2 = this.player2.totalDamage;
         this.result.totalRecoveryStateTransitionP2 = this.player2.totalRecoveryStateTransition;
         this.result.totalHitsReceivedP2 = this.player2.totalHitsReceived;
+        this.result.totalGameLength = this.gameLength;
 
         //send to evolution manager
         EvolutionManager.instance.AddResultFromGame(this.result);
@@ -292,17 +308,11 @@ public class ArenaManager : MonoBehaviour
         File.WriteAllText(filename, serializedJSON);
     }
 
-    /**Saves the current arena's settings to JSON files according to the gameID in gameData
-     */
-    public void SaveGameJSON() 
-    {
-        this.SaveGameJSON(this.result.gameID);
-    }
-
     /**Saves the current game based on a parameter
      */
     public void SaveGameJSON(int gameID)
     {
+        Debug.Log("Saving game with ID to disk: " + gameID);
         //Create a directory if non exist
         string tempDirectoryPath = Consts.GAME_PATH + gameID;
         if (!File.Exists(tempDirectoryPath)) 
