@@ -116,4 +116,15 @@ public class SerializedMove
         moveLocY = moveDist * (float)Math.Sin(moveAngle);
         damageGiven = 5f + (warmUpDuration + executionDuration + coolDownDuration) * damageFactor;
     }
+
+    public static SerializedMove singlePointCrossover(SerializedMove m1, SerializedMove m2, Random rand)
+    {
+        //TODO
+        return m1;
+    }
+
+    public void mutate(Random rand)
+    {
+        //TODO
+    }
 }

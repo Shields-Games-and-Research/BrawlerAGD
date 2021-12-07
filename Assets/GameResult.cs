@@ -20,6 +20,7 @@ public class GameResult
 
 
     public GameResult(
+        int _gameID,
         float totalDamageP1,
         float totalRecoveryStateTransitionP1,
         float totalHitsReceivedP1,
@@ -28,6 +29,7 @@ public class GameResult
         float totalHitsReceivedP2
         )
     {
+        this.gameID = _gameID;
         this.totalDamageP1 = totalDamageP1;
         this.totalRecoveryStateTransitionP1 = totalRecoveryStateTransitionP1;
         this.totalHitsReceivedP1 = totalHitsReceivedP1;
@@ -46,6 +48,12 @@ public class GameResult
         this.totalDamageP2 = 0;
         this.totalRecoveryStateTransitionP2 = 0;
         this.totalHitsReceivedP2 = 0;
+    }
+
+    public float evaluate()
+    {
+        // TODO
+        return 0;
     }
 }
 

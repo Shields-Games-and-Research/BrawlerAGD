@@ -171,4 +171,9 @@ public class SerializedPlayer
         }
         return new SerializedPlayer(p1.playerName, g3, si);
     }
+
+    public void mutate(Random rand)
+    {
+        // TODO
+    }
 }

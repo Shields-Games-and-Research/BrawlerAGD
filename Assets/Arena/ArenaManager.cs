@@ -12,16 +12,21 @@ using static EvolutionManager;
 using static UnityEngine.Random;
 
 
+public static class Consts
+{
+    public static string GAME_PATH = "Assets\\Game\\game";
+    //TODO: File management approach
+    public static string LEVEL_PATH = "\\level.json";
+    public static string PLAYER1_PATH = "\\player1.json";
+    public static string PLAYER2_PATH = "\\player2.json";
+    public static string PLAYER1MOVE1_PATH = "\\p1move1.json";
+    public static string PLAYER2MOVE1_PATH = "\\p2move1.json";
+    public static string GAME_RESULT_PATH = "\\gameresult.json";
+}
+
 
 public class ArenaManager : MonoBehaviour
 {
-    //TODO: File management approach
-    private static string levelPath = "\\level.json";
-    private static string player1Path = "\\player1.json";
-    private static string player2Path = "\\player2.json";
-    private static string player1Move1Path = "\\p1move1.json";
-    private static string player2Move1Path = "\\p2move1.json";
-    private static string gameResultPath = "\\gameresult.json";
 
     //UI components for each player
     public GameObject p1HUD;
@@ -59,7 +64,9 @@ public class ArenaManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.InitializeGameByGameID(1, false, false, true);
+        //Debug.Log("Loaded Game");
+        //Debug.Log(EvolutionManager.instance.currentGameID);
+        this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, false, false, true);
     }
 
     // Update is called once per frame
@@ -68,12 +75,11 @@ public class ArenaManager : MonoBehaviour
 
     }
 
-
     /** If there is a folder/file there, read it, if not, generate a new random instance for the game
      */
     public void InitializeGameByGameID(int gameID, bool p1Playable, bool p2Playable, bool UIEnabled) 
     {
-        string tempDirectoryPath = "Assets\\Game\\game" + gameID;
+        string tempDirectoryPath = Consts.GAME_PATH + gameID;
         if (!Directory.Exists(tempDirectoryPath))
         {
             print("GENERATING NEW GAME");
@@ -153,15 +159,15 @@ public class ArenaManager : MonoBehaviour
     public void ReadGame(string tempDirectoryPath)
     {
         // Read platforms from file
-        this.platforms = this.ReadJson<Platforms>(tempDirectoryPath + levelPath);
+        this.platforms = this.ReadJson<Platforms>(tempDirectoryPath + Consts.LEVEL_PATH);
         // Read player from file
-        this.serializedPlayer1 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + player1Path);
+        this.serializedPlayer1 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + Consts.PLAYER1_PATH);
         // Serialized Player 1, Move 1 Setup
-        this.serializedMove1Player1 = this.ReadJson<SerializedMove>(tempDirectoryPath + player1Move1Path);
+        this.serializedMove1Player1 = this.ReadJson<SerializedMove>(tempDirectoryPath + Consts.PLAYER1MOVE1_PATH);
         // Serialized Player 2 Setup
-        this.serializedPlayer2 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + player2Path);
+        this.serializedPlayer2 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + Consts.PLAYER2_PATH);
         // Serialized Player 2 Move 1 Setup
-        this.serializedMove1Player2 = this.ReadJson<SerializedMove>(tempDirectoryPath + player2Move1Path);
+        this.serializedMove1Player2 = this.ReadJson<SerializedMove>(tempDirectoryPath + Consts.PLAYER2MOVE1_PATH);
     }
 
     public void EndGame()
@@ -280,7 +286,6 @@ public class ArenaManager : MonoBehaviour
         }
     }
 
-
     public void WriteJson<T>(string filename, T serializedObj) 
     {
         string serializedJSON = JsonUtility.ToJson(serializedObj);
@@ -299,22 +304,22 @@ public class ArenaManager : MonoBehaviour
     public void SaveGameJSON(int gameID)
     {
         //Create a directory if non exist
-        string tempDirectoryPath = "Assets\\Game\\game" + gameID + "\\";
+        string tempDirectoryPath = Consts.GAME_PATH + gameID;
         if (!File.Exists(tempDirectoryPath)) 
         {
             Directory.CreateDirectory(tempDirectoryPath);
         }
-        string tempLevelPath = tempDirectoryPath + "level.json";
+        string tempLevelPath = tempDirectoryPath + Consts.LEVEL_PATH;
         this.WriteJson<Platforms>(tempLevelPath, this.platforms);
-        string tempPlayer1Path = tempDirectoryPath + "player1.json";
+        string tempPlayer1Path = tempDirectoryPath + Consts.PLAYER1_PATH;
         this.WriteJson<SerializedPlayer>(tempPlayer1Path, this.serializedPlayer1);
-        string tempPlayer2Path = tempDirectoryPath + "player2.json";
+        string tempPlayer2Path = tempDirectoryPath + Consts.PLAYER2_PATH;
         this.WriteJson<SerializedPlayer>(tempPlayer2Path, this.serializedPlayer2);
-        string tempPlayer1Move1Path = tempDirectoryPath + "p1move1.json";
+        string tempPlayer1Move1Path = tempDirectoryPath + Consts.PLAYER1MOVE1_PATH;
         this.WriteJson<SerializedMove>(tempPlayer1Move1Path, this.serializedMove1Player1);
-        string tempPlayer2Move1Path = tempDirectoryPath + "p2move1.json";
+        string tempPlayer2Move1Path = tempDirectoryPath + Consts.PLAYER2MOVE1_PATH;
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
-        string tempGameResultPath = tempDirectoryPath + "gameresult.json";
+        string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
     }
 
