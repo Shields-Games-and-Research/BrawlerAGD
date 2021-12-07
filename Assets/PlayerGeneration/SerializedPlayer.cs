@@ -73,6 +73,7 @@ public class SerializedPlayer
         Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
         this.spriteIndex = rand.Next(playerSprites.Length);
     }
+
     public SerializedPlayer(String _name, float[] genome, int _spriteIndex)
     {
         playerName = _name;
@@ -174,6 +175,13 @@ public class SerializedPlayer
 
     public void mutate(Random rand)
     {
-        // TODO
+        float[] genome = this.genome();
+        for (int i = 0; i < 5; i ++)
+        {
+            int index = rand.Next(genome.Length);
+            float val = chooseValue(index, rand);
+            genome[index] = val;
+        }
+        this.initFromGenome(genome);
     }
 }

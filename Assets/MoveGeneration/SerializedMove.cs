@@ -57,6 +57,12 @@ public class SerializedMove
         this.spriteIndex = rand.Next(moveSprites.Length);
     }
 
+    public SerializedMove(float[] genome, int _spriteIndex)
+    {
+        initFromGenome(genome);
+        spriteIndex = _spriteIndex;
+    }
+
     public static float chooseValue(int valueIndex, Random rand)
     {
         float rangeMin = ranges[valueIndex, 0];
@@ -119,12 +125,44 @@ public class SerializedMove
 
     public static SerializedMove singlePointCrossover(SerializedMove m1, SerializedMove m2, Random rand)
     {
-        //TODO
-        return m1;
+        int whichSprite = rand.Next(2);
+        int si = 0;
+        if (whichSprite == 0)
+        {
+            si = m1.spriteIndex;
+        }
+        else
+        {
+            si = m2.spriteIndex;
+        }
+        float[] g1 = m1.genome();
+        float[] g2 = m2.genome();
+        int point = rand.Next(g1.Length);
+        float[] g3 = new float[g1.Length];
+        // Create a new genome with crossover
+        for (int index = 0; index < g3.Length; index++)
+        {
+            if (index < point)
+            {
+                g3[index] = g1[index];
+            }
+            else
+            {
+                g3[index] = g2[index];
+            }
+        }
+        return new SerializedMove(g3, si);
     }
 
     public void mutate(Random rand)
     {
-        //TODO
+        float[] genome = this.genome();
+        for (int i = 0; i < 5; i++)
+        {
+            int index = rand.Next(genome.Length);
+            float val = chooseValue(index, rand);
+            genome[index] = val;
+        }
+        this.initFromGenome(genome);
     }
 }
