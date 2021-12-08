@@ -71,9 +71,10 @@ public class GameResult
 
         //Total Collisions (higher better)
         float collisionFitness = (this.totalHitsReceivedP1 + this.totalHitsReceivedP2);
-        //Save fitness to folder
-        this.fitness = timeFitness + damageFitness + collisionFitness;
 
+        float fairnessFitness = -Math.Abs(this.totalDamageP1 - this.totalDamageP2) / EvolutionManager.instance.damageFitnessScalar;
+        //Save fitness to folder
+        this.fitness = timeFitness + damageFitness + collisionFitness + fairnessFitness;
         return this.fitness;
     }
 }
