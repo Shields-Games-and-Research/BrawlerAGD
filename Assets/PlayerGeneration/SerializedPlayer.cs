@@ -178,6 +178,36 @@ public class SerializedPlayer
         return new SerializedPlayer(p1.playerName, g3, si);
     }
 
+    public static SerializedPlayer randomCrossover(SerializedPlayer p1, SerializedPlayer p2, Random rand)
+    {
+        int whichSprite = rand.Next(2);
+        int si = 0;
+        if (whichSprite == 0)
+        {
+            si = p1.spriteIndex;
+        }
+        else
+        {
+            si = p2.spriteIndex;
+        }
+        float[] g1 = p1.genome();
+        float[] g2 = p2.genome();
+        float[] g3 = new float[g1.Length];
+        for (int index = 0; index < g3.Length; index ++)
+        {
+            int which = rand.Next(2);
+            if (which == 0)
+            {
+                g3[index] = g1[index];
+            }
+            else
+            {
+                g3[index] = g2[index];
+            }    
+        }
+        return new SerializedPlayer(p1.playerName, g3, si);
+    }
+
     public void mutate(Random rand)
     {
         float[] genome = this.genome();
