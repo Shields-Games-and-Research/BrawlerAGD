@@ -28,6 +28,11 @@ public static class Consts
 public class ArenaManager : MonoBehaviour
 {
 
+    //Settings parameters for game
+    public bool p1Playable;
+    public bool p2Playable;
+    public bool UIEnabled;
+
     //UI components for each player
     public GameObject p1HUD;
     public Text p1HUDText;
@@ -53,11 +58,6 @@ public class ArenaManager : MonoBehaviour
     public SerializedPlayer serializedPlayer2;
     public SerializedMove serializedMove1Player2;
 
-    //Settings parameters for game
-    public bool p1Playable;
-    public bool p2Playable;
-    public bool UIEnabled;
-
     //Result of game stored here
     public GameResult result;
 
@@ -72,6 +72,8 @@ public class ArenaManager : MonoBehaviour
     {
         //Debug.Log("Loaded Game");
         //Debug.Log(EvolutionManager.instance.currentGameID);
+
+
         Debug.Log("Arena initializing with GameID: " + EvolutionManager.instance.currentGameID);
         this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, false, false, true);
         this.startTime = Time.time;
@@ -94,6 +96,10 @@ public class ArenaManager : MonoBehaviour
      */
     public void InitializeGameByGameID(int gameID, bool p1Playable, bool p2Playable, bool UIEnabled) 
     {
+        this.p1Playable = p1Playable;
+        this.p2Playable = p2Playable;
+        this.UIEnabled = UIEnabled;
+
         string tempDirectoryPath = Consts.GAME_PATH + gameID;
         if (!Directory.Exists(tempDirectoryPath))
         {
@@ -118,7 +124,6 @@ public class ArenaManager : MonoBehaviour
         // Player 1 spawns on the initial platform
         Platform initialPlatform = this.platforms.platformList[0];
         int player1Spawnx = (int)initialPlatform.x + (initialPlatform.xSize + 1) / 2;
-        Debug.Log(player1Spawnx);
         int player1Spawny = initialPlatform.y + initialPlatform.ySize + 1;
         Vector2 player1Spawn = new Vector2(player1Spawnx, player1Spawny);
         // Mirror Player 2's spawn relative to Player 1's
@@ -143,7 +148,7 @@ public class ArenaManager : MonoBehaviour
         player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
 
         //Set overall game options
-        this.SetGameOptions(UIEnabled, p1Playable, p2Playable);
+        this.SetGameOptions();
 
         //Save game to folder for next generation
         this.SaveGameJSON(result.gameID);
@@ -208,9 +213,9 @@ public class ArenaManager : MonoBehaviour
 
     /** Sets various arena-level settings, mostly for testing/debug
      */
-    public void SetGameOptions(bool UIEnabled, bool p1Playable, bool p2Playable) 
+    public void SetGameOptions() 
     {
-        if (UIEnabled)
+        if (this.UIEnabled)
         {
             this.InitUI();
         }
@@ -220,7 +225,7 @@ public class ArenaManager : MonoBehaviour
         }
 
         //Player Controller or Agent Assignment
-        if (p1Playable)
+        if (this.p1Playable)
         {
             this.SetPlayerToWASD(player1);
         }
@@ -228,7 +233,7 @@ public class ArenaManager : MonoBehaviour
         {
             this.SetPlayerToCPU(player1, player2);
         }
-        if (p2Playable)
+        if (this.p2Playable)
         {
             this.SetPlayerToIJKL(player2);
         }
@@ -286,7 +291,7 @@ public class ArenaManager : MonoBehaviour
      */
     T ReadJson<T>(string filename)
     {
-        print("filename reading: " + filename);
+        //print("filename reading: " + filename);
         // Write to file
         if (!File.Exists(filename))
         {

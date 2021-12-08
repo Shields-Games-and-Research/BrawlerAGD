@@ -276,10 +276,15 @@ public class Player : MonoBehaviour
     {
         LayerMask mask = LayerMask.GetMask("Floor");
         RaycastHit2D platformHit = Physics2D.Raycast(this.transform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
-        
+        RaycastHit2D ceilingHit = Physics2D.Raycast(this.transform.position, Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
+
         //if the player is touching a tile, the raycast is reasonably within the player's height, and is not null... 
         //Magic number is to try and make sure that we correctly recover regardless of character size.
-        if (collision.gameObject.CompareTag("Floor") && platformHit.distance <= this.sr.bounds.size.y*2 && platformHit.collider != null)
+        if (
+            collision.gameObject.CompareTag("Floor") && 
+            (Mathf.Abs(platformHit.distance) <= this.sr.bounds.size.y*2f && platformHit.collider != null) &&
+            (Mathf.Abs(platformHit.distance) <= Mathf.Abs(ceilingHit.distance) || ceilingHit.distance == 0)
+            )
         {
             isGrounded = true;
             jumpsExhausted = false;
