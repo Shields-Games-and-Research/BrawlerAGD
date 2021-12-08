@@ -159,6 +159,36 @@ public class SerializedMove
         return new SerializedMove(g3, si);
     }
 
+    public static SerializedMove randomCrossover(SerializedMove m1, SerializedMove m2, Random rand)
+    {
+        int whichSprite = rand.Next(2);
+        int si = 0;
+        if (whichSprite == 0)
+        {
+            si = m1.spriteIndex;
+        }
+        else
+        {
+            si = m2.spriteIndex;
+        }
+        float[] g1 = m1.genome();
+        float[] g2 = m2.genome();
+        float[] g3 = new float[g1.Length];
+        for (int index = 0; index < g3.Length; index++)
+        {
+            int which = rand.Next(2);
+            if (which == 0)
+            {
+                g3[index] = g1[index];
+            }
+            else
+            {
+                g3[index] = g2[index];
+            }
+        }
+        return new SerializedMove(g3, si);
+    }
+
     public void mutate(Random rand)
     {
         float[] genome = this.genome();
