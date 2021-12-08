@@ -8,14 +8,23 @@ using UnityEngine.SceneManagement;
 public class EvolutionManager : MonoBehaviour
 {
     // Make sure gamesFinished is the right length
-    public int popSize = 2;
-    public int numGenerations = 1;
-    public bool[] gamesFinished = new bool[2];
-    public float dropoutRate = 0.5f;
-    public double mutationRate = 0.1;
+    private int popSize = 10;
+    private int numGenerations = 0;
+    private bool[] gamesFinished = new bool[10];
+    private float dropoutRate = 0.5f;
+    private double mutationRate = 0.4;
     // Number of games that can be running at a time
-    public float nInstances = 1;
+    private float nInstances = 1;
+
+
     public int currentGameID = 0;
+    // Maximimum length of game
+    public float maxGameLength = 60f;
+    public float targetGameLength = 45f;
+    //Fitness Scalars
+    public float damageFitnessScalar = 10f;
+    
+
     public static EvolutionManager instance = null;
     public Random rand = new Random();
     // Average fitness of all individuals
@@ -46,7 +55,7 @@ public class EvolutionManager : MonoBehaviour
     {
         StartCoroutine(Evolve());
         //Set timescale based on optimization needs
-        //this.SetTimeScale(2f);
+        this.SetTimeScale(2f);
     }
 
     // Update is called once per frame
@@ -72,7 +81,7 @@ public class EvolutionManager : MonoBehaviour
     {
         Debug.Log("Starting Evolution");
         int currGeneration = 0;
-        int[] gameIDs = new int[popSize];
+        int[] gameIDs = new int[this.popSize];
         List<int> gidList = new List<int>();
         // Setup
         for (int i = 0; i < gameIDs.Length; i ++)
@@ -81,10 +90,10 @@ public class EvolutionManager : MonoBehaviour
             gidList.Add(i);
         }
         //loop through population numGenerations times
-        while (currGeneration < numGenerations) 
+        while (currGeneration < numGenerations || numGenerations == 0) 
         {
             Debug.Log("Generation: " + currGeneration);
-            Debug.Log("Running " + popSize + " games");
+            Debug.Log("Running " + this.popSize + " games");
             currGeneration++;
             // For each gameID, run a game, and collect the result
             foreach (int id in gameIDs)
@@ -112,9 +121,10 @@ public class EvolutionManager : MonoBehaviour
             for (int i = 0; i < indexToCut; i ++)
             {
                 int gid = gidList[i];
+                Debug.Log("DISCARDING GAME SAVED IN FOLDER game" + gid + " WITH FITNESS: " + evals[gid]);
                 int parentid1 = rand.Next(validParents) + indexToCut;
                 int parentid2 = rand.Next(validParents) + indexToCut;
-                crossoverGames(parentid1, parentid2, i);
+                crossoverGames(parentid1, parentid2, gid);
             }
             // Average fitness
             float totalFitness = 0f;

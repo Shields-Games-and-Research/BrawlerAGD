@@ -70,8 +70,7 @@ public class SerializedPlayer
         float[] genome = generateGenome(rand);
         initFromGenome(genome);
         // Choose a random sprite
-        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
-        this.spriteIndex = rand.Next(playerSprites.Length);
+        this.SetRandomSprite(rand);
     }
 
     public SerializedPlayer(String _name, float[] genome, int _spriteIndex)
@@ -80,6 +79,12 @@ public class SerializedPlayer
         stocks = 3;
         initFromGenome(genome);
         spriteIndex = _spriteIndex;
+    }
+
+    public void SetRandomSprite(Random rand) 
+    {
+        Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
+        this.spriteIndex = rand.Next(playerSprites.Length);
     }
 
     public static float chooseValue(int valueIndex, Random rand)
@@ -183,5 +188,6 @@ public class SerializedPlayer
             genome[index] = val;
         }
         this.initFromGenome(genome);
+        this.SetRandomSprite(rand);
     }
 }

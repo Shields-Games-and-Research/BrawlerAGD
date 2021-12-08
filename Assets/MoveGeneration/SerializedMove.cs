@@ -53,14 +53,19 @@ public class SerializedMove
     {
         float[] genome = generateGenome(rand);
         initFromGenome(genome);
-        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
-        this.spriteIndex = rand.Next(moveSprites.Length);
+        this.SetRandomSprite(rand);
     }
 
     public SerializedMove(float[] genome, int _spriteIndex)
     {
         initFromGenome(genome);
         spriteIndex = _spriteIndex;
+    }
+
+    public void SetRandomSprite(Random rand) 
+    {
+        Sprite[] moveSprites = Resources.LoadAll<Sprite>("moves");
+        this.spriteIndex = rand.Next(moveSprites.Length);
     }
 
     public static float chooseValue(int valueIndex, Random rand)
@@ -164,5 +169,6 @@ public class SerializedMove
             genome[index] = val;
         }
         this.initFromGenome(genome);
+        this.SetRandomSprite(rand);
     }
 }

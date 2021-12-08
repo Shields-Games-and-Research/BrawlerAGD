@@ -83,7 +83,7 @@ public class ArenaManager : MonoBehaviour
     {
         this.gameLength = Time.time - this.startTime;
         //End if this arena has lasted longer than 60 seconds
-        if (gameLength >= 60f) 
+        if (gameLength >= EvolutionManager.instance.maxGameLength) 
         {
             Debug.Log("This game stinks because it's so long. Pass");
             this.EndGame();

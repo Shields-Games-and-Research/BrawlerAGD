@@ -20,6 +20,8 @@ public class GameResult
 
     public float totalGameLength;
 
+    public float fitness;
+
     public GameResult(
         int _gameID,
         float totalDamageP1,
@@ -55,12 +57,24 @@ public class GameResult
         this.totalHitsReceivedP2 = 0;
 
         this.totalGameLength = 0;
+        this.fitness = float.NegativeInfinity;
     }
 
     public float evaluate()
     {
-        // TODO
-        return 0;
+        //Game went over time
+        float overTimePenalty = (this.totalGameLength >= EvolutionManager.instance.maxGameLength)?-35f:0f;
+        float timeFitness = -Math.Abs(EvolutionManager.instance.targetGameLength - this.totalGameLength) + overTimePenalty;
+
+        //Damage Dealt (higher better)
+        float damageFitness = (this.totalDamageP1 + this.totalDamageP2) / EvolutionManager.instance.damageFitnessScalar;
+
+        //Total Collisions (higher better)
+        float collisionFitness = (this.totalHitsReceivedP1 + this.totalHitsReceivedP2);
+        //Save fitness to folder
+        this.fitness = timeFitness + damageFitness + collisionFitness;
+
+        return this.fitness;
     }
 }
 
