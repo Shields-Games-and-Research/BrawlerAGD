@@ -15,6 +15,7 @@ using static UnityEngine.Random;
 public static class Consts
 {
     public static string GAME_PATH = "Assets\\Game\\game";
+    public static string EVO_RESULTS_PATH = "Assets\\Game\\evoresults";
     //TODO: File management approach
     public static string LEVEL_PATH = "\\level.json";
     public static string PLAYER1_PATH = "\\player1.json";
@@ -22,6 +23,7 @@ public static class Consts
     public static string PLAYER1MOVE1_PATH = "\\p1move1.json";
     public static string PLAYER2MOVE1_PATH = "\\p2move1.json";
     public static string GAME_RESULT_PATH = "\\gameresult.json";
+    public static string RESULTS_FILE_PATH = "\\results.json";
 }
 
 
@@ -106,7 +108,7 @@ public class ArenaManager : MonoBehaviour
             print("GENERATING NEW GAME");
             //Create new game if one does not exist
             Directory.CreateDirectory(tempDirectoryPath);
-            this.GenerateGame();
+            this.GenerateGame(gameID);
             this.SaveGameJSON(gameID);
         }
         //Read from file
@@ -116,19 +118,27 @@ public class ArenaManager : MonoBehaviour
             this.ReadGame(tempDirectoryPath);
         }
 
-        // Generate all objects from scratch
-        this.result = new GameResult();
-        this.result.gameID = gameID;
+
 
         // Compute spawn locations
         // Player 1 spawns on the initial platform
         Platform initialPlatform = this.platforms.platformList[0];
         int player1Spawnx = (int)initialPlatform.x + (initialPlatform.xSize + 1) / 2;
-        int player1Spawny = initialPlatform.y + initialPlatform.ySize + 1;
+        int player1Spawny = initialPlatform.y + initialPlatform.ySize + 2;
+        //ensure p1 spawn is safe before committing, move up if not
+        while (!this.SpawnIsSafe(player1Spawnx, player1Spawny, this.platforms.platformList))
+        {
+            player1Spawny += 1;
+        }
         Vector2 player1Spawn = new Vector2(player1Spawnx, player1Spawny);
         // Mirror Player 2's spawn relative to Player 1's
         int player2Spawnx = -player1Spawnx;
         int player2Spawny = player1Spawny;
+        //ensure p2 spawn is safe before committing, move up if not
+        while (!this.SpawnIsSafe(player2Spawnx, player2Spawny, this.platforms.platformList))
+        {
+            player2Spawny += 1;
+        }
         Vector2 player2Spawn = new Vector2(player2Spawnx, player2Spawny);
 
         // Player 1 Instantiation
@@ -154,10 +164,34 @@ public class ArenaManager : MonoBehaviour
         this.SaveGameJSON(result.gameID);
     }
 
-    public void GenerateGame()
+    public bool SpawnIsSafe(int spawnX, int spawnY, List<Platform> platforms) 
+    {
+        foreach(Platform platform in platforms) 
+        {
+            if (this.SpawnInPlatform(spawnX, spawnY, platform.x, platform.xSize, platform.y, platform.ySize)) 
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public bool SpawnInPlatform(int spawnX, int spawnY, int platX, int platSizeX, int platY, int platSizeY)
+    {
+        bool intersectsX = (spawnX >= platX) && (spawnX <= (platX + platSizeX));
+        bool intersectsY = (spawnY >= platY) && (spawnY <= (platY + platSizeY));
+        return (intersectsX && intersectsY);
+    }
+
+    public void GenerateGame(int gameID)
     {
         // Initialize RNG
         Random rand = EvolutionManager.instance.rand;
+
+        // Create GameResults Object
+        this.result = new GameResult();
+        this.result.gameID = gameID;
+        this.result.generationNum = 0;
 
         // Generate / Load Map
         MapGenerator mapGen = new MapGenerator(2, 2, 3, 6, rand);
@@ -188,6 +222,12 @@ public class ArenaManager : MonoBehaviour
         this.serializedPlayer2 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + Consts.PLAYER2_PATH);
         // Serialized Player 2 Move 1 Setup
         this.serializedMove1Player2 = this.ReadJson<SerializedMove>(tempDirectoryPath + Consts.PLAYER2MOVE1_PATH);
+        // Game Result Setup
+        // Generate all objects from scratch
+        GameResult oldResult = this.ReadJson<GameResult>(tempDirectoryPath + Consts.GAME_RESULT_PATH);
+        this.result = new GameResult();
+        this.result.gameID = oldResult.gameID;
+        this.result.generationNum = oldResult.generationNum;
     }
 
     public void EndGame()
@@ -201,10 +241,20 @@ public class ArenaManager : MonoBehaviour
         this.result.totalHitsReceivedP2 = this.player2.totalHitsReceived;
         this.result.totalGameLength = this.gameLength;
 
+        //iterate generation
+        this.result.generationNum += 1;
+
         //send to evolution manager
         EvolutionManager.instance.AddResultFromGame(this.result);
 
+        //add to serialized evolution results
+        EvolutionManager.instance.formattedEvoResults.evolutionResults.Add(this.result);
+
+
+        
+        //Save to file
         this.SaveGameJSON(result.gameID);
+        
 
         //destroy objects to preserve score - all other objects unloaded by unloading scene
         this.player1.destroy();
@@ -336,6 +386,12 @@ public class ArenaManager : MonoBehaviour
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
         string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
+
+        if (!File.Exists(Consts.EVO_RESULTS_PATH))
+        {
+            Directory.CreateDirectory(Consts.EVO_RESULTS_PATH);
+        }
+        this.WriteJson<EvolutionResult>(Consts.EVO_RESULTS_PATH + Consts.RESULTS_FILE_PATH, EvolutionManager.instance.formattedEvoResults);
     }
 
     //UI Control for this game

@@ -3,7 +3,17 @@ guid: 034646845405dd2419a656feeacc1428
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - p1HUD: {instanceID: 0}
+  - p1HUDText: {instanceID: 0}
+  - p2HUD: {instanceID: 0}
+  - p2HUDText: {instanceID: 0}
+  - notifications: {instanceID: 0}
+  - notificationsText: {instanceID: 0}
+  - move: {instanceID: 0}
+  - player: {instanceID: 0}
+  - player1: {instanceID: 0}
+  - player2: {instanceID: 0}
   executionOrder: 100
   icon: {instanceID: 0}
   userData: 

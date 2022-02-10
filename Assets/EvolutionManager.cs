@@ -37,6 +37,9 @@ public class EvolutionManager : MonoBehaviour
     public Dictionary<int, GameResult> results = new Dictionary<int, GameResult>();
     public Dictionary<int, float> evals = new Dictionary<int, float>();
 
+    //puts all results into a serialized object for printing to file.
+    public EvolutionResult formattedEvoResults;
+
     void Awake()
     {
         if (instance == null)
@@ -53,9 +56,10 @@ public class EvolutionManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.formattedEvoResults = new EvolutionResult();
         StartCoroutine(Evolve());
         //Set timescale based on optimization needs
-        this.SetTimeScale(2f);
+        //this.SetTimeScale(2f);
     }
 
     // Update is called once per frame

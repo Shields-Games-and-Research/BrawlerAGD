@@ -199,7 +199,7 @@ public class AI : Controller
     {
         recoveryTimeLimit = 300;
         recoveryTime = 0;
-        targetTimeLimit = 40;
+        targetTimeLimit = 150;
         targetMod = new Vector2(0, 0);
     }
 
