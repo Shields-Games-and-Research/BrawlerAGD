@@ -93,10 +93,14 @@ public class SerializedMove
         float moveLocX = moveDist * (float)Math.Cos(moveAngle);
         float moveLocY = moveDist * (float)Math.Sin(moveAngle);
 
-        if (Vector2.Angle(new Vector2(knockbackModX, knockbackModY), new Vector2(moveLocX, moveLocY)) < 45f)
+        Vector2 knockbackVector = new Vector2(knockbackModX, knockbackModY);
+        Vector2 moveLocVector = new Vector2(moveLocX, moveLocY);
+
+        while (Vector2.Angle(moveLocVector, knockbackVector) >= 135f)
         {
-            knockbackModX = -knockbackModX;
-            genome[9] = knockbackModX;
+            knockbackVector = Vector2.Lerp(knockbackVector, moveLocVector, .05);
+            genome[9] = knockbackVector.x;
+            genome[10] = knockbackVector.y;
         }
 
         return genome;
