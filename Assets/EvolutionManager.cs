@@ -14,7 +14,7 @@ public class EvolutionManager : MonoBehaviour
     private float dropoutRate = 0.5f;
     private double mutationRate = 0.4;
     // Number of games that can be running at a time
-    private float nInstances = 1;
+    public int currGeneration = 0;
 
 
     public int currentGameID = 0;
@@ -38,7 +38,7 @@ public class EvolutionManager : MonoBehaviour
     public Dictionary<int, float> evals = new Dictionary<int, float>();
 
     //puts all results into a serialized object for printing to file.
-    public EvolutionResult formattedEvoResults;
+    public EvolutionResults evolutionResults;
 
     void Awake()
     {
@@ -56,10 +56,10 @@ public class EvolutionManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.formattedEvoResults = new EvolutionResult();
+        this.evolutionResults = new EvolutionResults();
         StartCoroutine(Evolve());
         //Set timescale based on optimization needs
-        //this.SetTimeScale(2f);
+        this.SetTimeScale(2f);
     }
 
     // Update is called once per frame
@@ -83,8 +83,6 @@ public class EvolutionManager : MonoBehaviour
 
     public IEnumerator Evolve() 
     {
-        Debug.Log("Starting Evolution");
-        int currGeneration = 0;
         int[] gameIDs = new int[this.popSize];
         List<int> gidList = new List<int>();
         // Setup
@@ -94,11 +92,9 @@ public class EvolutionManager : MonoBehaviour
             gidList.Add(i);
         }
         //loop through population numGenerations times
-        while (currGeneration < numGenerations || numGenerations == 0) 
+        while (this.currGeneration < numGenerations || numGenerations == 0) 
         {
-            Debug.Log("Generation: " + currGeneration);
-            Debug.Log("Running " + this.popSize + " games");
-            currGeneration++;
+            this.currGeneration++;
             // For each gameID, run a game, and collect the result
             foreach (int id in gameIDs)
             {
@@ -114,8 +110,18 @@ public class EvolutionManager : MonoBehaviour
                 }
                 SceneManager.UnloadSceneAsync("Arena");
                 Debug.Log("Done running! Fitness was " + evals[id]);
+
             }
-            Debug.Log("Done running games");
+            // Save the current generation to our evolution results for data analysis
+            EvolutionResult generationResult = new EvolutionResult();
+            generationResult.generationNumber = this.currGeneration;
+
+            // Save results for generation
+            foreach (GameResult tempGameResult in this.results.Values) 
+            {
+                tempGameResult.generationNum = this.currGeneration;
+                generationResult.gameResults.Add(tempGameResult);
+            }
             // Sort the population by the fitness and keep the top x%
             gidList.Sort(compareGameIDs);
             int indexToCut = (int) (popSize * dropoutRate);
@@ -133,22 +139,36 @@ public class EvolutionManager : MonoBehaviour
             // Average fitness
             float totalFitness = 0f;
             float totalTopFitness = 0f;
+            float topFitness = float.MinValue;
             for (int i = 0; i < popSize; i ++)
             {
-                float f = evals[gidList[i]];
-                totalFitness += f;
+                float currFitness = evals[gidList[i]];
+                if (currFitness >= topFitness) 
+                {
+                    topFitness = currFitness;
+                }
+                totalFitness += currFitness;
                 if (i >= indexToCut)
                 {
-                    totalTopFitness += f;
+                    totalTopFitness += currFitness;
                 }
             }
-            averageFitness.Add(totalFitness / (float) popSize);
-            averageTopFitness.Add(totalTopFitness / (float) (popSize - indexToCut));
-            Debug.Log("Average Fitness");
-            foreach (float entry in averageFitness)
-            {
-                Debug.Log(entry);
-            }
+            
+            float averageFitness = (totalFitness / (float)popSize);
+            float averageTopFitness = (totalTopFitness / (float) (popSize - indexToCut));
+            
+            //TODO: Rename these lists or the above variables
+            this.averageFitness.Add(averageFitness);
+            this.averageTopFitness.Add(averageTopFitness);
+
+            generationResult.topFitness = topFitness;
+            generationResult.averageFitness = averageFitness;
+            generationResult.averageTopFitness = averageTopFitness;
+
+            //add to our temporary results object, then save to file for analsysis
+            this.evolutionResults.evolutionResults.Add(generationResult);
+            this.SaveToResults();
+            
         }
     }
 
@@ -212,14 +232,13 @@ public class EvolutionManager : MonoBehaviour
         }
     }
 
-    IEnumerator testCoroutine() 
+    public void SaveToResults()
     {
-        AsyncOperation ao = SceneManager.LoadSceneAsync("Arena", LoadSceneMode.Additive);
-        while (!ao.isDone) 
+        if (!File.Exists(Consts.EVO_RESULTS_PATH))
         {
-            yield return null;
+            Directory.CreateDirectory(Consts.EVO_RESULTS_PATH);
         }
-        SceneManager.UnloadSceneAsync("Arena");
+        this.WriteJson<EvolutionResults>(Consts.EVO_RESULTS_PATH + Consts.RESULTS_FILE_PATH, this.evolutionResults);
     }
 
     // TODO : duplicate of the code in ArenaManager

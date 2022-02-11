@@ -6,15 +6,27 @@ using UnityEngine;
 [Serializable]
 public class EvolutionResult
 {
-    public List<GameResult> evolutionResults;
+    public int generationNumber;
+    public float topFitness;
+    public float averageFitness;
+    public float averageTopFitness;
+    public List<GameResult> gameResults;
 
-    public EvolutionResult(List<GameResult> evolutionResults) 
+    public EvolutionResult(List<GameResult> gameResults) 
     {
-        this.evolutionResults = evolutionResults;
+        this.generationNumber = 0;
+        this.topFitness = 0;
+        this.averageFitness = 0;
+        this.averageTopFitness = 0;
+        this.gameResults = gameResults;
     }
 
     public EvolutionResult() 
     {
-        this.evolutionResults = new List<GameResult>();
+        this.generationNumber = 0;
+        this.topFitness = 0;
+        this.averageFitness = 0;
+        this.averageTopFitness = 0;
+        this.gameResults = new List<GameResult>();
     }
 }

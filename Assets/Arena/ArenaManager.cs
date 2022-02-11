@@ -109,7 +109,7 @@ public class ArenaManager : MonoBehaviour
             //Create new game if one does not exist
             Directory.CreateDirectory(tempDirectoryPath);
             this.GenerateGame(gameID);
-            this.SaveGameJSON(gameID);
+            this.SaveGameJSON(gameID);  
         }
         //Read from file
         else
@@ -242,15 +242,16 @@ public class ArenaManager : MonoBehaviour
         this.result.totalGameLength = this.gameLength;
 
         //iterate generation
-        this.result.generationNum += 1;
+        //this.result.generationNum += 1;
 
         //send to evolution manager
         EvolutionManager.instance.AddResultFromGame(this.result);
 
         //add to serialized evolution results
-        EvolutionManager.instance.formattedEvoResults.evolutionResults.Add(this.result);
+        //EvolutionManager.instance.formattedEvoResults.evolutionResults.Add(this.result);
 
-
+        //save to evo results
+        //this.SaveToResults();
         
         //Save to file
         this.SaveGameJSON(result.gameID);
@@ -387,11 +388,7 @@ public class ArenaManager : MonoBehaviour
         string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
 
-        if (!File.Exists(Consts.EVO_RESULTS_PATH))
-        {
-            Directory.CreateDirectory(Consts.EVO_RESULTS_PATH);
-        }
-        this.WriteJson<EvolutionResult>(Consts.EVO_RESULTS_PATH + Consts.RESULTS_FILE_PATH, EvolutionManager.instance.formattedEvoResults);
+        
     }
 
     //UI Control for this game

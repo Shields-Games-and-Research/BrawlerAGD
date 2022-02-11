@@ -44,7 +44,7 @@ public class SerializedMove
         {0.1f, 0.6f}, // coolDownDuration
         {0f, 10f}, // damageFactor
         {1f, 16f}, // knockbackScale
-        {-1f, 1f}, // knockbackModX
+        {0, 1f}, // knockbackModX
         {-1f, 1f}, // knockbackModY
         {0f, 1f} // hitstunDuration
     };
@@ -84,6 +84,21 @@ public class SerializedMove
         {
             genome[index] = chooseValue(index, rand);
         }
+
+        float moveDist = genome[0];
+        float moveAngle = genome[1];
+        float knockbackModX = genome[9];
+        float knockbackModY = genome[10];
+
+        float moveLocX = moveDist * (float)Math.Cos(moveAngle);
+        float moveLocY = moveDist * (float)Math.Sin(moveAngle);
+
+        if (Vector2.Angle(new Vector2(knockbackModX, knockbackModY), new Vector2(moveLocX, moveLocY)) < 45f)
+        {
+            knockbackModX = -knockbackModX;
+            genome[9] = knockbackModX;
+        }
+
         return genome;
     }
 
@@ -125,6 +140,11 @@ public class SerializedMove
         // Extra parameters calculated from the genome
         moveLocX = moveDist * (float)Math.Cos(moveAngle);
         moveLocY = moveDist * (float)Math.Sin(moveAngle);
+
+        if (Vector2.Angle(new Vector2(knockbackModX, knockbackModY), new Vector2(moveLocX, moveLocY)) < 45f)
+        {
+            knockbackModX = -knockbackModX;
+        }
         damageGiven = 5f + (warmUpDuration + executionDuration + coolDownDuration) * damageFactor;
     }
 

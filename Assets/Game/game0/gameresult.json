@@ -1,1 +1,1 @@
-{"gameID":0,"generationNum":1,"totalDamageP1":11.889676094055176,"totalRecoveryStateTransitionP1":822.0,"totalHitsReceivedP1":1.0,"totalDamageP2":11.006545066833496,"totalRecoveryStateTransitionP2":2304.0,"totalHitsReceivedP2":1.0,"totalGameLength":19.239686965942384,"fitness":-21.559003829956056}
+{"gameID":0,"generationNum":0,"totalDamageP1":0.0,"totalRecoveryStateTransitionP1":0.0,"totalHitsReceivedP1":0.0,"totalDamageP2":0.0,"totalRecoveryStateTransitionP2":0.0,"totalHitsReceivedP2":0.0,"totalGameLength":0.0,"fitness":-Infinity}
