@@ -236,9 +236,11 @@ public class ArenaManager : MonoBehaviour
         this.result.totalDamageP1 = this.player1.totalDamage;
         this.result.totalRecoveryStateTransitionP1 = this.player1.totalRecoveryStateTransition;
         this.result.totalHitsReceivedP1 = this.player1.totalHitsReceived;
+        this.result.remainingStocksP1 = this.player1.stocks;
         this.result.totalDamageP2 = this.player2.totalDamage;
         this.result.totalRecoveryStateTransitionP2 = this.player2.totalRecoveryStateTransition;
         this.result.totalHitsReceivedP2 = this.player2.totalHitsReceived;
+        this.result.remainingStocksP2 = this.player2.stocks;
         this.result.totalGameLength = this.gameLength;
 
         //iterate generation

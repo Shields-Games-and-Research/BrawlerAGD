@@ -78,6 +78,9 @@ public class Player : MonoBehaviour
 
     public Controller controller;
 
+    //Player label - set dynamically based on player name
+    public GameObject sign;
+
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
     public enum PlayerState
     {
@@ -118,7 +121,16 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        this.sign = new GameObject("player_label");
+        this.sign.transform.rotation = Camera.main.transform.rotation; // Causes the text faces camera.
+        TextMesh tm = sign.AddComponent<TextMesh>();
+        tm.text = this.playerName;
+        tm.color = new Color(0.8f, 0.8f, 0.8f);
+        tm.fontStyle = FontStyle.Bold;
+        tm.alignment = TextAlignment.Center;
+        tm.anchor = TextAnchor.MiddleCenter;
+        tm.characterSize = 0.065f;
+        tm.fontSize = 60;
 
     }
 
@@ -128,6 +140,7 @@ public class Player : MonoBehaviour
     {
         if (arenaManager.UIEnabled) 
         {
+            this.sign.transform.position = this.transform.position + Vector3.up;
             updatePlayerHUD();
         }
 
@@ -202,6 +215,8 @@ public class Player : MonoBehaviour
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
         if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
+
+        move1.SetInactive();
     }
 
     /**A player, from air, can:
@@ -221,6 +236,8 @@ public class Player : MonoBehaviour
 
         if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
 
+        move1.SetInactive();
+
     }
 
     /**A player, from air jumps exhausted, can:
@@ -231,6 +248,7 @@ public class Player : MonoBehaviour
         sr.color = Color.grey;
         if (controller.GetKey(controller.rightKey)) { moveRight(); }
         if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        move1.SetInactive();
     }
 
     /**A player, from warm up, can:
@@ -241,6 +259,7 @@ public class Player : MonoBehaviour
         sr.color = Color.yellow;
         if (controller.GetKey(controller.rightKey)) { moveRight(); }
         if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        move1.SetInactive();
     }
 
     /**A player, from attack, can:
@@ -267,6 +286,7 @@ public class Player : MonoBehaviour
     void updateStun()
     {
         sr.color = Color.magenta;
+        move1.SetInactive();
     }
 
     void updateLanding() { }
@@ -278,12 +298,19 @@ public class Player : MonoBehaviour
         RaycastHit2D platformHit = Physics2D.Raycast(this.transform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
         RaycastHit2D ceilingHit = Physics2D.Raycast(this.transform.position, Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
 
+        //DEBUG FOR CEILING HIT
+        bool floorCol = collision.gameObject.CompareTag("Floor");
+        bool platformNotNull = platformHit.collider != null;
+        bool ceilingIsNull = ceilingHit == false;
+        bool platformLTCeil = Mathf.Abs(platformHit.distance) <= Mathf.Abs(ceilingHit.distance);
+        bool platformInYBound = Mathf.Abs(platformHit.distance) <= this.sr.bounds.size.y * 2f;
+
         //if the player is touching a tile, the raycast is reasonably within the player's height, and is not null... 
         //Magic number is to try and make sure that we correctly recover regardless of character size.
         if (
-            collision.gameObject.CompareTag("Floor") && 
-            (Mathf.Abs(platformHit.distance) <= this.sr.bounds.size.y*2f && platformHit.collider != null) &&
-            (Mathf.Abs(platformHit.distance) <= Mathf.Abs(ceilingHit.distance) || ceilingHit == false)
+            floorCol && 
+            (platformInYBound && platformNotNull) &&
+            (platformLTCeil || ceilingIsNull)
             )
         {
             isGrounded = true;
@@ -565,7 +592,7 @@ public class Player : MonoBehaviour
 
         state = PlayerState.coolDown;
         yield return new WaitForSeconds(move.coolDownDuration);
-        //TODO branch depending on air/ground
+        //branch depending on air/ground
         if (this.isGrounded)
         {
             state = PlayerState.idle;
