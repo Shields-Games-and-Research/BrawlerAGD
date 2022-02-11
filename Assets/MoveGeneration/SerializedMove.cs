@@ -98,7 +98,7 @@ public class SerializedMove
 
         while (Vector2.Angle(moveLocVector, knockbackVector) >= 135f)
         {
-            knockbackVector = Vector2.Lerp(knockbackVector, moveLocVector, .05);
+            knockbackVector = Vector2.Lerp(knockbackVector, moveLocVector, 0.05f);
             genome[9] = knockbackVector.x;
             genome[10] = knockbackVector.y;
         }

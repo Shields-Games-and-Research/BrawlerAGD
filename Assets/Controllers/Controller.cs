@@ -227,20 +227,13 @@ public class AI : Controller
         {
             recoveryTime = 0;
         }
+
         // Change state if the player is over a pit long enough
         if (recoveryTime > recoveryTimeLimit)
         {
             this.player.totalRecoveryStateTransition++;
             state = AIState.recover;
         }
-        // Change state if the player has their jumps exhausted; because it disables their attacks
-        //if (this.JumpsExhausted())
-        //{
-        //    this.player.totalRecoveryStateTransition++;
-        //    state = AIState.recover;
-        //}
-
-
         else
         {
             state = AIState.pursue;
@@ -266,10 +259,7 @@ public class AI : Controller
         Vector2 relMovePosition = Vector2.Scale((movePosition - (Vector2) player.gameObject.transform.position), new Vector2(1.2f, 1.2f));
         Vector2 targetPosition = (Vector2) opponent.gameObject.transform.position - relMovePosition;
         targetPosition = targetPosition + targetMod;
-        //Debug.Log(opponent.gameObject.transform.position);
-        //Debug.Log(player.move.center);
-        //Debug.Log(relMovePosition);
-        //Debug.Log(targetPosition);
+
         if (this.PlayerInRangeOfMove())
         {
             pressMove1 = true;
@@ -277,6 +267,8 @@ public class AI : Controller
         else
         {
             pressMove1 = false;
+
+            //jump towards opponent if they are above you, or if you are approaching an edge
             if (((targetPosition.y > 0) && player.isGrounded) || ApproachingEdge())
             {
                 pressJump = true;
@@ -285,7 +277,15 @@ public class AI : Controller
             {
                 pressJump = false;
             }
-            if (targetPosition.x > player.gameObject.transform.position.x)
+
+            //if the player is below and you are separated by platform, move until you are off platform
+            if ((targetPosition.y < 0) && player.isGrounded)
+            {
+                pressRight = true;
+                pressLeft = false;
+            }
+            //otherwise simply move towards opponent
+            else if (targetPosition.x > player.gameObject.transform.position.x)
             {
                 pressRight = true;
                 pressLeft = false;

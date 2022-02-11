@@ -283,7 +283,7 @@ public class Player : MonoBehaviour
         if (
             collision.gameObject.CompareTag("Floor") && 
             (Mathf.Abs(platformHit.distance) <= this.sr.bounds.size.y*2f && platformHit.collider != null) &&
-            (Mathf.Abs(platformHit.distance) <= Mathf.Abs(ceilingHit.distance) || ceilingHit.distance == 0)
+            (Mathf.Abs(platformHit.distance) <= Mathf.Abs(ceilingHit.distance) || ceilingHit == false)
             )
         {
             isGrounded = true;
