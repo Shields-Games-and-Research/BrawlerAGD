@@ -142,14 +142,6 @@ public class Player : MonoBehaviour
     {
         if (arenaManager.UIEnabled) 
         {
-            if (this.transform.localScale.x > 0) 
-            {
-                this.sign.transform.localScale = new Vector3(Mathf.Abs(this.sign.transform.localScale.x), this.sign.transform.localScale.y, this.sign.transform.localScale.z);
-            }
-            if (this.transform.localScale.x < 0)
-            {
-                this.sign.transform.localScale = new Vector3(-Mathf.Abs(this.sign.transform.localScale.x), this.sign.transform.localScale.y, this.sign.transform.localScale.z);
-            }
             this.sign.transform.position = this.transform.position + Vector3.up;
             updatePlayerHUD();
         }
@@ -453,6 +445,7 @@ public class Player : MonoBehaviour
         if (transform.localScale.x < 0)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            this.sign.transform.localScale = new Vector3(-this.sign.transform.localScale.x, this.sign.transform.localScale.y, this.sign.transform.localScale.z);
         }
     }
 
@@ -491,6 +484,7 @@ public class Player : MonoBehaviour
         if (transform.localScale.x > 0)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+            this.sign.transform.localScale = new Vector3(-this.sign.transform.localScale.x, this.sign.transform.localScale.y, this.sign.transform.localScale.z);
         }
 
     }
