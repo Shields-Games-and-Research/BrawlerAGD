@@ -16,6 +16,7 @@ public static class Consts
 {
     public static string GAME_PATH = "Assets\\Game\\game";
     public static string EVO_RESULTS_PATH = "Assets\\Game\\evoresults";
+    public static string HIGH_FITNESS_GAMES = "Assets\\Game\\highfitness\\";
     //TODO: File management approach
     public static string LEVEL_PATH = "\\level.json";
     public static string PLAYER1_PATH = "\\player1.json";
@@ -243,22 +244,18 @@ public class ArenaManager : MonoBehaviour
         this.result.remainingStocksP2 = this.player2.stocks;
         this.result.totalGameLength = this.gameLength;
 
-        //iterate generation
-        //this.result.generationNum += 1;
-
         //send to evolution manager
         EvolutionManager.instance.AddResultFromGame(this.result);
 
-        //add to serialized evolution results
-        //EvolutionManager.instance.formattedEvoResults.evolutionResults.Add(this.result);
+        //TODO: Refactor this code to avoid repeat calls to evaluate
+        if (this.result.evaluate() >= 40f) 
+        {
+            SaveGameJSONtoResultsFolder(this.result.gameID);
+        }
 
-        //save to evo results
-        //this.SaveToResults();
-        
         //Save to file
         this.SaveGameJSON(result.gameID);
         
-
         //destroy objects to preserve score - all other objects unloaded by unloading scene
         this.player1.destroy();
         this.player2.destroy();
@@ -389,8 +386,29 @@ public class ArenaManager : MonoBehaviour
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
         string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
+    }
 
-        
+    public void SaveGameJSONtoResultsFolder(int gameID)
+    {
+        Debug.Log("Saving game with ID to results, fitness over 40: " + gameID);
+        //Create a directory if non exist
+        string tempDirectoryPath = Consts.HIGH_FITNESS_GAMES + "game" + gameID + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+        if (!File.Exists(tempDirectoryPath))
+        {
+            Directory.CreateDirectory(tempDirectoryPath);
+        }
+        string tempLevelPath = tempDirectoryPath + Consts.LEVEL_PATH;
+        this.WriteJson<Platforms>(tempLevelPath, this.platforms);
+        string tempPlayer1Path = tempDirectoryPath + Consts.PLAYER1_PATH;
+        this.WriteJson<SerializedPlayer>(tempPlayer1Path, this.serializedPlayer1);
+        string tempPlayer2Path = tempDirectoryPath + Consts.PLAYER2_PATH;
+        this.WriteJson<SerializedPlayer>(tempPlayer2Path, this.serializedPlayer2);
+        string tempPlayer1Move1Path = tempDirectoryPath + Consts.PLAYER1MOVE1_PATH;
+        this.WriteJson<SerializedMove>(tempPlayer1Move1Path, this.serializedMove1Player1);
+        string tempPlayer2Move1Path = tempDirectoryPath + Consts.PLAYER2MOVE1_PATH;
+        this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
+        string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
+        this.WriteJson<GameResult>(tempGameResultPath, this.result);
     }
 
     //UI Control for this game

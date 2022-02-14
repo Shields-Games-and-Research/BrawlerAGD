@@ -8,9 +8,9 @@ using UnityEngine.SceneManagement;
 public class EvolutionManager : MonoBehaviour
 {
     // Make sure gamesFinished is the right length
-    private int popSize = 10;
+    private int popSize = 20;
     private int numGenerations = 0;
-    private bool[] gamesFinished = new bool[10];
+    private bool[] gamesFinished = new bool[20];
     private float dropoutRate = 0.5f;
     private double mutationRate = 0.4;
     // Number of games that can be running at a time
@@ -56,10 +56,13 @@ public class EvolutionManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        var fixedDeltaTime = Time.fixedDeltaTime;
+        this.SetTimeScale(3f);
+        Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
         this.evolutionResults = new EvolutionResults();
         StartCoroutine(Evolve());
         //Set timescale based on optimization needs
-        this.SetTimeScale(2f);
+        
     }
 
     // Update is called once per frame
