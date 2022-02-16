@@ -96,13 +96,6 @@ public class Player : MonoBehaviour
     //default player state to idle on spawn.
     public PlayerState state = PlayerState.idle;
 
-    /** PLAYER CONTROLS: sets the keycodes used to control the player. */
-    public KeyCode leftKey = KeyCode.A;
-    public KeyCode rightKey = KeyCode.D;
-    public KeyCode jumpKey = KeyCode.W;
-    public KeyCode fallKey = KeyCode.S;
-    public KeyCode move1Key = KeyCode.Space;
-
     void Awake()
     {
         //Sprite[] playerSprites = Resources.LoadAll<Sprite>("players");
@@ -211,8 +204,8 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.white;
 
-        if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        else if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
+        else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
 
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
@@ -231,8 +224,8 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.green;
 
-        if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        else if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        //if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        //else if (controller.GetKey(controller.leftKey)) { moveLeft(); }
 
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
@@ -248,8 +241,8 @@ public class Player : MonoBehaviour
     void updateAirJumpsExhausted()
     {
         sr.color = Color.grey;
-        if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        //if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        //if (controller.GetKey(controller.leftKey)) { moveLeft(); }
         move1.SetInactive();
     }
 
@@ -259,8 +252,8 @@ public class Player : MonoBehaviour
     void updateWarmUp()
     {
         sr.color = Color.yellow;
-        if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        //if (controller.GetKey(controller.rightKey)) { moveRight(); }
+        //if (controller.GetKey(controller.leftKey)) { moveLeft(); }
         move1.SetInactive();
     }
 
@@ -546,11 +539,6 @@ public class Player : MonoBehaviour
 */
     public void InitializePlayerFromSerializedObj(SerializedPlayer serializedPlayer, Vector2 spawnLoc)
     {
-        //assigns controls of player
-        this.leftKey = serializedPlayer.leftKey;
-        this.rightKey = serializedPlayer.rightKey;
-        this.jumpKey = serializedPlayer.jumpKey;
-        this.move1Key = serializedPlayer.attackKey;
 
         //Player parameter initialization
         this.playerName = serializedPlayer.playerName;

@@ -16,7 +16,7 @@ public static class Consts
 {
     public static string GAME_PATH = "Assets\\Game\\game";
     public static string EVO_RESULTS_PATH = "Assets\\Game\\evoresults";
-    public static string HIGH_FITNESS_GAMES = "Assets\\Game\\highfitness\\";
+    public static string HIGH_FITNESS_GAMES = "Assets\\Game\\randomfitness\\";
     //TODO: File management approach
     public static string LEVEL_PATH = "\\level.json";
     public static string PLAYER1_PATH = "\\player1.json";
@@ -73,12 +73,9 @@ public class ArenaManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Debug.Log("Loaded Game");
-        //Debug.Log(EvolutionManager.instance.currentGameID);
-
 
         Debug.Log("Arena initializing with GameID: " + EvolutionManager.instance.currentGameID);
-        this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, false, false, true);
+        this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, true, true, true);
         this.startTime = Time.time;
  
     }
@@ -192,7 +189,7 @@ public class ArenaManager : MonoBehaviour
         // Create GameResults Object
         this.result = new GameResult();
         this.result.gameID = gameID;
-        this.result.generationNum = 0;
+        this.result.generationNum = EvolutionManager.instance.currGeneration;
 
         // Generate / Load Map
         MapGenerator mapGen = new MapGenerator(2, 2, 3, 6, rand);
@@ -248,7 +245,7 @@ public class ArenaManager : MonoBehaviour
         EvolutionManager.instance.AddResultFromGame(this.result);
 
         //TODO: Refactor this code to avoid repeat calls to evaluate
-        if (this.result.evaluate() >= 40f) 
+        if (this.result.evaluate() >= -12f && this.result.evaluate() <= -8f) 
         {
             SaveGameJSONtoResultsFolder(this.result.gameID);
         }
@@ -320,19 +317,21 @@ public class ArenaManager : MonoBehaviour
     public void SetPlayerToWASD(Player player) 
     {
         player.controller = new Controller(player1, null);
-        player.controller.leftKey = KeyCode.A;
-        player.controller.rightKey = KeyCode.D;
-        player.controller.jumpKey = KeyCode.W;
-        player.controller.move1Key = KeyCode.S;
+        player.controller.SetPlayer1Buttons();
+        //player.controller.leftKey = KeyCode.A;
+        //player.controller.rightKey = KeyCode.D;
+        //player.controller.jumpKey = KeyCode.W;
+        //player.controller.move1Key = KeyCode.S;
     }
     
     public void SetPlayerToIJKL(Player player) 
     {
         player.controller = new Controller(player2, null);
-        player.controller.leftKey = KeyCode.J;
-        player.controller.rightKey = KeyCode.L;
-        player.controller.jumpKey = KeyCode.I;
-        player.controller.move1Key = KeyCode.K;
+        player.controller.SetPlayer2Buttons();
+        //player.controller.leftKey = KeyCode.J;
+        //player.controller.rightKey = KeyCode.L;
+        //player.controller.jumpKey = KeyCode.I;
+        //player.controller.move1Key = KeyCode.K;
     }
 
 

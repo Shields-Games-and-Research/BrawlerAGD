@@ -6,11 +6,10 @@ using System.Linq;
 
 public class Controller
 {
-    public KeyCode leftKey;
-    public KeyCode rightKey;
-    public KeyCode jumpKey;
-    public KeyCode pauseKey;
-    public KeyCode move1Key;
+    public string horizontalAxis;
+    public string jumpKey;
+    public string pauseKey;
+    public string move1Key;
 
     public Player player;
     public Player opponent;
@@ -28,15 +27,23 @@ public class Controller
         this.opponent = opponent;
 
         //Defaults
-        this.leftKey = KeyCode.A;
-        this.rightKey = KeyCode.D;
-        this.jumpKey = KeyCode.W;
-        this.move1Key = KeyCode.S;
+        this.horizontalAxis = "";
+        this.jumpKey = "";
+        this.move1Key = "";
 
         this.playerTransform = player.gameObject.transform;
         this.mask = LayerMask.GetMask("Floor");
 
-        
+        if (this.player.playerName == "player 1")
+        {
+            this.SetPlayer1Buttons();
+        }
+        else
+        {
+            this.SetPlayer2Buttons();
+        }
+
+
 
         /** ColliderDistance2D properties
             distance    Gets the distance between two colliders.
@@ -46,7 +53,21 @@ public class Controller
             pointA A point on a Collider2D that is a specific distance away from pointB.
             pointB A point on a Collider2D that is a specific distance away from pointA.
         */
-        
+
+    }
+
+    public void SetPlayer1Buttons() 
+    {
+        this.horizontalAxis = "HorizontalP1";
+        this.jumpKey = "JumpP1";
+        this.move1Key = "AttackP1";
+    }
+
+    public void SetPlayer2Buttons() 
+    {
+        this.horizontalAxis = "HorizontalP2";
+        this.jumpKey = "JumpP2";
+        this.move1Key = "AttackP2";
     }
 
     public virtual void Update()
@@ -85,14 +106,14 @@ public class Controller
         return nearestPlatformPoint - (Vector2)playerTransform.position;
     }
 
-    public virtual bool GetKey(KeyCode code)
+    public virtual float GetAxis(string code)
     {
-        return Input.GetKey(code);
+        return Input.GetAxis(code);
     }
 
-    public virtual bool GetKeyDown(KeyCode code)
+    public virtual bool GetKeyDown(string code)
     {
-        return Input.GetKeyDown(code);
+        return Input.GetButtonDown(code);
     }
 
     public bool OverPit(Vector2 offset) 
@@ -146,37 +167,27 @@ public class HoldLeft : Controller
 
     }
 
-    public override bool GetKey(KeyCode code)
+    public override float GetAxis(string code)
     {
-        if (code == this.leftKey)
+        if (code == this.horizontalAxis)
         {
-            return true;
+            return 1f;
         }
         else
         {
-            return false;
+            return -1f;
         }
     }
 
-    public override bool GetKeyDown(KeyCode code)
+    public override bool GetKeyDown(string code)
     {
-        if (code == this.leftKey)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
 }
 
 public class AI : Controller
 {
-
-
-
     //AI States
     public enum AIState
     {
@@ -322,33 +333,33 @@ public class AI : Controller
         pressMove1 = false;
     }
 
-    public override bool GetKey(KeyCode code)
+    public override float GetAxis(string code)
     {
-        if (code == this.leftKey)
+        if (code == this.horizontalAxis) 
         {
-            return pressLeft;
+            if (this.pressLeft) 
+            {
+                return -1;
+            }
+            if (this.pressRight)
+            {
+                return 1;
+            }
         }
-        else if (code == this.rightKey)
-        {
-            return pressRight;
-        }
-        else if (code == this.jumpKey)
-        {
-            return pressJump;
-        }
-        else if (code == this.move1Key)
-        {
-            return pressMove1;
-        }
-        else
-        {
-            return false;
-        }
+        return 0f;
     }
 
-    public override bool GetKeyDown(KeyCode code)
+    public override bool GetKeyDown(string code)
     {
-        return this.GetKey(code);
+        if (code == this.jumpKey) 
+        {
+            return this.pressJump;
+        }
+        if (code == this.move1Key)
+        {
+            return this.pressMove1;
+        }
+        return false;
     }
 
     
