@@ -17,6 +17,8 @@ public static class Consts
     public static string GAME_PATH = "Assets\\Game\\game";
     public static string EVO_RESULTS_PATH = "Assets\\Game\\evoresults";
     public static string HIGH_FITNESS_GAMES = "Assets\\Game\\randomfitness\\";
+    public static string RESEARCH_RESULTS = "Assets\\Game\\research\\results\\";
+    public static string RESEARCH_GAME = "Assets\\Game\\research\\game\\";
     //TODO: File management approach
     public static string LEVEL_PATH = "\\level.json";
     public static string PLAYER1_PATH = "\\player1.json";
@@ -73,23 +75,104 @@ public class ArenaManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        Debug.Log("Arena initializing with GameID: " + EvolutionManager.instance.currentGameID);
-        this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, true, true, true);
-        this.startTime = Time.time;
- 
+        //Load existing game settings
+        //TODO: Use Game Settings for initializing all games
+        if (GameSettings.instance == null)
+        {
+            Debug.Log("Arena initializing with GameID: " + EvolutionManager.instance.currentGameID);
+            this.InitializeGameByGameID(EvolutionManager.instance.currentGameID, false, false, true);
+            this.startTime = Time.time;
+        }
+        else 
+        {
+            Debug.Log("Arena initializing with Path: " + GameSettings.instance.loadGamePath);
+            this.InitializeGameByPath(GameSettings.instance.loadGamePath, true, true, true);
+            this.startTime = Time.time;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         this.gameLength = Time.time - this.startTime;
+
+
         //End if this arena has lasted longer than 60 seconds
-        if (gameLength >= EvolutionManager.instance.maxGameLength) 
+        if (GameSettings.instance == null)
         {
-            Debug.Log("This game stinks because it's so long. Pass");
-            this.EndGame();
+            if (gameLength >= EvolutionManager.instance.maxGameLength)
+            {
+                Debug.Log("This game has exceeded the evolution manager's max game length");
+                this.EndGame("draw");
+            }
         }
+
+    }
+
+
+    /** If there is a folder/file there, read it, if not, generate a new random instance for the game
+ */
+    public void InitializeGameByPath(string path, bool p1Playable, bool p2Playable, bool UIEnabled)
+    {
+        this.p1Playable = p1Playable;
+        this.p2Playable = p2Playable;
+        this.UIEnabled = UIEnabled;
+
+        if (!Directory.Exists(path))
+        {
+            Debug.Log("ERROR: ATTEMPTING TO READ FILE THAT DOES NOT EXIST");
+        }
+        //Read from file
+        else
+        {
+            Debug.Log("LOADING GAME FROM FILE: " + path);
+            this.ReadGame(path);
+        }
+
+
+
+        // Compute spawn locations
+        // Player 1 spawns on the initial platform
+        Platform initialPlatform = this.platforms.platformList[0];
+        int player1Spawnx = (int)initialPlatform.x + (initialPlatform.xSize + 1) / 2;
+        int player1Spawny = initialPlatform.y + initialPlatform.ySize + 2;
+        //ensure p1 spawn is safe before committing, move up if not
+        while (!this.SpawnIsSafe(player1Spawnx, player1Spawny, this.platforms.platformList))
+        {
+            player1Spawny += 1;
+        }
+        Vector2 player1Spawn = new Vector2(player1Spawnx, player1Spawny);
+        // Mirror Player 2's spawn relative to Player 1's
+        int player2Spawnx = -player1Spawnx;
+        int player2Spawny = player1Spawny;
+        //ensure p2 spawn is safe before committing, move up if not
+        while (!this.SpawnIsSafe(player2Spawnx, player2Spawny, this.platforms.platformList))
+        {
+            player2Spawny += 1;
+        }
+        Vector2 player2Spawn = new Vector2(player2Spawnx, player2Spawny);
+
+        // Player 1 Instantiation
+        Vector3 spawnLocationP1 = new Vector3(player1Spawnx, player1Spawny, 0);
+        this.player1 = Instantiate(player, spawnLocationP1, Quaternion.identity);
+        player1.arenaManager = this;
+
+        // Player 2 Instantiation
+        Vector3 spawnLocationP2 = new Vector3(player2Spawnx, player2Spawny, 0);
+        this.player2 = Instantiate(player, spawnLocationP2, Quaternion.identity);
+        player2.arenaManager = this;
+
+        //update gameobjects instantiated into the scene with values from JSON
+        player1.InitializePlayerFromSerializedObj(this.serializedPlayer1, player1Spawn);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
+        player2.InitializePlayerFromSerializedObj(this.serializedPlayer2, player2Spawn);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
+
+        //Set overall game options
+        this.SetGameOptions();
+
+        //Save game to folder for next generation
+        this.SaveGameJSON(result.gameID);
     }
 
     /** If there is a folder/file there, read it, if not, generate a new random instance for the game
@@ -228,7 +311,7 @@ public class ArenaManager : MonoBehaviour
         this.result.generationNum = oldResult.generationNum;
     }
 
-    public void EndGame()
+    public void EndGame(string loser)
     {
         //record game scores
         this.result.totalDamageP1 = this.player1.totalDamage;
@@ -240,19 +323,27 @@ public class ArenaManager : MonoBehaviour
         this.result.totalHitsReceivedP2 = this.player2.totalHitsReceived;
         this.result.remainingStocksP2 = this.player2.stocks;
         this.result.totalGameLength = this.gameLength;
-
+        this.result.loser = loser;
         //send to evolution manager
-        EvolutionManager.instance.AddResultFromGame(this.result);
-
-        //TODO: Refactor this code to avoid repeat calls to evaluate
-        if (this.result.evaluate() >= -12f && this.result.evaluate() <= -8f) 
+        if (GameSettings.instance == null) 
         {
-            SaveGameJSONtoResultsFolder(this.result.gameID);
+            //update evolution manager
+            EvolutionManager.instance.AddResultFromGame(this.result);
+            //Save to file
+            this.SaveGameJSON(result.gameID);
+        }
+        else  
+        {
+            //Evaluate Results
+            this.result.evaluateHumanGame();
+            //Save to research results
+            SaveGameJSONtoResultsFolder(GameSettings.instance.resultsPath);
+            //return to main menu
+            StartCoroutine(this.ReturnToMenuCoroutine());
         }
 
-        //Save to file
-        this.SaveGameJSON(result.gameID);
-        
+
+
         //destroy objects to preserve score - all other objects unloaded by unloading scene
         this.player1.destroy();
         this.player2.destroy();
@@ -387,26 +478,24 @@ public class ArenaManager : MonoBehaviour
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
     }
 
-    public void SaveGameJSONtoResultsFolder(int gameID)
+    public void SaveGameJSONtoResultsFolder(string gamePath)
     {
-        Debug.Log("Saving game with ID to results, fitness over 40: " + gameID);
-        //Create a directory if non exist
-        string tempDirectoryPath = Consts.HIGH_FITNESS_GAMES + "game" + gameID + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-        if (!File.Exists(tempDirectoryPath))
+        Debug.Log("Saving research results to path: " + gamePath);
+        if (!File.Exists(gamePath))
         {
-            Directory.CreateDirectory(tempDirectoryPath);
+            Directory.CreateDirectory(gamePath);
         }
-        string tempLevelPath = tempDirectoryPath + Consts.LEVEL_PATH;
+        string tempLevelPath = gamePath + Consts.LEVEL_PATH;
         this.WriteJson<Platforms>(tempLevelPath, this.platforms);
-        string tempPlayer1Path = tempDirectoryPath + Consts.PLAYER1_PATH;
+        string tempPlayer1Path = gamePath + Consts.PLAYER1_PATH;
         this.WriteJson<SerializedPlayer>(tempPlayer1Path, this.serializedPlayer1);
-        string tempPlayer2Path = tempDirectoryPath + Consts.PLAYER2_PATH;
+        string tempPlayer2Path = gamePath + Consts.PLAYER2_PATH;
         this.WriteJson<SerializedPlayer>(tempPlayer2Path, this.serializedPlayer2);
-        string tempPlayer1Move1Path = tempDirectoryPath + Consts.PLAYER1MOVE1_PATH;
+        string tempPlayer1Move1Path = gamePath + Consts.PLAYER1MOVE1_PATH;
         this.WriteJson<SerializedMove>(tempPlayer1Move1Path, this.serializedMove1Player1);
-        string tempPlayer2Move1Path = tempDirectoryPath + Consts.PLAYER2MOVE1_PATH;
+        string tempPlayer2Move1Path = gamePath + Consts.PLAYER2MOVE1_PATH;
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
-        string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
+        string tempGameResultPath = gamePath + Consts.GAME_RESULT_PATH;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
     }
 
@@ -432,6 +521,15 @@ public class ArenaManager : MonoBehaviour
         UpdateNotifications(message);
         yield return new WaitForSeconds(5f);
         ClearNotifications();
+    }
+
+    public IEnumerator ReturnToMenuCoroutine() 
+    {
+        yield return new WaitForSeconds(5f);
+        UpdateNotifications("Returning to study menu.");
+        yield return new WaitForSeconds(5f);
+        ClearNotifications();
+        SceneManager.LoadSceneAsync("LoadGame", LoadSceneMode.Single);
     }
    
 }

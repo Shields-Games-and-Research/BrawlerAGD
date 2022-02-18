@@ -116,7 +116,7 @@ public class Player : MonoBehaviour
     {
         //TODO: Refactor into method
         this.sign = new GameObject("player_label");
-        this.sign.transform.rotation = Camera.main.transform.rotation; // Causes the text faces camera.
+        //this.sign.transform.rotation = Camera.main.transform.rotation; // Causes the text faces camera.
         this.sign.transform.parent = this.transform;
         TextMesh tm = sign.AddComponent<TextMesh>();
         tm.text = this.playerName;
@@ -224,8 +224,8 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.green;
 
-        //if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        //else if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
+        else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
 
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
@@ -241,8 +241,8 @@ public class Player : MonoBehaviour
     void updateAirJumpsExhausted()
     {
         sr.color = Color.grey;
-        //if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        //if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
+        else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
         move1.SetInactive();
     }
 
@@ -252,8 +252,8 @@ public class Player : MonoBehaviour
     void updateWarmUp()
     {
         sr.color = Color.yellow;
-        //if (controller.GetKey(controller.rightKey)) { moveRight(); }
-        //if (controller.GetKey(controller.leftKey)) { moveLeft(); }
+        if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
+        else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
         move1.SetInactive();
     }
 
@@ -512,7 +512,7 @@ public class Player : MonoBehaviour
         if (stocks == 0)
         {
             StartCoroutine(arenaManager.NotificationCoroutine(this.playerName + " HAS LOST THE GAME"));
-            arenaManager.EndGame();
+            arenaManager.EndGame(this.playerName);
         }
         else 
         {

@@ -248,7 +248,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -906,6 +906,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 034646845405dd2419a656feeacc1428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  p1Playable: 0
+  p2Playable: 0
+  UIEnabled: 0
   p1HUD: {fileID: 1642781192}
   p1HUDText: {fileID: 0}
   p2HUD: {fileID: 1759345128}
@@ -916,24 +919,106 @@ MonoBehaviour:
   player: {fileID: 9002358621052085747, guid: dfceabb6f98685e438d2e46bd210070e, type: 3}
   platforms:
     platformList: []
-    player1x: 0
-    player1y: 0
-    player2x: 0
-    player2y: 0
   player1: {fileID: 0}
+  serializedPlayer1:
+    playerName: 
+    jumpKey: 0
+    leftKey: 0
+    rightKey: 0
+    attackKey: 0
+    stocks: 0
+    groundAccelerationFactor: 0
+    groundAcceleration: 0
+    airAccelerationFactor: 0
+    airAcceleration: 0
+    maxGroundSpeed: 0
+    maxAirSpeed: 0
+    totalJumpForce: 0
+    jumpRatio: 0
+    groundJumpForce: 0
+    airJumpForce: 0
+    mass: 0
+    drag: 0
+    widthScalar: 0
+    heightScalar: 0
+    gravityScalar: 0
+    hitstunDamageScalar: 0
+    spriteIndex: 0
+  serializedMove1Player1:
+    moveDist: 0
+    moveAngle: 0
+    moveLocX: 0
+    moveLocY: 0
+    widthScalar: 0
+    heightScalar: 0
+    warmUpDuration: 0
+    executionDuration: 0
+    coolDownDuration: 0
+    damageFactor: 0
+    damageGiven: 0
+    knockbackScalar: 0
+    knockbackModX: 0
+    knockbackModY: 0
+    hitstunDuration: 0
+    spriteIndex: 0
   player2: {fileID: 0}
-  p1Playable: 0
-  p2Playable: 0
-  UIEnabled: 0
+  serializedPlayer2:
+    playerName: 
+    jumpKey: 0
+    leftKey: 0
+    rightKey: 0
+    attackKey: 0
+    stocks: 0
+    groundAccelerationFactor: 0
+    groundAcceleration: 0
+    airAccelerationFactor: 0
+    airAcceleration: 0
+    maxGroundSpeed: 0
+    maxAirSpeed: 0
+    totalJumpForce: 0
+    jumpRatio: 0
+    groundJumpForce: 0
+    airJumpForce: 0
+    mass: 0
+    drag: 0
+    widthScalar: 0
+    heightScalar: 0
+    gravityScalar: 0
+    hitstunDamageScalar: 0
+    spriteIndex: 0
+  serializedMove1Player2:
+    moveDist: 0
+    moveAngle: 0
+    moveLocX: 0
+    moveLocY: 0
+    widthScalar: 0
+    heightScalar: 0
+    warmUpDuration: 0
+    executionDuration: 0
+    coolDownDuration: 0
+    damageFactor: 0
+    damageGiven: 0
+    knockbackScalar: 0
+    knockbackModX: 0
+    knockbackModY: 0
+    hitstunDuration: 0
+    spriteIndex: 0
   result:
     gameID: 1
     generationNum: 0
     totalDamageP1: 0
     totalRecoveryStateTransitionP1: 0
     totalHitsReceivedP1: 0
+    remainingStocksP1: 0
     totalDamageP2: 0
     totalRecoveryStateTransitionP2: 0
     totalHitsReceivedP2: 0
+    remainingStocksP2: 0
+    totalGameLength: 0
+    fitness: -Infinity
+    loser: 
+  startTime: 0
+  gameLength: 0
 --- !u!4 &1661193752
 Transform:
   m_ObjectHideFlags: 0
