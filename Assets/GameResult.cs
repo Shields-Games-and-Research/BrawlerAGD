@@ -84,6 +84,15 @@ public class GameResult
         //Damage Dealt (higher better)
         float damageFitness = (this.totalDamageP1 + this.totalDamageP2) / EvolutionManager.instance.damageFitnessScalar;
 
+        //Damage Penalty for very high damage scores - average 100 per stock
+        float damagePenalty = 0f;
+        float totalDamageDealt = this.totalDamageP1 + this.totalDamageP2;
+        float targetDamagePerStock = (6 - this.remainingStocksP1 + this.remainingStocksP2) * 100;
+        if (totalDamageDealt >= targetDamagePerStock) 
+        {
+            damagePenalty = targetDamagePerStock - totalDamageDealt;
+        }
+
         //Total Collisions (higher better)
         float collisionFitness = (this.totalHitsReceivedP1 + this.totalHitsReceivedP2);
         
@@ -94,7 +103,7 @@ public class GameResult
         float stockFairnessFitness = (3f - Math.Abs(this.remainingStocksP1 - this.remainingStocksP1));
 
         //Save fitness to folder
-        this.fitness = timeFitness + damageFitness + collisionFitness + damageFairnessFitness + stockFairnessFitness;
+        this.fitness = timeFitness + damageFitness + collisionFitness + damageFairnessFitness + stockFairnessFitness + damagePenalty;
         return this.fitness;
     }
 

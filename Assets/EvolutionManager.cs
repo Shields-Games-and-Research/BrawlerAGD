@@ -8,9 +8,9 @@ using UnityEngine.SceneManagement;
 public class EvolutionManager : MonoBehaviour
 {
     // Make sure gamesFinished is the right length
-    private int popSize = 20;
+    private int popSize = 30;
     private int numGenerations = 0;
-    private bool[] gamesFinished = new bool[20];
+    private bool[] gamesFinished = new bool[30];
     private float dropoutRate = 0.5f;
     private double mutationRate = 0.4;
     // Number of games that can be running at a time
