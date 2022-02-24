@@ -14,6 +14,8 @@ public class GameSettings : MonoBehaviour
     //Used for Human Fitness Calculation, refactor 
     public float damageFitnessScalar = 10f;
 
+    public bool loadWithTutorialController = false;
+
     void Awake()
     {
         if (instance == null)
@@ -44,6 +46,15 @@ public class GameSettings : MonoBehaviour
         string resultsPath = Consts.RESEARCH_RESULTS + file;
         this.loadGamePath = loadPath;
         this.resultsPath = resultsPath;
+        this.loadWithTutorialController = false;
+        SceneManager.LoadSceneAsync("Arena", LoadSceneMode.Single);
+    }
+
+    public void LoadTutorialArenaFromFile() 
+    {
+        this.loadGamePath = Consts.TUTORIAL_GAME;
+        this.resultsPath = Consts.TUTORIAL_RESULTS;
+        this.loadWithTutorialController = true;
         SceneManager.LoadSceneAsync("Arena", LoadSceneMode.Single);
     }
 }

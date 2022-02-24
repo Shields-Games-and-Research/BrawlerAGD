@@ -81,6 +81,8 @@ public class Player : MonoBehaviour
     //Player label - set dynamically based on player name
     public GameObject sign;
 
+    public bool isDummy = false;
+
     /**STATE MANAGEMENT: TODO: Refactor to separate classes eventually */
     public enum PlayerState
     {
@@ -175,7 +177,7 @@ public class Player : MonoBehaviour
 
     void updatePlayerHUD() 
     {
-        if (arenaManager.UIEnabled) 
+        if (arenaManager.UIEnabled && !this.isDummy) 
         {
             playerDetails.text =
                 playerName + "\n" +
@@ -285,28 +287,71 @@ public class Player : MonoBehaviour
     }
 
     void updateLanding() { }
-    
+
+    //When a collision ends, this method is called
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        LayerMask mask = LayerMask.GetMask("Floor");
+        RaycastHit2D platformHit = Physics2D.Raycast(this.cc.bounds.center, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
+
+        bool floorCol = collision.gameObject.CompareTag("Floor");
+        bool platformNotNull = platformHit.collider != null;
+        bool platformInYBound = Mathf.Abs(platformHit.distance - 0.01f) <= (this.cc.bounds.extents.y);
+
+        if (floorCol && !platformInYBound)
+        {
+            isGrounded = false;
+            if (this.jumpsExhausted)
+            {
+                this.state = PlayerState.airJumpsExhausted;
+            }
+            else
+            {
+                this.state = PlayerState.air;
+            }
+        }
+    }
+
+    void OnCollisionStay2D(Collision2D collision) 
+    {
+        LayerMask mask = LayerMask.GetMask("Floor");
+        RaycastHit2D platformHit = Physics2D.Raycast(this.transform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
+
+        bool floorCol = collision.gameObject.CompareTag("Floor");
+        bool platformNotNull = platformHit.collider != null;
+        bool platformInYBound = Mathf.Abs(platformHit.distance - 0.01f) <= (this.cc.bounds.extents.y);
+
+        if (floorCol && platformInYBound && platformNotNull)
+        {
+            this.isGrounded = true;
+            this.jumpsExhausted = false;
+            if (state == PlayerState.airJumpsExhausted || state == PlayerState.air)
+            {
+                state = PlayerState.idle;
+            }
+        }
+        else 
+        {
+            this.isGrounded = false;
+        }
+
+    }
+
     //When a collision begins, this method is called
     void OnCollisionEnter2D(Collision2D collision)
     {
         LayerMask mask = LayerMask.GetMask("Floor");
-        RaycastHit2D platformHit = Physics2D.Raycast(this.transform.position, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
-        RaycastHit2D ceilingHit = Physics2D.Raycast(this.transform.position, Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
+        RaycastHit2D platformHit = Physics2D.Raycast(this.cc.bounds.center, -Vector2.up, Mathf.Infinity, mask, -Mathf.Infinity, Mathf.Infinity);
 
-        //DEBUG FOR CEILING HIT
         bool floorCol = collision.gameObject.CompareTag("Floor");
         bool platformNotNull = platformHit.collider != null;
-        bool ceilingIsNull = ceilingHit == false;
-        bool platformLTCeil = Mathf.Abs(platformHit.distance) <= Mathf.Abs(ceilingHit.distance);
-        bool platformInYBound = Mathf.Abs(platformHit.distance) <= this.sr.bounds.size.y * 2f;
-
-        //if the player is touching a tile, the raycast is reasonably within the player's height, and is not null... 
-        //Magic number is to try and make sure that we correctly recover regardless of character size.
-        if (
-            floorCol && 
-            (platformInYBound && platformNotNull) &&
-            (platformLTCeil || ceilingIsNull)
-            )
+        bool platformInYBound = Mathf.Abs(platformHit.distance - 0.01f) <= (this.cc.bounds.extents.y);
+        Debug.Log("CC.size.y: " + this.cc.size.y * this.transform.localScale.y);
+        Debug.Log("cc.bounds.size.y: " + this.cc.bounds.extents.y);
+        Debug.Log("platformHit: " + platformHit.distance);
+        Debug.Log("Distance - bounds size: " + (platformHit.distance - this.cc.bounds.extents.y));
+        Debug.Log("cc center: " + this.cc.bounds.center.y);
+       if (floorCol && platformInYBound && platformNotNull)
         {
             isGrounded = true;
             jumpsExhausted = false;
@@ -361,23 +406,6 @@ public class Player : MonoBehaviour
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
-        }
-    }
-
-    //When a collision ends, this method is called
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Floor"))
-        {
-            isGrounded = false;
-            if (this.jumpsExhausted)
-            {
-                this.state = PlayerState.airJumpsExhausted;
-            }
-            else
-            {
-                this.state = PlayerState.air;
-            }
         }
     }
 

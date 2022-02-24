@@ -47,6 +47,10 @@ public class StudyMenu : MonoBehaviour
                 GameSettings.instance.LoadResearchArenaFromFile("GameF");
                 Debug.Log("Loading F.");
                 break;
+            case ("Tutorial"):
+                GameSettings.instance.LoadTutorialArenaFromFile();
+                Debug.Log("Loading Tutorial");
+                break;
             default:
                 Debug.Log("Bad button name passed");
                 break;

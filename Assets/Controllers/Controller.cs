@@ -159,10 +159,34 @@ public class Controller
 }
 
 
+public class HoldJump : Controller
+{
+
+    public HoldJump(Player player, Player opponent) : base (player, opponent)
+    {
+
+    }
+
+    public override float GetAxis(string code)
+    {
+        return 0f;
+    }
+
+    public override bool GetKeyDown(string code)
+    {
+        if (code == this.jumpKey) 
+        {
+            return false;
+        }
+        return false;
+    }
+
+}
+
 public class HoldLeft : Controller
 {
 
-    public HoldLeft(Player player, Player opponent) : base (player, opponent)
+    public HoldLeft(Player player, Player opponent) : base(player, opponent)
     {
 
     }

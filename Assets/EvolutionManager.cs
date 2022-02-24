@@ -57,8 +57,8 @@ public class EvolutionManager : MonoBehaviour
     void Start()
     {
         var fixedDeltaTime = Time.fixedDeltaTime;
-        this.SetTimeScale(3f);
-        Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
+        //this.SetTimeScale(3f);
+        //Time.fixedDeltaTime = fixedDeltaTime * Time.timeScale;
         this.evolutionResults = new EvolutionResults();
         StartCoroutine(Evolve());
         //Set timescale based on optimization needs
