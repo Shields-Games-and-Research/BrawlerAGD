@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['mainorthocam_0',['mainOrthoCam',['../class_arena.html#ae46e1fc0fb851bab887fea043cc364b7',1,'Arena']]],
+  ['makenewdoxyfile_1',['MakeNewDoxyFile',['../class_doxygen_window.html#abf3c2a3c3a53e6691e58b865da8404de',1,'DoxygenWindow']]],
+  ['mapgenerator_2',['MapGenerator',['../class_map_generator.html',1,'MapGenerator'],['../class_map_generator.html#a82019e1a7d07b20d74cb52e2034abb60',1,'MapGenerator.MapGenerator()']]],
+  ['mapgenerator_2ecs_3',['MapGenerator.cs',['../_map_generator_8cs.html',1,'']]],
+  ['mask_4',['mask',['../class_controller.html#a4a52f9b5c5121c1a2026bcbf40b66834',1,'Controller']]],
+  ['mass_5',['mass',['../class_serialized_player.html#a44da26c55437fd9828e0ca8df7fa8a30',1,'SerializedPlayer']]],
+  ['maxairspeed_6',['maxAirSpeed',['../class_player.html#adef123517941c0b2642fe15babba96dd',1,'Player.maxAirSpeed()'],['../class_serialized_player.html#af4819f21a1dd0b87445895b4a2e3bb53',1,'SerializedPlayer.maxAirSpeed()']]],
+  ['maxgamelength_7',['maxGameLength',['../class_evolution_manager.html#a57fd2bfeb269f63791158a9899b91e74',1,'EvolutionManager']]],
+  ['maxgroundspeed_8',['maxGroundSpeed',['../class_player.html#a2f2e1e647e9cb022aba06880a2e1f717',1,'Player.maxGroundSpeed()'],['../class_serialized_player.html#a2e79bc69e3d44c02aa03e3bfe1abc9bf',1,'SerializedPlayer.maxGroundSpeed()']]],
+  ['maxplatformsize_9',['maxPlatformSize',['../class_map_generator.html#a193efe5cde224953dbf036399c3b0605',1,'MapGenerator']]],
+  ['maxwidth_10',['maxWidth',['../class_map_generator.html#a700367fc5ddeb1b9175d9cad8e9904cf',1,'MapGenerator']]],
+  ['minwidth_11',['minWidth',['../class_map_generator.html#a0e00b7ed37061a2dcfa3ffea9b10c0b6',1,'MapGenerator']]],
+  ['move_12',['Move',['../class_move.html',1,'']]],
+  ['move_13',['move',['../class_arena_manager.html#a8c3fc6d4d4ecd109add2b28b073973ec',1,'ArenaManager.move()'],['../class_player.html#a81379ef6ba6e57bc0b1def68d6be63f3',1,'Player.move()']]],
+  ['move_2ecs_14',['Move.cs',['../_move_8cs.html',1,'']]],
+  ['move1_15',['move1',['../class_player.html#a3effc86607ca6dbc79befe8767f7a3d4',1,'Player']]],
+  ['move1key_16',['move1Key',['../class_controller.html#aab569ce6135171da737bec7da4fb91e7',1,'Controller']]],
+  ['moveangle_17',['moveAngle',['../class_serialized_move.html#ab280941d0b64ec56c45a64468f22535a',1,'SerializedMove']]],
+  ['movedist_18',['moveDist',['../class_serialized_move.html#a5b994963cf331d208a431c6f0474aa01',1,'SerializedMove']]],
+  ['moveleft_19',['moveLeft',['../class_player.html#a3a1c0cb6ad30093a542ed64b86269514',1,'Player']]],
+  ['movelocx_20',['moveLocX',['../class_serialized_move.html#ad08e67b9406d2d5ee68cfdcfafb13abd',1,'SerializedMove']]],
+  ['movelocy_21',['moveLocY',['../class_serialized_move.html#a2f04e4f9bb18547130758e8adff6c31e',1,'SerializedMove']]],
+  ['moveright_22',['moveRight',['../class_player.html#a4cded3c5976bc0735aa3bb777bbcf77f',1,'Player']]],
+  ['mutate_23',['mutate',['../class_platforms.html#af83c42aacf4daeaa16752c2acd21d4e6',1,'Platforms.mutate()'],['../class_serialized_move.html#a1cca6b9a8c3e7fa4342c149dd5ddd4d2',1,'SerializedMove.mutate()'],['../class_serialized_player.html#a0036bfeacc923608e7e2d846e42490a3',1,'SerializedPlayer.mutate()']]]
+];

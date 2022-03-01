@@ -346,11 +346,7 @@ public class Player : MonoBehaviour
         bool floorCol = collision.gameObject.CompareTag("Floor");
         bool platformNotNull = platformHit.collider != null;
         bool platformInYBound = Mathf.Abs(platformHit.distance - 0.01f) <= (this.cc.bounds.extents.y);
-        Debug.Log("CC.size.y: " + this.cc.size.y * this.transform.localScale.y);
-        Debug.Log("cc.bounds.size.y: " + this.cc.bounds.extents.y);
-        Debug.Log("platformHit: " + platformHit.distance);
-        Debug.Log("Distance - bounds size: " + (platformHit.distance - this.cc.bounds.extents.y));
-        Debug.Log("cc center: " + this.cc.bounds.center.y);
+
        if (floorCol && platformInYBound && platformNotNull)
         {
             isGrounded = true;

@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['game_5fpath_0',['GAME_PATH',['../class_consts.html#add7c96edbbcabfc3b19c8a229cf71c16',1,'Consts']]],
+  ['game_5fresult_5fpath_1',['GAME_RESULT_PATH',['../class_consts.html#a7a2837092b538d6c49714d0611a05b62',1,'Consts']]],
+  ['gamegen_2',['gamegen',['../class_level_loader.html#a2ac353b9885bf536449d786036b0c8e0',1,'LevelLoader']]],
+  ['gameid_3',['gameID',['../class_game_result.html#a190e1cdce81ecba35bdb728c2522fdda',1,'GameResult']]],
+  ['gamelength_4',['gameLength',['../class_arena_manager.html#a81d76932e62b1dddf7d88e7e33778245',1,'ArenaManager']]],
+  ['gameresult_5',['GameResult',['../class_game_result.html',1,'GameResult'],['../class_game_result.html#adf40465568a3ee37142c849c82f9acd4',1,'GameResult.GameResult(int _gameID, float totalDamageP1, float totalRecoveryStateTransitionP1, float totalHitsReceivedP1, float remainingStocksP1, float totalDamageP2, float totalRecoveryStateTransitionP2, float totalHitsReceivedP2, float remainingStocksP2, float totalGameLength, string loser)'],['../class_game_result.html#acb57570cea82a9f585dd51c0218815fc',1,'GameResult.GameResult()']]],
+  ['gameresult_2ecs_6',['GameResult.cs',['../_game_result_8cs.html',1,'']]],
+  ['gameresults_7',['gameResults',['../class_evolution_result.html#a0d10f4d17cab18430973e1927c82268f',1,'EvolutionResult']]],
+  ['gamesettings_8',['GameSettings',['../class_game_settings.html',1,'']]],
+  ['gamesettings_2ecs_9',['GameSettings.cs',['../_game_settings_8cs.html',1,'']]],
+  ['generate_10',['Generate',['../class_doxygen_window.html#ad1f6043062e30f52cb634b72294a5676a32b919d18cfaca89383f6000dcc9c031',1,'DoxygenWindow']]],
+  ['generate_11',['generate',['../class_map_generator.html#a36158847e0b88df5cdc7a91500265793',1,'MapGenerator']]],
+  ['generategame_12',['GenerateGame',['../class_arena_manager.html#a8058bb8fb5fa182a5abb0a32007f31b9',1,'ArenaManager']]],
+  ['generategenome_13',['generateGenome',['../class_serialized_move.html#a235c5fa706f1c922ea3096d4e02fbc7d',1,'SerializedMove.generateGenome()'],['../class_serialized_player.html#aa623ffc3ba4518a51c6a9324fcbfb2cd',1,'SerializedPlayer.generateGenome()']]],
+  ['generationnum_14',['generationNum',['../class_game_result.html#a0b9727434249fec7908df6350f30c8f6',1,'GameResult']]],
+  ['generationnumber_15',['generationNumber',['../class_evolution_result.html#a5fd3f5f752d603c437d990b9f8690cf5',1,'EvolutionResult']]],
+  ['genome_16',['genome',['../class_serialized_move.html#a6153ec780cb74b6ccf838a2948b87f7f',1,'SerializedMove.genome()'],['../class_serialized_player.html#a7b7ddfa89e093e05a1461c27fa3a6a8a',1,'SerializedPlayer.genome()']]],
+  ['getaxis_17',['GetAxis',['../class_controller.html#a3927f60882732509664ebfd9db646395',1,'Controller.GetAxis()'],['../class_hold_jump.html#a824a8023b93cd64e4c0e0f57fefa0f15',1,'HoldJump.GetAxis()'],['../class_hold_left.html#ace55c1d8ff48ff2714dee0600730d96b',1,'HoldLeft.GetAxis()'],['../class_a_i.html#a13b355afc90dd2fb66c572b89fe2508b',1,'AI.GetAxis()']]],
+  ['getclosestplatformdirection_18',['GetClosestPlatformDirection',['../class_controller.html#a94715708e505040d1db30a0e775a94cb',1,'Controller']]],
+  ['getkeydown_19',['GetKeyDown',['../class_controller.html#aae9967379684ed81c35b0d2239f3fdb0',1,'Controller.GetKeyDown()'],['../class_hold_jump.html#adea232ba187f27074e5d1144726762b5',1,'HoldJump.GetKeyDown()'],['../class_hold_left.html#aae34dddd8108913bec6f1f48471ff0f5',1,'HoldLeft.GetKeyDown()'],['../class_a_i.html#aebecb88e04355457913bc978e8fb6688',1,'AI.GetKeyDown()']]],
+  ['gravityscalar_20',['gravityScalar',['../class_serialized_player.html#a51667055e0640fd20507e56cdd05e65a',1,'SerializedPlayer']]],
+  ['groundacceleration_21',['groundAcceleration',['../class_player.html#ae3dadb0ecc0fe10ce5df9e441af36c5a',1,'Player.groundAcceleration()'],['../class_serialized_player.html#a7fdef15896189017fd85717abb7db0dd',1,'SerializedPlayer.groundAcceleration()']]],
+  ['groundaccelerationfactor_22',['groundAccelerationFactor',['../class_serialized_player.html#a3b4c952ca3af57a696b63f7323bcb637',1,'SerializedPlayer']]],
+  ['groundjumpforce_23',['groundJumpForce',['../class_player.html#a27412e66064db787b8ce5a4a43c7c983',1,'Player.groundJumpForce()'],['../class_serialized_player.html#ad9ca7d0615899af704c67285832812c8',1,'SerializedPlayer.groundJumpForce()']]]
+];

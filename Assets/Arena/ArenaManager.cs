@@ -29,6 +29,7 @@ public static class Consts
     public static string PLAYER2MOVE1_PATH = "\\p2move1.json";
     public static string GAME_RESULT_PATH = "\\gameresult.json";
     public static string RESULTS_FILE_PATH = "\\results.json";
+    public static string ROUND_RESULTS_FOLDER_PATH = "\\round_results";
 }
 
 
@@ -115,6 +116,30 @@ public class ArenaManager : MonoBehaviour
             }
         }
 
+    }
+
+    //Options 
+
+    public void SetPlayerToCPU(Player player, Player opponent)
+    {
+        player.controller = new AI(player, opponent);
+    }
+
+    public void SetPlayerToJumpCPU(Player player, Player opponent)
+    {
+        player.controller = new HoldJump(player, opponent);
+    }
+
+    public void SetPlayerToWASD(Player player)
+    {
+        player.controller = new Controller(player1, null);
+        player.controller.SetPlayer1Buttons();
+    }
+
+    public void SetPlayerToIJKL(Player player)
+    {
+        player.controller = new Controller(player2, null);
+        player.controller.SetPlayer2Buttons();
     }
 
 
@@ -269,7 +294,7 @@ public class ArenaManager : MonoBehaviour
         //Read from file
         else
         {
-            print("READING FROM FILE");
+            print("READING FROM FILE: " + tempDirectoryPath);
             this.ReadGame(tempDirectoryPath);
         } 
 
@@ -397,11 +422,15 @@ public class ArenaManager : MonoBehaviour
         this.result.remainingStocksP2 = this.player2.stocks;
         this.result.totalGameLength = this.gameLength;
         this.result.loser = loser;
+
         //send to evolution manager
         if (GameSettings.instance == null)
         {
+            this.result.round = EvolutionManager.instance.currRound;
+            this.result.generationNum = EvolutionManager.instance.currGeneration;
+            this.result.evaluate();
             //update evolution manager
-            EvolutionManager.instance.AddResultFromGame(this.result);
+            EvolutionManager.instance.AddResultFromRound(this.result);
             //Save to file
             this.SaveGameJSON(result.gameID);
         }
@@ -474,39 +503,9 @@ public class ArenaManager : MonoBehaviour
         Destroy(notifications);
     }
 
-    public void SetPlayerToCPU(Player player, Player opponent) 
-    {
-        player.controller = new AI(player, opponent);
-    }
-
-    public void SetPlayerToJumpCPU(Player player, Player opponent) 
-    {
-        player.controller = new HoldJump(player, opponent);
-    }
-    
-    public void SetPlayerToWASD(Player player) 
-    {
-        player.controller = new Controller(player1, null);
-        player.controller.SetPlayer1Buttons();
-        //player.controller.leftKey = KeyCode.A;
-        //player.controller.rightKey = KeyCode.D;
-        //player.controller.jumpKey = KeyCode.W;
-        //player.controller.move1Key = KeyCode.S;
-    }
-    
-    public void SetPlayerToIJKL(Player player) 
-    {
-        player.controller = new Controller(player2, null);
-        player.controller.SetPlayer2Buttons();
-        //player.controller.leftKey = KeyCode.J;
-        //player.controller.rightKey = KeyCode.L;
-        //player.controller.jumpKey = KeyCode.I;
-        //player.controller.move1Key = KeyCode.K;
-    }
-
 
     //TODO: Refactor this into a utility object
-    /** checks to see if a file exists, if it doesn't, creates it and generates randomly
+    /** checks to see if a file exists, if it doesn't, generates it
      */
     T ReadJson<T>(string filename)
     {
@@ -536,7 +535,7 @@ public class ArenaManager : MonoBehaviour
      */
     public void SaveGameJSON(int gameID)
     {
-        Debug.Log("Saving game with ID to disk: " + gameID);
+        Debug.Log("Saving game with ID to disk: " + gameID + " and Round: " + EvolutionManager.instance.currRound);
         //Create a directory if non exist
         string tempDirectoryPath = Consts.GAME_PATH + gameID;
         if (!File.Exists(tempDirectoryPath)) 
@@ -553,7 +552,11 @@ public class ArenaManager : MonoBehaviour
         this.WriteJson<SerializedMove>(tempPlayer1Move1Path, this.serializedMove1Player1);
         string tempPlayer2Move1Path = tempDirectoryPath + Consts.PLAYER2MOVE1_PATH;
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
-        string tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
+        //write to correct results folder
+        string tempGameResultPath = tempDirectoryPath + Consts.ROUND_RESULTS_FOLDER_PATH + EvolutionManager.instance.currRound;
+        this.WriteJson<GameResult>(tempGameResultPath, this.result);
+        //TODO: This is a hack to make sure we don't break the read function. I'll get back to it
+        tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
     }
 
