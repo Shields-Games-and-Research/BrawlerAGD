@@ -346,7 +346,8 @@ public class Player : MonoBehaviour
         bool floorCol = collision.gameObject.CompareTag("Floor");
         bool platformNotNull = platformHit.collider != null;
         bool platformInYBound = Mathf.Abs(platformHit.distance - 0.01f) <= (this.cc.bounds.extents.y);
-        if (floorCol && platformInYBound && platformNotNull)
+
+       if (floorCol && platformInYBound && platformNotNull)
         {
             isGrounded = true;
             jumpsExhausted = false;

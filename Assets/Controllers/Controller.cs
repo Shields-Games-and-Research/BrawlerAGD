@@ -176,7 +176,7 @@ public class HoldJump : Controller
     {
         if (code == this.jumpKey) 
         {
-            return false;
+            return true;
         }
         return false;
     }
