@@ -385,7 +385,13 @@ public class Player : MonoBehaviour
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
-            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
+            Vector2 convertedKBDirection = new Vector2(tempMove.knockbackDirection.x, tempMove.knockbackDirection.y);
+            if (tempMove.transform.parent.localScale.x < 0)
+            {
+                Debug.Log("reversed kb direction");
+                convertedKBDirection = new Vector2(-tempMove.knockbackDirection.x, tempMove.knockbackDirection.y);
+            }
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
         }
     }
@@ -400,7 +406,12 @@ public class Player : MonoBehaviour
             this.totalDamage += tempMove.damageGiven;
             this.totalHitsReceived++;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
-            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
+            Vector2 convertedKBDirection = new Vector2(tempMove.knockbackDirection.x, tempMove.knockbackDirection.y);
+            if (tempMove.transform.parent.localScale.x < 0)  
+            {
+                convertedKBDirection = new Vector2(-tempMove.knockbackDirection.x, tempMove.knockbackDirection.y);
+            }
+            this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
         }
     }
@@ -514,18 +525,7 @@ public class Player : MonoBehaviour
     //TODO: prevent player-facing KB
     void applyKnockback(Vector2 collisionDirection, float moveScalar, Vector2 moveDirection, float hitstunDuration)
     {
-        Vector2 transformedMoveDirection = moveDirection;
-
-        //flip move knockback over x axis if the player is facing left
-        if (transform.localScale.x < 0)
-        {
-            transformedMoveDirection = new Vector2(-moveDirection.x, moveDirection.y);
-        }
-        else 
-        {
-            transformedMoveDirection = new Vector2(moveDirection.x, moveDirection.y);
-        }
-        Vector2 appliedKnockback = (collisionDirection + transformedMoveDirection);
+        Vector2 appliedKnockback = (collisionDirection + moveDirection);
         appliedKnockback = (appliedKnockback) * (moveScalar) * (damage * .1f);
         rb.velocity += appliedKnockback;
         StartCoroutine(HitstunCoroutine(hitstunDuration));

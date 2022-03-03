@@ -429,10 +429,15 @@ public class ArenaManager : MonoBehaviour
             this.result.round = EvolutionManager.instance.currRound;
             this.result.generationNum = EvolutionManager.instance.currGeneration;
             this.result.evaluate();
+            //Save to file if evaluate is in range
+            if (this.result.fitness >= -13f && this.result.fitness <= -7f) 
+            {
+                this.SaveGameJSONtoResultsFolder(Consts.HIGH_FITNESS_GAMES + this.result.gameID);
+            }
             //update evolution manager
             EvolutionManager.instance.AddResultFromRound(this.result);
             //Save to file
-            this.SaveGameJSON(result.gameID);
+            this.SaveGameJSON(this.result.gameID);
         }
         else if (!GameSettings.instance.loadWithTutorialController)
         {
@@ -535,12 +540,17 @@ public class ArenaManager : MonoBehaviour
      */
     public void SaveGameJSON(int gameID)
     {
-        Debug.Log("Saving game with ID to disk: " + gameID + " and Round: " + EvolutionManager.instance.currRound);
+        //Debug.Log("Saving game with ID to disk: " + gameID + " and Round: " + EvolutionManager.instance.currRound);
         //Create a directory if non exist
         string tempDirectoryPath = Consts.GAME_PATH + gameID;
         if (!File.Exists(tempDirectoryPath)) 
         {
             Directory.CreateDirectory(tempDirectoryPath);
+        }
+        string resultsName = "";
+        if (EvolutionManager.instance != null) 
+        {
+            resultsName = EvolutionManager.instance.currRound + "";
         }
         string tempLevelPath = tempDirectoryPath + Consts.LEVEL_PATH;
         this.WriteJson<Platforms>(tempLevelPath, this.platforms);
@@ -553,7 +563,7 @@ public class ArenaManager : MonoBehaviour
         string tempPlayer2Move1Path = tempDirectoryPath + Consts.PLAYER2MOVE1_PATH;
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
         //write to correct results folder
-        string tempGameResultPath = tempDirectoryPath + Consts.ROUND_RESULTS_FOLDER_PATH + EvolutionManager.instance.currRound;
+        string tempGameResultPath = tempDirectoryPath + Consts.ROUND_RESULTS_FOLDER_PATH + resultsName;
         this.WriteJson<GameResult>(tempGameResultPath, this.result);
         //TODO: This is a hack to make sure we don't break the read function. I'll get back to it
         tempGameResultPath = tempDirectoryPath + Consts.GAME_RESULT_PATH;

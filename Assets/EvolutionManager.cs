@@ -20,16 +20,16 @@ public class EvolutionManager : MonoBehaviour
     public Random rand = new Random();
 
     // Population Size For Each Generation
-    private int popSize = 30;
-    private bool[] gamesFinished = new bool[30];
+    private int popSize = 100;
+    private bool[] gamesFinished = new bool[100];
     
     // Generation Details. If numGenerations is 0, run indefinitely
     private int numGenerations = 0;
     public int currGeneration = 0;
 
     // Number of Evaluation Rounds
-    private int numEvalRounds = 3;
-    private bool[] roundsFinished = new bool[3];
+    private int numEvalRounds = 1;
+    private bool[] roundsFinished = new bool[1];
     public int currRound = 0;
     
     // How many individuals are removed from the population each generation.
@@ -81,7 +81,7 @@ public class EvolutionManager : MonoBehaviour
     {
         //Set timescale based on optimization needs
         var fixedDeltaTime = Time.fixedDeltaTime;
-        this.SetTimeScale(3f);
+        this.SetTimeScale(6f);
 
         //Begin Evolution
         this.evolutionResults = new EvolutionResults();
@@ -224,7 +224,16 @@ public class EvolutionManager : MonoBehaviour
     public void AddResultFromRound(GameResult result)
     {
         //add results to dictionary of rounds to results
-        this.results[result.gameID].Add(result);
+        List<GameResult> roundResults = this.results[result.gameID];
+        if (roundResults.Count == 0) 
+        {
+            this.results[result.gameID] = new List<GameResult>();
+            for (int i = 0; i < this.numEvalRounds; i++) 
+            {
+                this.results[result.gameID].Add(new GameResult());
+            }
+        }
+        this.results[result.gameID][result.round] = result;
         //indicate that this round is done to continue while loop in evolve
         this.roundsFinished[result.round] = true;
 
@@ -250,6 +259,11 @@ public class EvolutionManager : MonoBehaviour
         }
         averageFitness = averageFitness / tempResults.Count;
         float medianFitness = tempResults[tempResults.Count/2].fitness;
+        if (medianFitness <= -7f && medianFitness >= -13f) 
+        {
+            this.SaveToResults();
+            
+        }
         switch (evalStrategy) 
         {
             case 0:
