@@ -232,7 +232,7 @@ public class AI : Controller
 
     public AI(Player player, Player opponent) : base(player, opponent)
     {
-        recoveryTimeLimit = 300;
+        recoveryTimeLimit = 100;
         recoveryTime = 0;
         targetTimeLimit = 150;
         targetMod = new Vector2(0, 0);

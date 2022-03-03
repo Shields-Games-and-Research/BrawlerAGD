@@ -53,8 +53,8 @@ public class SerializedPlayer
         {2f, 10f}, // maxAirSpeed
         {0f, 1f}, // groundAcceleration factor
         {0f, 1f}, // airAcceleration factor
-        {5f, 17f}, // totalJumpForce
-        {0.2f, 0.9f}, // jumpRatio
+        {1f, 15f}, // groundJump
+        {1f, 15f}, // airJump
         {0.5f, 2.5f}, // mass
         {1f, 6f}, // drag
         {0.7f, 1.5f}, // widthScale
@@ -114,8 +114,8 @@ public class SerializedPlayer
             maxAirSpeed,
             groundAccelerationFactor,
             airAccelerationFactor,
-            totalJumpForce,
-            jumpRatio,
+            groundJumpForce,
+            airJumpForce,
             mass,
             drag,
             widthScalar,
@@ -131,8 +131,8 @@ public class SerializedPlayer
         maxAirSpeed = genome[1];
         groundAccelerationFactor = genome[2];
         airAccelerationFactor = genome[3];
-        totalJumpForce = genome[4];
-        jumpRatio = genome[5];
+        groundJumpForce = genome[4];
+        airJumpForce = genome[5];
         mass = genome[6];
         drag = genome[7];
         widthScalar = genome[8];
@@ -143,8 +143,8 @@ public class SerializedPlayer
         // Extra parameters calculated from the genome
         airAcceleration = maxAirSpeed * airAccelerationFactor;
         groundAcceleration = maxGroundSpeed * groundAccelerationFactor;
-        groundJumpForce = totalJumpForce * jumpRatio;
-        airJumpForce = totalJumpForce * (1 - jumpRatio);
+        //groundJumpForce = totalJumpForce * jumpRatio;
+        //airJumpForce = totalJumpForce * (1 - jumpRatio);
     }
 
     public static SerializedPlayer singlePointCrossover(SerializedPlayer p1, SerializedPlayer p2, Random rand)
