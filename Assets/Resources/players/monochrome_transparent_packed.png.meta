@@ -284,6 +284,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -315,9 +317,12 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
   platformSettings:
   - serializedVersion: 3
@@ -2196,6 +2201,94 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      monochrome_transparent_packed_37: -5676900131639990554
+      monochrome_transparent_packed_29: 2137583226918415056
+      monochrome_transparent_packed_61: 8943314797642498397
+      monochrome_transparent_packed_84: -7366347748524391228
+      monochrome_transparent_packed_5: -3902071884278208034
+      monochrome_transparent_packed_56: 9100246730832136671
+      monochrome_transparent_packed_46: 2287731976590305749
+      monochrome_transparent_packed_33: -273803501809585663
+      monochrome_transparent_packed_69: 1257883596652638581
+      monochrome_transparent_packed_19: -5510219325582822580
+      monochrome_transparent_packed_63: 4688993221313030603
+      monochrome_transparent_packed_12: -125294812525453898
+      monochrome_transparent_packed_55: 5060150964810049599
+      monochrome_transparent_packed_68: 3276959716793521790
+      monochrome_transparent_packed_35: 3617637511063401949
+      monochrome_transparent_packed_47: 6778370102577854318
+      monochrome_transparent_packed_79: -4430355453518516589
+      monochrome_transparent_packed_58: -1904429448137287795
+      monochrome_transparent_packed_51: -5301814471893477322
+      monochrome_transparent_packed_81: 6260381777394451466
+      monochrome_transparent_packed_54: -428833716522990440
+      monochrome_transparent_packed_52: -516317081129836767
+      monochrome_transparent_packed_3: 6498992187095088715
+      monochrome_transparent_packed_60: 7836522133909268131
+      monochrome_transparent_packed_17: -234200714594594760
+      monochrome_transparent_packed_36: 4655860529626017785
+      monochrome_transparent_packed_70: -8338962075183721195
+      monochrome_transparent_packed_64: 3036433694517328087
+      monochrome_transparent_packed_0: -3032536096966241093
+      monochrome_transparent_packed_2: 5391725437307407777
+      monochrome_transparent_packed_23: 8516609751470380444
+      monochrome_transparent_packed_45: 2346764690610580389
+      monochrome_transparent_packed_83: 2807877293359104396
+      monochrome_transparent_packed_40: 1733254694341893322
+      monochrome_transparent_packed_14: -2860817149020656267
+      monochrome_transparent_packed_21: -8666692798856810375
+      monochrome_transparent_packed_82: 4384454941863367738
+      monochrome_transparent_packed_74: -1335138331982909665
+      monochrome_transparent_packed_22: 7829609798139332992
+      monochrome_transparent_packed_25: 2347369921621585979
+      monochrome_transparent_packed_73: -2029406746519952363
+      monochrome_transparent_packed_75: 5683866303744725493
+      monochrome_transparent_packed_7: -6703305794410399575
+      monochrome_transparent_packed_31: 4356190770097004343
+      monochrome_transparent_packed_62: 8661202323521407730
+      monochrome_transparent_packed_66: 6093496852734128160
+      monochrome_transparent_packed_65: 3817238115248720045
+      monochrome_transparent_packed_57: -4678202894273416491
+      monochrome_transparent_packed_11: 2754235656897080690
+      monochrome_transparent_packed_50: 833409412175589752
+      monochrome_transparent_packed_78: 5766323104309150528
+      monochrome_transparent_packed_15: 8566550835790466286
+      monochrome_transparent_packed_86: -3894715121131730678
+      monochrome_transparent_packed_10: 6733317360203888005
+      monochrome_transparent_packed_67: -6795938189238802538
+      monochrome_transparent_packed_26: 8049024241501034948
+      monochrome_transparent_packed_6: -8106958686382220732
+      monochrome_transparent_packed_72: 9140559515475412308
+      monochrome_transparent_packed_85: 3565648368395098087
+      monochrome_transparent_packed_20: 730764671182104258
+      monochrome_transparent_packed_16: 4002555493733754418
+      monochrome_transparent_packed_27: 8333053375100661828
+      monochrome_transparent_packed_38: -483406266963938646
+      monochrome_transparent_packed_43: -5524676764598615783
+      monochrome_transparent_packed_30: 2522206649845509431
+      monochrome_transparent_packed_48: 2726496830753861816
+      monochrome_transparent_packed_39: -2859331449831654184
+      monochrome_transparent_packed_49: -6195967459898737139
+      monochrome_transparent_packed_71: 4076715617734383082
+      monochrome_transparent_packed_76: 6325850883018976070
+      monochrome_transparent_packed_42: 9101145651585584332
+      monochrome_transparent_packed_24: 8000117828308700731
+      monochrome_transparent_packed_8: 2542525495126258572
+      monochrome_transparent_packed_18: -1908260255200751837
+      monochrome_transparent_packed_41: -1476554682871919055
+      monochrome_transparent_packed_1: -5258339883686333690
+      monochrome_transparent_packed_34: -3543313766036823043
+      monochrome_transparent_packed_32: -6187522220790814945
+      monochrome_transparent_packed_28: 3591798549798801462
+      monochrome_transparent_packed_9: -4531652251376512669
+      monochrome_transparent_packed_4: -1563979499396834108
+      monochrome_transparent_packed_77: 8858567607105789445
+      monochrome_transparent_packed_13: 8576190640545190636
+      monochrome_transparent_packed_44: 4902882639080354729
+      monochrome_transparent_packed_53: 2267109346060713552
+      monochrome_transparent_packed_59: -5285551733330013570
+      monochrome_transparent_packed_80: 5654416649995380001
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
