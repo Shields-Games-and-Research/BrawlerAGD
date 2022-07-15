@@ -6,13 +6,15 @@ using TMPro;
 
 public class ButtonChange : MonoBehaviour
 {
-    public TextMeshProUGUI buttonText;
-    public TextMeshProUGUI changeText;
-    // Start is called before the first frame update
 
-    void Start()
-    {
-        changeText.text = buttonText.text;
+    // Sets Text of Rounds to Evaluate
+
+    public void SetText(string text) {
+        TextMeshProUGUI txt = GameObject.Find("RoundEvalValue").GetComponent<TextMeshProUGUI>();
+        txt.text = text;
+        
+            
+        
     }
 
 
