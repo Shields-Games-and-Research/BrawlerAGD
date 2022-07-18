@@ -19,24 +19,27 @@ public class EvolutionManager : MonoBehaviour
     //Random object for mutations and generation
     public Random rand = new Random();
 
+    //Time factor for games (<1 slows, >1 speeds)
+    public float timeScale = 1f;
+
     // Population Size For Each Generation
     private int popSize = 100;
     private bool[] gamesFinished = new bool[100];
     
     // Generation Details. If numGenerations is 0, run indefinitely
-    private int numGenerations = 0;
+    public int numGenerations = 0;
     public int currGeneration = 0;
 
     // Number of Evaluation Rounds
     private int numEvalRounds = 1;
-    private bool[] roundsFinished = new bool[1];
+    public bool[] roundsFinished = new bool[1];
     public int currRound = 0;
     
     // How many individuals are removed from the population each generation.
-    private float dropoutRate = 0.5f;
+    public float dropoutRate = 0.5f;
     
     // The rate at which attributes are mutated on an individual's genome 
-    private double mutationRate = 0.4;
+    public double mutationRate = 0.4;
     
     // The index of the current Game's results
     public int currentGameID = 0;
@@ -75,13 +78,22 @@ public class EvolutionManager : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);
+
+        //Game Settings Check - if there is a settings object in the scene, load key instance settings from that.
+        GameObject evolutionSettingsObj = GameObject.Find("EvolutionSettings");
+        if (evolutionSettingsObj != null) 
+        {
+            EvolutionSettings evoSettings = evolutionSettingsObj.GetComponent<EvolutionSettings>();
+            this.SetTimeScale(evoSettings.timeScale);
+        }
+        
     }
 
     void Start()
     {
         //Set timescale based on optimization needs
         var fixedDeltaTime = Time.fixedDeltaTime;
-        this.SetTimeScale(6f);
+        this.SetTimeScale(this.timeScale);
 
         //Begin Evolution
         this.evolutionResults = new EvolutionResults();
@@ -102,6 +114,7 @@ public class EvolutionManager : MonoBehaviour
     /// <param name="timeScalar">timeScalar</param>
     public void SetTimeScale(float timeScalar)
     {
+        this.timeScale = timeScalar;
         Time.timeScale = timeScalar;
         Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
     }
