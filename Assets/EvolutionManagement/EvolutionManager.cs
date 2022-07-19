@@ -85,6 +85,15 @@ public class EvolutionManager : MonoBehaviour
         {
             EvolutionSettings evoSettings = evolutionSettingsObj.GetComponent<EvolutionSettings>();
             this.SetTimeScale(evoSettings.timeScale);
+            this.popSize = evoSettings.totalPopulation;
+            this.gamesFinished = new bool[this.popSize];
+            this.dropoutRate = evoSettings.dropoutRate;
+            this.mutationRate = evoSettings.mutationRate;
+            this.maxGameLength = evoSettings.maxGameLength;
+            this.targetGameLength = evoSettings.targetGameLength;
+            this.numGenerations = evoSettings.numGenerations;
+            this.numEvalRounds = evoSettings.roundsToEvaluate;
+            this.roundsFinished = new bool[this.numEvalRounds];
         }
         
     }

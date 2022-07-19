@@ -2,19 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
+using TMPro;
 public class EvolutionSettings : MonoBehaviour
 {
 
     public static EvolutionSettings instance = null;
-    public float timeScale = 0;
-    public float totalPopulation = 0;
-    public float targetGameLength = 0;
-    public float roundsToEvaluate = 0;
-    public float dropoutRate = 0;
-    public float mutationRate = 0;
-    public float maxGameLength = 0;
-    public float numGenerations = 0;
+    public float timeScale = 1f;
+    public int totalPopulation = 100;
+    public float targetGameLength = 45f;
+    public int roundsToEvaluate = 5;
+    public float dropoutRate = 0.5f;
+    public float mutationRate = 0.4f;
+    public float maxGameLength = 60f;
+    public int numGenerations = 0;
 
     // Awake is called before Start
     void Awake() 
@@ -50,50 +51,65 @@ public class EvolutionSettings : MonoBehaviour
     public void AdjustTimeScale(float value) 
     {
         this.timeScale = value;
-        Debug.Log(value);
+        GameObject.Find("TimeValue").GetComponent<TextMeshProUGUI>().text = value.ToString("0.00");
     }
 
     public void AdjustTotalPopulation(float value) 
     {
-        this.totalPopulation = value;
-        Debug.Log(value);
+        this.totalPopulation = (int)value;
+        GameObject.Find("PopValue").GetComponent<TextMeshProUGUI>().text = this.totalPopulation.ToString("0");
+
     }
 
     public void AdjustTargetGameLength(float value) 
     {
         this.targetGameLength = value;
-        Debug.Log(value);
+        GameObject.Find("TarLenValue").GetComponent<TextMeshProUGUI>().text = value.ToString("0");
     }
 
     public void AdjustRoundsToEvaluate(float value) 
     {
-        this.roundsToEvaluate = value;
-        Debug.Log(value);
+        this.roundsToEvaluate = (int)value;
+        GameObject.Find("RoundEvalValue").GetComponent<TextMeshProUGUI>().text = this.roundsToEvaluate.ToString("0");
     }
 
     public void AdjustDropoutRate(float value) 
     {
         this.dropoutRate = value;
-        Debug.Log(value);
+        GameObject.Find("DropValue").GetComponent<TextMeshProUGUI>().text = value.ToString("0.00");
     }
 
     public void AdjustMutationRate(float value) 
     {
         this.mutationRate = value;
-        Debug.Log(value);
+        GameObject.Find("MutValue").GetComponent<TextMeshProUGUI>().text = value.ToString("0.00");
     }
 
     public void AdjustMaxGameLength(float value) 
     {
         this.maxGameLength = value;
-        Debug.Log(value);
+        GameObject.Find("MaxLenValue").GetComponent<TextMeshProUGUI>().text = value.ToString("0");
     }
 
     public void AdjustNumGenerations(float value) 
     {
-        this.numGenerations = value;
-        Debug.Log(value);
-    }
+        this.numGenerations = (int)value;
+        if(value == 0f) {
+            GameObject.Find("GenValue").GetComponent<TextMeshProUGUI>().text = "∞";
+            return;
 
+        } 
+        GameObject.Find("GenValue").GetComponent<TextMeshProUGUI>().text = this.numGenerations.ToString("0");
+    }
+    public void userToggle(bool tog) {
+        Slider slide = GameObject.Find("GenSlider").GetComponent<Slider>();
+        if(tog) {
+            AdjustNumGenerations(0f);
+            slide.enabled = false;
+        } else {
+            AdjustNumGenerations(slide.value);
+            slide.enabled = true;
+        }
+    }
 
 }
