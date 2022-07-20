@@ -21,7 +21,9 @@ public class EvolutionManager : MonoBehaviour
 
     //Time factor for games (<1 slows, >1 speeds)
     public float timeScale = 1f;
-
+    //Determines if simulation is paused
+    public bool gameIsPaused = false;
+    public GameObject pauseMenuUI;
     // Population Size For Each Generation
     private int popSize = 100;
     private bool[] gamesFinished = new bool[100];
@@ -112,7 +114,13 @@ public class EvolutionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            if(gameIsPaused) {
+                Resume();
+            } else {
+                Pause();
+            }
+        }
     }
 
     // Settings
@@ -370,6 +378,21 @@ public class EvolutionManager : MonoBehaviour
         this.WriteJson<EvolutionResults>(Consts.EVO_RESULTS_PATH + Consts.RESULTS_FILE_PATH, this.evolutionResults);
     }
 
+    public void Pause(){
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+        gameIsPaused = true;
+    }
+
+    public void Resume(){
+        pauseMenuUI.SetActive(false);
+        this.SetTimeScale(this.timeScale);
+        gameIsPaused = false;
+    }
+    public void Menu(){
+        SceneManager.LoadScene("EvolutionaryManagerStartScene");
+
+    }
     // TODO : duplicate of the code in ArenaManager
     T ReadJson<T>(string filename)
     {

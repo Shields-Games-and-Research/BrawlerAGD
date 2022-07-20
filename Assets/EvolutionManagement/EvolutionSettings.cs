@@ -8,14 +8,14 @@ public class EvolutionSettings : MonoBehaviour
 {
 
     public static EvolutionSettings instance = null;
-    public float timeScale = 1f;
-    public int totalPopulation = 100;
-    public float targetGameLength = 45f;
-    public int roundsToEvaluate = 5;
-    public float dropoutRate = 0.5f;
-    public float mutationRate = 0.4f;
-    public float maxGameLength = 60f;
-    public int numGenerations = 0;
+    public float timeScale;
+    public int totalPopulation;
+    public float targetGameLength;
+    public int roundsToEvaluate;
+    public float dropoutRate;
+    public float mutationRate;
+    public float maxGameLength;
+    public int numGenerations;
 
     // Awake is called before Start
     void Awake() 
@@ -34,7 +34,14 @@ public class EvolutionSettings : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        timeScale = 1f;
+        totalPopulation = 100;
+        targetGameLength = 45f;
+        roundsToEvaluate = 5;
+        dropoutRate = 0.5f;
+        mutationRate = 0.4f;
+        maxGameLength = 60f;
+        numGenerations = 100;
     }
 
     // Update is called once per frame

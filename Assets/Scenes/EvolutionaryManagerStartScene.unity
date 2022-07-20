@@ -3636,7 +3636,6 @@ GameObject:
   m_Component:
   - component: {fileID: 544235278}
   - component: {fileID: 544235279}
-  - component: {fileID: 544235280}
   m_Layer: 5
   m_Name: Toggle
   m_TagString: Untagged
@@ -3725,22 +3724,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
---- !u!114 &544235280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544235277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ea893e19e100d743998794581c1b072, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  toggleS: {fileID: 544235279}
-  slider: {fileID: 231873798}
-  sliderText: {fileID: 1566306218}
+  m_IsOn: 0
 --- !u!1 &588171656
 GameObject:
   m_ObjectHideFlags: 0
@@ -6792,7 +6776,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1907962013}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99881035
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9561,12 +9545,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeScale: 0
-  totalPopulation: 0
-  targetGameLength: 0
-  roundsToEvaluate: 0
+  totalPopulation: 100
+  targetGameLength: 45
+  roundsToEvaluate: 5
   dropoutRate: 0
   mutationRate: 0
-  maxGameLength: 0
+  maxGameLength: 60
   numGenerations: 0
 --- !u!1 &1501763504
 GameObject:
@@ -9736,7 +9720,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000102112266}
+  m_AnchoredPosition: {x: 0, y: 0.000117623065}
   m_SizeDelta: {x: 0, y: 1080}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1551352737
@@ -10082,7 +10066,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u221E"
+  m_text: 100
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
