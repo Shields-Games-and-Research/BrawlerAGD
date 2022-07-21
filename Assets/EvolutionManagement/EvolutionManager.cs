@@ -5,7 +5,7 @@ using UnityEngine;
 using System.IO;
 using Random = System.Random;
 using UnityEngine.SceneManagement;
-
+using TMPro;
 
 /// <summary>
 /// Class That Manages the Evolutionary Process
@@ -23,7 +23,10 @@ public class EvolutionManager : MonoBehaviour
     public float timeScale = 1f;
     //Determines if simulation is paused
     public bool gameIsPaused = false;
+    public bool pauseMenuActive;
     public GameObject pauseMenuUI;
+    public float timeInRound;
+    public float roundStartTime;
     // Population Size For Each Generation
     private int popSize = 100;
     private bool[] gamesFinished = new bool[100];
@@ -121,6 +124,19 @@ public class EvolutionManager : MonoBehaviour
                 Pause();
             }
         }
+        if(pauseMenuActive){
+            GameObject.Find("TimeElapsed").GetComponent<TextMeshProUGUI>().text = "Simulation Time Elapsed: " + Time.time.ToString("0.00") + " seconds";
+            float estimatedTime = EvolutionSettings.instance.calculateEstimateSimTime(numGenerations, numEvalRounds, popSize, targetGameLength, maxGameLength);
+            TextMeshProUGUI estimateText = GameObject.Find("EstSimTime").GetComponent<TextMeshProUGUI>();
+            if(estimatedTime != 0.0f) {
+                estimateText.text = "Estimated Simulation Time: " + estimatedTime + " seconds";
+            } else {
+                estimateText.text = "Estimated Simulation Time: " + "∞";
+
+            }
+        }
+        
+
     }
 
     // Settings
@@ -247,7 +263,7 @@ public class EvolutionManager : MonoBehaviour
             //add to our temporary results object, then save to file for analsysis
             this.evolutionResults.evolutionResults.Add(generationResult);
             this.SaveToResults();
-
+            this.Pause();
         }
     }
 
@@ -382,17 +398,27 @@ public class EvolutionManager : MonoBehaviour
         pauseMenuUI.SetActive(true);
         Time.timeScale = 0f;
         gameIsPaused = true;
+        pauseMenuActive = true;
     }
 
     public void Resume(){
         pauseMenuUI.SetActive(false);
-        this.SetTimeScale(this.timeScale);
+        Time.timeScale = this.timeScale;
         gameIsPaused = false;
-    }
-    public void Menu(){
-        SceneManager.LoadScene("EvolutionaryManagerStartScene");
+        pauseMenuActive = false;
 
     }
+    public void ResumeInMenu(){
+        //pauseMenuUI.SetActive(false);
+
+        Time.timeScale = this.timeScale;
+        gameIsPaused = false;
+        pauseMenuActive = true;
+
+    }
+    /*public void Menu(){
+        SceneManager.LoadScene("EvolutionaryManagerStartScene");
+    }*/
     // TODO : duplicate of the code in ArenaManager
     T ReadJson<T>(string filename)
     {

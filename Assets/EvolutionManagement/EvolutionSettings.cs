@@ -16,7 +16,7 @@ public class EvolutionSettings : MonoBehaviour
     public float mutationRate;
     public float maxGameLength;
     public int numGenerations;
-
+    public float estimatedSimTime;
     // Awake is called before Start
     void Awake() 
     {
@@ -52,6 +52,7 @@ public class EvolutionSettings : MonoBehaviour
 
     public void StartEvolutionScene() 
     {
+        estimatedSimTime = calculateEstimateSimTime(this.numGenerations, this.roundsToEvaluate, this.totalPopulation, this.targetGameLength, this.maxGameLength);
         SceneManager.LoadScene("EvolutionaryArenaManager");
     }
 
@@ -118,5 +119,13 @@ public class EvolutionSettings : MonoBehaviour
             slide.enabled = true;
         }
     }
-
+    public float calculateEstimateSimTime( int generations, int roundsToEvaluate, int totalPopulation, float targetGameLength, float maxGameLength) {
+        //just a placeholder.
+        if(generations < 10) {
+            return generations *roundsToEvaluate * totalPopulation * (targetGameLength - ((maxGameLength - targetGameLength) * 1 / 2));
+        } else {
+            return generations *roundsToEvaluate * totalPopulation * (targetGameLength + ((maxGameLength - targetGameLength) * 1 / 8));
+        }
+    }
+ 
 }
