@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
-
+using TMPro;
 public class Player : MonoBehaviour
 {
     /**ARENA MANAGEMENT REFERENCE*/
@@ -61,7 +61,7 @@ public class Player : MonoBehaviour
     public int spriteIndex = 0;
     
     //Shows initial UI
-    public Text playerDetails;
+    public TextMeshProUGUI playerDetails;
     //Reference to notifications board
     public Text notifications;
     //Player Name
@@ -80,6 +80,10 @@ public class Player : MonoBehaviour
 
     //Player label - set dynamically based on player name
     public GameObject sign;
+    //UIHearts
+    public GameObject heart1;
+    public GameObject heart2;
+    public GameObject heart3;
 
     public bool isDummy = false;
 
@@ -179,13 +183,38 @@ public class Player : MonoBehaviour
 
     void updatePlayerHUD() 
     {
-        if (arenaManager.UIEnabled && !this.isDummy) 
+        /*if (arenaManager.UIEnabled && !this.isDummy) 
         {
             playerDetails.text =
                 playerName + "\n" +
                 "Damage: " + damage + "%\n" +
                 "Stocks: " + stocks + "\n" +
                 "State: " + state;
+        }*/
+        if (arenaManager.UIEnabled && !this.isDummy) {
+            if(state != PlayerState.airJumpsExhausted){
+                playerDetails.text = playerName + " " + damage.ToString("0.00") + "%\n" + "              " + state;
+            } else {
+                playerDetails.text = playerName + " " + damage.ToString("0.00") + "%\n" + "              " + "exhaust";
+            }
+            switch (stocks) {
+                case 0:
+                    heart1.SetActive(false);
+                    break;
+                case 1:
+                    heart2.SetActive(false);
+                    break;
+                case 2:
+                    heart3.SetActive(false);
+                    break;
+                case 3:
+                    heart1.SetActive(true);
+                    heart2.SetActive(true);
+                    heart3.SetActive(true);
+                    break;
+                default:
+                    break;
+            }
         }
         
     }

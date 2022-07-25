@@ -125,11 +125,12 @@ public class EvolutionManager : MonoBehaviour
             }
         }
         if(pauseMenuActive){
-            GameObject.Find("TimeElapsed").GetComponent<TextMeshProUGUI>().text = "Simulation Time Elapsed: " + Time.time.ToString("0.00") + " seconds";
-            float estimatedTime = EvolutionSettings.instance.calculateEstimateSimTime(numGenerations, numEvalRounds, popSize, targetGameLength, maxGameLength);
+            GameObject.Find("TimeElapsed").GetComponent<TextMeshProUGUI>().text = "Simulation Time Elapsed: " + Time.time.ToString("0.00") + " ticks";
+            EvolutionSettings evs = new EvolutionSettings();
+            float estimatedTime = CalculateEstimateSimTime(numGenerations, numEvalRounds, popSize, targetGameLength, maxGameLength);
             TextMeshProUGUI estimateText = GameObject.Find("EstSimTime").GetComponent<TextMeshProUGUI>();
             if(estimatedTime != 0.0f) {
-                estimateText.text = "Estimated Simulation Time: " + estimatedTime + " seconds";
+                estimateText.text = "Estimated Simulation Time: " + estimatedTime + " ticks";
             } else {
                 estimateText.text = "Estimated Simulation Time: " + "∞";
 
@@ -137,6 +138,14 @@ public class EvolutionManager : MonoBehaviour
         }
         
 
+    }
+    public float CalculateEstimateSimTime( int generations, int roundsToEvaluate, int totalPopulation, float targetGameLength, float maxGameLength) {
+        //just a placeholder.
+        if(generations < 10) {
+            return generations *roundsToEvaluate * totalPopulation * (targetGameLength - ((maxGameLength - targetGameLength) * 1 / 2));
+        } else {
+            return generations *roundsToEvaluate * totalPopulation * (targetGameLength + ((maxGameLength - targetGameLength) * 1 / 8));
+        }
     }
 
     // Settings

@@ -17,6 +17,7 @@ public class EvolutionSettings : MonoBehaviour
     public float maxGameLength;
     public int numGenerations;
     public float estimatedSimTime;
+    public bool start;
     // Awake is called before Start
     void Awake() 
     {
@@ -42,17 +43,25 @@ public class EvolutionSettings : MonoBehaviour
         mutationRate = 0.4f;
         maxGameLength = 60f;
         numGenerations = 100;
+        start = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(!start) {
+            estimatedSimTime = CalculateEstimateSimTime(this.numGenerations, this.roundsToEvaluate, this.totalPopulation, this.targetGameLength, this.maxGameLength);
+            if(estimatedSimTime == 0.0) {
+                GameObject.Find("EstSimTimeText").GetComponent<TextMeshProUGUI>().text = "Estimated Simulation Length: " + "∞";
+            } else {
+                GameObject.Find("EstSimTimeText").GetComponent<TextMeshProUGUI>().text = "Estimated Simulation Length: " + estimatedSimTime + " ticks";
+            }
+        }
     }
 
     public void StartEvolutionScene() 
     {
-        estimatedSimTime = calculateEstimateSimTime(this.numGenerations, this.roundsToEvaluate, this.totalPopulation, this.targetGameLength, this.maxGameLength);
+        start = true;
         SceneManager.LoadScene("EvolutionaryArenaManager");
     }
 
@@ -109,7 +118,7 @@ public class EvolutionSettings : MonoBehaviour
         } 
         GameObject.Find("GenValue").GetComponent<TextMeshProUGUI>().text = this.numGenerations.ToString("0");
     }
-    public void userToggle(bool tog) {
+    public void UserToggle(bool tog) {
         Slider slide = GameObject.Find("GenSlider").GetComponent<Slider>();
         if(tog) {
             AdjustNumGenerations(0f);
@@ -119,7 +128,7 @@ public class EvolutionSettings : MonoBehaviour
             slide.enabled = true;
         }
     }
-    public float calculateEstimateSimTime( int generations, int roundsToEvaluate, int totalPopulation, float targetGameLength, float maxGameLength) {
+    public float CalculateEstimateSimTime( int generations, int roundsToEvaluate, int totalPopulation, float targetGameLength, float maxGameLength) {
         //just a placeholder.
         if(generations < 10) {
             return generations *roundsToEvaluate * totalPopulation * (targetGameLength - ((maxGameLength - targetGameLength) * 1 / 2));
