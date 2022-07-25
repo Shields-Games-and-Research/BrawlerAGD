@@ -147,7 +147,38 @@ public class Player : MonoBehaviour
 
         //check if controller has a behavior or not
         this.controller.Update();
-        if(EvolutionManager.instance.gameIsPaused == false) {
+        if(EvolutionManager.instance == null) {
+            switch (state)
+            {
+                case PlayerState.idle:
+                    updateIdle();
+                    break;
+                case PlayerState.air:
+                    updateAir();
+                    break;
+                case PlayerState.airJumpsExhausted:
+                    updateAirJumpsExhausted();
+                    break;
+                case PlayerState.warmUp:
+                    updateWarmUp();
+                    break;
+                case PlayerState.attack:
+                    updateAttack();
+                    break;
+                case PlayerState.coolDown:
+                    updateCoolDown();
+                    break;
+                case PlayerState.landing:
+                    updateLanding();
+                    break;
+                case PlayerState.stun:
+                    updateStun();
+                    break;
+                default:
+                    state = PlayerState.idle;
+                    break;
+            }
+        } else if ( EvolutionManager.instance.gameIsPaused == false) {
             switch (state)
             {
                 case PlayerState.idle:
