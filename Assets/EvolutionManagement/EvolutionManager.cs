@@ -5,7 +5,7 @@ using UnityEngine;
 using System.IO;
 using Random = System.Random;
 using UnityEngine.SceneManagement;
-
+using TMPro;
 
 /// <summary>
 /// Class That Manages the Evolutionary Process
@@ -21,7 +21,12 @@ public class EvolutionManager : MonoBehaviour
 
     //Time factor for games (<1 slows, >1 speeds)
     public float timeScale = 1f;
-
+    //Determines if simulation is paused
+    public bool gameIsPaused = false;
+    public bool pauseMenuActive;
+    public GameObject pauseMenuUI;
+    public float timeInRound;
+    public float roundStartTime;
     // Population Size For Each Generation
     private int popSize = 100;
     private bool[] gamesFinished = new bool[100];
@@ -85,6 +90,15 @@ public class EvolutionManager : MonoBehaviour
         {
             EvolutionSettings evoSettings = evolutionSettingsObj.GetComponent<EvolutionSettings>();
             this.SetTimeScale(evoSettings.timeScale);
+            this.popSize = evoSettings.totalPopulation;
+            this.gamesFinished = new bool[this.popSize];
+            this.dropoutRate = evoSettings.dropoutRate;
+            this.mutationRate = evoSettings.mutationRate;
+            this.maxGameLength = evoSettings.maxGameLength;
+            this.targetGameLength = evoSettings.targetGameLength;
+            this.numGenerations = evoSettings.numGenerations;
+            this.numEvalRounds = evoSettings.roundsToEvaluate;
+            this.roundsFinished = new bool[this.numEvalRounds];
         }
         
     }
@@ -103,7 +117,35 @@ public class EvolutionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            if(gameIsPaused) {
+                Resume();
+            } else {
+                Pause();
+            }
+        }
+        if(pauseMenuActive){
+            GameObject.Find("TimeElapsed").GetComponent<TextMeshProUGUI>().text = "Simulation Time Elapsed: " + Time.time.ToString("0.00") + " ticks";
+            EvolutionSettings evs = new EvolutionSettings();
+            float estimatedTime = CalculateEstimateSimTime(numGenerations, numEvalRounds, popSize, targetGameLength, maxGameLength);
+            TextMeshProUGUI estimateText = GameObject.Find("EstSimTime").GetComponent<TextMeshProUGUI>();
+            if(estimatedTime != 0.0f) {
+                estimateText.text = "Estimated Simulation Time: " + estimatedTime + " ticks";
+            } else {
+                estimateText.text = "Estimated Simulation Time: " + "∞";
+
+            }
+        }
         
+
+    }
+    public float CalculateEstimateSimTime( int generations, int roundsToEvaluate, int totalPopulation, float targetGameLength, float maxGameLength) {
+        //just a placeholder.
+        if(generations < 10) {
+            return generations *roundsToEvaluate * totalPopulation * (targetGameLength - ((maxGameLength - targetGameLength) * 1 / 2));
+        } else {
+            return generations *roundsToEvaluate * totalPopulation * (targetGameLength + ((maxGameLength - targetGameLength) * 1 / 8));
+        }
     }
 
     // Settings
@@ -230,7 +272,7 @@ public class EvolutionManager : MonoBehaviour
             //add to our temporary results object, then save to file for analsysis
             this.evolutionResults.evolutionResults.Add(generationResult);
             this.SaveToResults();
-
+            this.Pause();
         }
     }
 
@@ -361,6 +403,31 @@ public class EvolutionManager : MonoBehaviour
         this.WriteJson<EvolutionResults>(Consts.EVO_RESULTS_PATH + Consts.RESULTS_FILE_PATH, this.evolutionResults);
     }
 
+    public void Pause(){
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+        gameIsPaused = true;
+        pauseMenuActive = true;
+    }
+
+    public void Resume(){
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = this.timeScale;
+        gameIsPaused = false;
+        pauseMenuActive = false;
+
+    }
+    public void ResumeInMenu(){
+        //pauseMenuUI.SetActive(false);
+
+        Time.timeScale = this.timeScale;
+        gameIsPaused = false;
+        pauseMenuActive = true;
+
+    }
+    /*public void Menu(){
+        SceneManager.LoadScene("EvolutionaryManagerStartScene");
+    }*/
     // TODO : duplicate of the code in ArenaManager
     T ReadJson<T>(string filename)
     {

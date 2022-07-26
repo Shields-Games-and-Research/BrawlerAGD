@@ -10,7 +10,7 @@ using static GameResult;
 using UnityEngine.SceneManagement;
 using static EvolutionManager;
 using static UnityEngine.Random;
-
+using TMPro;
 
 public static class Consts
 {
@@ -43,9 +43,15 @@ public class ArenaManager : MonoBehaviour
 
     //UI components for each player
     public GameObject p1HUD;
-    public Text p1HUDText;
+    public TextMeshProUGUI p1HUDText;
     public GameObject p2HUD;
-    public Text p2HUDText;
+    public TextMeshProUGUI p2HUDText;
+    public GameObject p1H1;
+    public GameObject p1H2;
+    public GameObject p1H3;
+    public GameObject p2H1;
+    public GameObject p2H2;
+    public GameObject p2H3;
 
     //UI components for notifications
     public GameObject notifications;
@@ -492,11 +498,17 @@ public class ArenaManager : MonoBehaviour
     public void InitUI() 
     {
         //Player 1 Heads Up Display
-        this.p1HUDText = this.p1HUD.GetComponent<Text>();
+        this.p1HUDText = this.p1HUD.GetComponent<TextMeshProUGUI>();
         this.player1.playerDetails = this.p1HUDText;
+        this.player1.heart1 = this.p1H1;
+        this.player1.heart2 = this.p1H2;
+        this.player1.heart3 = this.p1H3;
         //Player 2 Heads Up Display
-        this.p2HUDText = this.p2HUD.GetComponent<Text>();
+        this.p2HUDText = this.p2HUD.GetComponent<TextMeshProUGUI>();
         this.player2.playerDetails = this.p2HUDText;
+        this.player2.heart1 = this.p2H1;
+        this.player2.heart2 = this.p2H2;
+        this.player2.heart3 = this.p2H3;
         //notifications
         notificationsText = notifications.GetComponent<Text>();
     }
