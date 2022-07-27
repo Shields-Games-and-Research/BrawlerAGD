@@ -425,9 +425,10 @@ public class EvolutionManager : MonoBehaviour
         pauseMenuActive = true;
 
     }
-    /*public void Menu(){
+    public void Menu(){
+        //EvolutionSettings ev = new EvolutionSettings();
         SceneManager.LoadScene("EvolutionaryManagerStartScene");
-    }*/
+    }
     // TODO : duplicate of the code in ArenaManager
     T ReadJson<T>(string filename)
     {

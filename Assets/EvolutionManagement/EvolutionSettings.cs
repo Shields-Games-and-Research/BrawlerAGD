@@ -17,7 +17,7 @@ public class EvolutionSettings : MonoBehaviour
     public float maxGameLength;
     public int numGenerations;
     public float estimatedSimTime;
-    public bool start;
+    public bool changeScene;
     // Awake is called before Start
     void Awake() 
     {
@@ -43,13 +43,13 @@ public class EvolutionSettings : MonoBehaviour
         mutationRate = 0.4f;
         maxGameLength = 60f;
         numGenerations = 100;
-        start = false;
+        changeScene = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(!start) {
+        if(!changeScene) {
             estimatedSimTime = CalculateEstimateSimTime(this.numGenerations, this.roundsToEvaluate, this.totalPopulation, this.targetGameLength, this.maxGameLength);
             if(estimatedSimTime == 0.0) {
                 GameObject.Find("EstSimTimeText").GetComponent<TextMeshProUGUI>().text = "Estimated Simulation Length: " + "∞";
@@ -61,8 +61,12 @@ public class EvolutionSettings : MonoBehaviour
 
     public void StartEvolutionScene() 
     {
-        start = true;
+        changeScene = true;
         SceneManager.LoadScene("EvolutionaryArenaManager");
+    }
+    public void ReturnToMainMenu(){
+        changeScene = true;
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void AdjustTimeScale(float value) 
