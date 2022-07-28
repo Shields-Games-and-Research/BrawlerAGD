@@ -31,7 +31,7 @@ public class GameSettings : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        ArenaManager.evo = false;
     }
 
     // Update is called once per frame

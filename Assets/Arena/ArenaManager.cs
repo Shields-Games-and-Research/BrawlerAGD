@@ -81,6 +81,12 @@ public class ArenaManager : MonoBehaviour
     //Game length in seconds
     public float gameLength;
     
+    public static bool evo;
+    public GameObject pauseMenuUI;
+    public GameObject pauseButton;
+    public float timeScale;
+    public bool gameIsPaused = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -111,7 +117,17 @@ public class ArenaManager : MonoBehaviour
     {
         this.gameLength = Time.time - this.startTime;
 
-
+        if(evo) {
+            this.pauseButton.SetActive(false);
+            this.pauseMenuUI.SetActive(false);
+        }
+        if(Input.GetKeyDown(KeyCode.Escape)) {
+            if(gameIsPaused) {
+                Resume();
+            } else {
+                Pause();
+            }
+        }
         //End if this arena has lasted longer than 60 seconds
         if (GameSettings.instance == null)
         {
@@ -635,5 +651,25 @@ public class ArenaManager : MonoBehaviour
         ClearNotifications();
         SceneManager.LoadSceneAsync("LoadGame", LoadSceneMode.Single);
     }
-   
+   public void Pause(){
+        pauseMenuUI.SetActive(true);
+        timeScale = Time.timeScale;
+        Time.timeScale = 0f;
+        
+    }
+
+    public void Resume(){
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = this.timeScale;
+        
+
+    }
+
+    public void Menu(){
+        //EvolutionSettings ev = new EvolutionSettings();
+        Destroy(GameSettings.instance);
+        Time.timeScale = this.timeScale;
+
+        SceneManager.LoadScene("LoadGame");
+    }
 }
