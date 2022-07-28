@@ -23,7 +23,7 @@ public class EvolutionManager : MonoBehaviour
     public float timeScale = 1f;
     //Determines if simulation is paused
     public bool gameIsPaused = false;
-    public bool pauseMenuActive;
+    public bool pauseMenuActive = false;
     public GameObject pauseMenuUI;
     public float timeInRound;
     public float roundStartTime;
@@ -88,7 +88,7 @@ public class EvolutionManager : MonoBehaviour
         GameObject evolutionSettingsObj = GameObject.Find("EvolutionSettings");
         if (evolutionSettingsObj != null) 
         {
-            EvolutionSettings evoSettings = evolutionSettingsObj.GetComponent<EvolutionSettings>();
+            EvolutionSettings evoSettings = EvolutionSettings.instance;
             this.SetTimeScale(evoSettings.timeScale);
             this.popSize = evoSettings.totalPopulation;
             this.gamesFinished = new bool[this.popSize];
@@ -105,6 +105,7 @@ public class EvolutionManager : MonoBehaviour
 
     void Start()
     {
+        ArenaManager.evo = true;
         //Set timescale based on optimization needs
         var fixedDeltaTime = Time.fixedDeltaTime;
         this.SetTimeScale(this.timeScale);
@@ -425,9 +426,12 @@ public class EvolutionManager : MonoBehaviour
         pauseMenuActive = true;
 
     }
-    /*public void Menu(){
+    public void Menu(){
+        //EvolutionSettings ev = new EvolutionSettings();
+        Destroy(EvolutionSettings.instance);
+
         SceneManager.LoadScene("EvolutionaryManagerStartScene");
-    }*/
+    }
     // TODO : duplicate of the code in ArenaManager
     T ReadJson<T>(string filename)
     {

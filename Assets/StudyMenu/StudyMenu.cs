@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.SceneManagement;
 public class StudyMenu : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -16,7 +16,9 @@ public class StudyMenu : MonoBehaviour
     {
         
     }
-
+    public void ReturnToMainMenu(){
+        SceneManager.LoadScene("MainMenuScene");
+    }
     // Load Game
     public void LoadGame() 
     {
