@@ -2450,6 +2450,8 @@ MonoBehaviour:
   p2H1: {fileID: 1189153803}
   p2H2: {fileID: 1621601498}
   p2H3: {fileID: 1755857360}
+  pauseMenuUI: {fileID: 1008825293}
+  pauseButton: {fileID: 1554345945}
   notifications: {fileID: 6167194}
   notificationsText: {fileID: 0}
   move: {fileID: 1539125409374822326, guid: b82126d0f4e6a2e4eaa52481a30896a1, type: 3}
@@ -2557,8 +2559,6 @@ MonoBehaviour:
     round: 0
   startTime: 0
   gameLength: 0
-  pauseMenuUI: {fileID: 1008825293}
-  pauseButton: {fileID: 1554345945}
   timeScale: 0
   gameIsPaused: 0
 --- !u!4 &1661193752
@@ -2836,7 +2836,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1922457744
 MonoBehaviour:
   m_ObjectHideFlags: 0

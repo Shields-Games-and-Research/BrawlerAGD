@@ -281,6 +281,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
@@ -324,6 +325,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -2264,8 +2266,8 @@ TextureImporter:
       monochrome_transparent_packed_20: 730764671182104258
       monochrome_transparent_packed_16: 4002555493733754418
       monochrome_transparent_packed_27: 8333053375100661828
-      monochrome_transparent_packed_38: -483406266963938646
       monochrome_transparent_packed_43: -5524676764598615783
+      monochrome_transparent_packed_38: -483406266963938646
       monochrome_transparent_packed_30: 2522206649845509431
       monochrome_transparent_packed_48: 2726496830753861816
       monochrome_transparent_packed_39: -2859331449831654184
@@ -2282,16 +2284,15 @@ TextureImporter:
       monochrome_transparent_packed_32: -6187522220790814945
       monochrome_transparent_packed_28: 3591798549798801462
       monochrome_transparent_packed_9: -4531652251376512669
+      monochrome_transparent_packed_13: 8576190640545190636
       monochrome_transparent_packed_4: -1563979499396834108
       monochrome_transparent_packed_77: 8858567607105789445
-      monochrome_transparent_packed_13: 8576190640545190636
       monochrome_transparent_packed_44: 4902882639080354729
       monochrome_transparent_packed_53: 2267109346060713552
       monochrome_transparent_packed_59: -5285551733330013570
       monochrome_transparent_packed_80: 5654416649995380001
   spritePackingTag: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
