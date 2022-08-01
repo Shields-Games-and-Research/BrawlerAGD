@@ -83,8 +83,8 @@ public class StudyMenu : MonoBehaviour
     {
         GameSettings.instance.mode = GameSettings.GameMode.LOAD;
         GameSettings.instance.loadWithTutorialController = true;
-        string loadPath = Constants.PILOT_GAME_LOAD_PATH + file;
-        string resultsPath = Constants.PILOT_GAME_RESULTS_PATH + file;
+        string loadPath = Constants.PILOT_GAME_LOAD_PATH + file + Constants.PC_SLASH;
+        string resultsPath = Constants.PILOT_GAME_RESULTS_PATH + file + Constants.PC_SLASH;
         GameSettings.instance.loadGamePath = loadPath;
         GameSettings.instance.resultsPath = resultsPath;
         GameSettings.instance.loadWithTutorialController = false;
@@ -95,8 +95,8 @@ public class StudyMenu : MonoBehaviour
     {
         GameSettings.instance.mode = GameSettings.GameMode.TUTORIAL;
         GameSettings.instance.loadWithTutorialController = true;
-        GameSettings.instance.loadGamePath = Constants.TUTORIAL_GAME_PATH;
-        GameSettings.instance.resultsPath = Constants.TUTORIAL_RESULTS_PATH;
+        GameSettings.instance.loadGamePath = Constants.TUTORIAL_GAME_PATH + Constants.PC_SLASH;
+        GameSettings.instance.resultsPath = Constants.TUTORIAL_RESULTS_PATH + Constants.PC_SLASH;
         SceneManager.LoadSceneAsync(Constants.ARENA_SCENE, LoadSceneMode.Single);
     }
 }

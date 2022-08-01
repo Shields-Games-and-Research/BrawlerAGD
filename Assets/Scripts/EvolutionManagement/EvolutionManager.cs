@@ -89,7 +89,7 @@ public class EvolutionManager : MonoBehaviour
         if (evolutionSettingsObj != null) 
         {
             EvolutionSettings evoSettings = EvolutionSettings.instance;
-            this.SetTimeScale(evoSettings.timeScale);
+            this.timeScale = evoSettings.timeScale;
             this.popSize = evoSettings.totalPopulation;
             this.gamesFinished = new bool[this.popSize];
             this.dropoutRate = evoSettings.dropoutRate;
@@ -107,7 +107,6 @@ public class EvolutionManager : MonoBehaviour
     {
         ArenaManager.evo = true;
         //Set timescale based on optimization needs
-        var fixedDeltaTime = Time.fixedDeltaTime;
         this.SetTimeScale(this.timeScale);
 
         //Begin Evolution
@@ -156,7 +155,6 @@ public class EvolutionManager : MonoBehaviour
     /// <param name="timeScalar">timeScalar</param>
     public void SetTimeScale(float timeScalar)
     {
-        this.timeScale = timeScalar;
         Time.timeScale = timeScalar;
         Time.fixedDeltaTime = Time.fixedDeltaTime * Time.timeScale;
     }
@@ -407,14 +405,14 @@ public class EvolutionManager : MonoBehaviour
 
     public void Pause(){
         pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f;
+        this.SetTimeScale(0f);
         gameIsPaused = true;
         pauseMenuActive = true;
     }
 
     public void Resume(){
         pauseMenuUI.SetActive(false);
-        Time.timeScale = this.timeScale;
+        this.SetTimeScale(this.timeScale);
         gameIsPaused = false;
         pauseMenuActive = false;
 
@@ -422,7 +420,7 @@ public class EvolutionManager : MonoBehaviour
     public void ResumeInMenu(){
         //pauseMenuUI.SetActive(false);
 
-        Time.timeScale = this.timeScale;
+        this.SetTimeScale(this.timeScale);
         gameIsPaused = false;
         pauseMenuActive = true;
 
