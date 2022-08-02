@@ -12,7 +12,7 @@ This system aims to create 2D "Brawler" fighting video games by randomly generat
 
 The system has two main ways of being used by the public: for more technical users, the Unity Interface and direct editing of game scripts provides the most flexibility and depth. For less technical users, or users looking for a quick start, a user-interface is provided in a video-game fashion for trying to "grow" your very own Brawler games.
 
-The system is compatible with Windows 10 and above.
+The system is compatible with Windows 10 and above. The initial pilot study were run in the Unity editor's play mode, though preliminary tests of the full executable build have shown identical functionality.
 
 # Using the Graphical User Interface (GUI):
 
