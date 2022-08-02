@@ -53,10 +53,6 @@ public class EvolutionSettings : MonoBehaviour
         maxGameLength = 60f;
         numGenerations = 100;
         changeScene = false;
-
-        if(EvolutionManager.instance != null ) {
-            Destroy(EvolutionManager.instance);
-        }
     }
 
     // Update is called once per frame

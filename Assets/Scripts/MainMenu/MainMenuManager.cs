@@ -19,6 +19,11 @@ public class MainMenuManager : MonoBehaviour
         //Init Game Mode
         this.gameSettings = GameSettings.instance;
         this.gameSettings.mode = GameSettings.GameMode.MENU;
+
+        if (EvolutionSettings.instance != null) 
+        {
+            Destroy(EvolutionSettings.instance.gameObject);
+        }
     }
 
     // Update is called once per frame
