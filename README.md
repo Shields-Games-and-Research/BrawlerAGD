@@ -18,25 +18,25 @@ The system is compatible with Windows 10 and above.
 
 Running "BrawlerAGD.exe" in the root of the repository runs the game as a Unity application. On loading, the main menu should appear. You will have four options: Start Evolution, Load Game, Load Pilot, and Credits.
 
-#Start Evolution (Generating Games)
+## Start Evolution (Generating Games)
 
 Starting an evolution shows you a screen with a description of key variables in a genetic algorithm. An information icon at the top left of the screen provides details on how the parameters affect the system.
 
 Output data are saved in an Assets folder relative to the where the BrawlerAGD.exe was run. Evolutionary runs can be stopped at any time, as games and results are saved to disk on a realtime basis. 
 
-#Load Game
+## Load Game
 
 This menu is used to load generated game from disk to play them.
 
-#Pilot Study
+## Pilot Study
 
 This menu loads the game menu used for the original pilot study of the game. Games shown in the pilot study paper are presented here.
 
-#Gameplay
+# Gameplay
 
 Games are played between two players, where each player attempts to knock the other player off of the screen boundaries a number of times. Every time a player is knocked off the screen, a player loses a "stock" and is able to fight fresh. Whenever a character is hit, that character takes a certain number of damage, which in turn impacts how far they are flung when hit. Characters' movement and ability to stay on screen depends on their attacking ability, movement capabilities, timing parameters, etc.
 
-#Controls
+## Controls
 
 XBOX One controllers can be used in place of keyboard bindings. The joystick controls left and right movement; the face buttons control jumps and attacks.
 
@@ -54,7 +54,7 @@ L: Right
 K: Attack
 I: Jump
 
-#Key Technical Information
+# Key Technical Information
 
 For those looking to dig deeper, two critical portions of the system for improvement are agent behaviors and the system's fitness function.
 
@@ -63,7 +63,7 @@ The agent behaviors are detailed in the file "Controller.cs".
 
 These initial implementations are on the simpler side, and are the next targets of iteration for future studies.
 
-#Known Issues
+## Known Issues
 
 Please report any found bugs! We are a very nascent team and still trying to improve - any suggestions are helpful.
 
