@@ -126,15 +126,16 @@ public class ArenaManager : MonoBehaviour
             this.pauseMenuUI.SetActive(false);
         } else {
             this.pauseButton.SetActive(true);
-        }
-        if(Input.GetKeyDown(KeyCode.Escape)) {
-            if(gameIsPaused) {
-                Resume();
-            } else {
-                Pause();
-                
+            if(Input.GetKeyDown(KeyCode.Escape)) {
+                if(gameIsPaused) {
+                    Resume();
+                } else {
+                    Pause();
+                }
             }
+        
         }
+        
         //End if this arena has lasted longer than 60 seconds
         if (EvolutionManager.instance != null)
         {

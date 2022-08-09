@@ -412,7 +412,7 @@ public class EvolutionManager : MonoBehaviour
 
     public void Resume(){
         pauseMenuUI.SetActive(false);
-        this.SetTimeScale(this.timeScale);
+        Time.timeScale = this.timeScale;
         gameIsPaused = false;
         pauseMenuActive = false;
 
@@ -420,7 +420,8 @@ public class EvolutionManager : MonoBehaviour
     public void ResumeInMenu(){
         //pauseMenuUI.SetActive(false);
 
-        this.SetTimeScale(this.timeScale);
+        Time.timeScale = this.timeScale;
+
         gameIsPaused = false;
         pauseMenuActive = true;
 
