@@ -428,7 +428,7 @@ public class EvolutionManager : MonoBehaviour
     public void Menu(){
         //EvolutionSettings ev = new EvolutionSettings();
         Destroy(EvolutionSettings.instance);
-
+        Time.timeScale = 1.0f;
         SceneManager.LoadScene("EvolutionaryManagerStartScene");
     }
     // TODO : duplicate of the code in ArenaManager

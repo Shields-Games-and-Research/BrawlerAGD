@@ -84,6 +84,7 @@ public class ArenaManager : MonoBehaviour
 
         this.startTime = Time.time;
         print("Attempting to load file. " + loadPath);
+        this.pauseMenuUI.SetActive(false);
 
         //On loading the arena, check the GameSettings file to ensure appropriate files are loaded.
         switch (GameSettings.instance.mode) 
@@ -123,12 +124,15 @@ public class ArenaManager : MonoBehaviour
         if(evo) {
             this.pauseButton.SetActive(false);
             this.pauseMenuUI.SetActive(false);
+        } else {
+            this.pauseButton.SetActive(true);
         }
         if(Input.GetKeyDown(KeyCode.Escape)) {
             if(gameIsPaused) {
                 Resume();
             } else {
                 Pause();
+                
             }
         }
         //End if this arena has lasted longer than 60 seconds
@@ -673,12 +677,14 @@ public class ArenaManager : MonoBehaviour
     public void Pause(){
         pauseMenuUI.SetActive(true);
         timeScale = Time.timeScale;
-        Time.timeScale = 0f; 
+        Time.timeScale = 0f;
+        gameIsPaused = true;
     }
 
     public void Resume(){
         pauseMenuUI.SetActive(false);
         Time.timeScale = this.timeScale;
+        gameIsPaused = false;
     }
 
     public void Menu(){
