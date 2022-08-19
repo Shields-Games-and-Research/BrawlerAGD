@@ -67,7 +67,5 @@ These initial implementations are on the simpler side, and are the next targets 
 
 Please report any found bugs! We are a very nascent team and still trying to improve - any suggestions are helpful.
 
-1. The Pause menu was not implemented at the time of the pilot study, and thus is not fully functional in that context.
-2. The Tutorial is currently a dead-end, and needs a restart to start the other games.
-3. Exiting the evolution system and attempting to perform other actions can sometimes corrupt the game state and require a restart.
-4. The "Announcer" UI does not always correctly announce the correct winner/loser (Though the correct loser is saved to disk)
+1. The "Announcer" UI does not always correctly announce the correct winner/loser (Though the correct loser is saved to disk)
+2. The pilot study and all games are loaded relative to where the .exe is placed; thus new builds and runs should (for now) be built in the root so that the Assets folder is correctly relative to the game.
