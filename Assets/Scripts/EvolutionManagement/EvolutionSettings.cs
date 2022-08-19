@@ -43,7 +43,7 @@ public class EvolutionSettings : MonoBehaviour
         this.gameSettings = GameSettings.instance;
         this.gameSettings.mode = GameSettings.GameMode.EVO;
         this.gameSettings.evolutionSettings = this;
-
+        Destroy(EvolutionManager.instance);
         timeScale = 1f;
         totalPopulation = 100;
         targetGameLength = 45f;

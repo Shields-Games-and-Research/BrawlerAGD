@@ -54,6 +54,8 @@ public class GameSettings : MonoBehaviour
 
     void Awake()
     {
+        ArenaManager.evo = false;
+
         if (instance == null)
         {
             instance = this;
