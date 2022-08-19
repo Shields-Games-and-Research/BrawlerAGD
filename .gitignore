@@ -60,4 +60,7 @@ crashlytics-build.properties
 
 
 Assets/Game/game*
-Release/BrawlerAGD.exe
+Assets/Output/EvoPopulation/*
+Assets/Output/EvoResults/*
+Assets/VerboseResults/*
+Assets/Research/Results/*
