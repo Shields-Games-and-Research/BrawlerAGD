@@ -271,9 +271,22 @@ public class Player : MonoBehaviour
         if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
         else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
 
-        if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
+        if (controller.GetKeyDown(controller.jumpKey))
+        {
+            Debug.Log("Pressed Jump Button");
+            jump();
+        }
 
-        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
+        if (controller.GetKeyDown(controller.move1Key))
+        {
+            Debug.Log("Pressed Move1Key");
+            performMove(move1);
+        }
+
+        if (controller.GetKeyDown(controller.move2Key))
+        {
+            Debug.Log("Pressed Move2Key");
+        }
 
         move1.SetInactive();
     }
