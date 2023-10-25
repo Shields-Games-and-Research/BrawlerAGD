@@ -70,6 +70,14 @@ Please report any found bugs! We are a very nascent team and still trying to imp
 1. The "Announcer" UI does not always correctly announce the correct winner/loser (Though the correct loser is saved to disk)
 2. The pilot study and all games are loaded relative to where the .exe is placed; thus new builds and runs should (for now) be built in the root so that the Assets folder is correctly relative to the game.
 
-# Team
+# Contributors
 
-Gabriel Oliver - Gameplay Engineer - Movement
+GAMEPLAY:
+Gabriel Oliver - Gameplay Engineer
+
+ART:
+Caroline Chou - Artist
+
+SOUND:
+Hyo Kim - Sound Designer
+
