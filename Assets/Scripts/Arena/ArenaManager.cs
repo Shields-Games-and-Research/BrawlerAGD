@@ -51,10 +51,12 @@ public class ArenaManager : MonoBehaviour
     public Player player1;
     public SerializedPlayer serializedPlayer1;
     public SerializedMove serializedMove1Player1;
+    public SerializedMove serializedMove2Player1;
     
     public Player player2;
     public SerializedPlayer serializedPlayer2;
     public SerializedMove serializedMove1Player2;
+    public SerializedMove serializedMove2Player2;
 
     //Result of game stored here
     public GameResult result;
@@ -199,8 +201,10 @@ public class ArenaManager : MonoBehaviour
         //update gameobjects instantiated into the scene with values from JSON
         player1.InitializePlayerFromSerializedObj(this.serializedPlayer1, player1Spawn);
         player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove2Player1);
         player2.InitializePlayerFromSerializedObj(this.serializedPlayer2, player2Spawn);
         player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove2Player2);
 
         //Set overall game options
         this.SetGameOptions();
@@ -268,7 +272,6 @@ public class ArenaManager : MonoBehaviour
         player1.InitializePlayerFromSerializedObj(this.serializedPlayer1, player1Spawn);
         player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
         player2.InitializePlayerFromSerializedObj(this.serializedPlayer2, player2Spawn);
-        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
 
         //Create two NPCs with jump AI, update their names, set to jumping controller
         Vector3 spawnLocationDummy1 = new Vector3(-3f, 0f, 0f);
@@ -283,8 +286,10 @@ public class ArenaManager : MonoBehaviour
         this.SetPlayerToJumpCPU(player2Dummy, this.player2);
         player1Dummy.InitializePlayerFromSerializedObj(this.serializedPlayer2, new Vector2(-3f, 0f));
         player1Dummy.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
+        player1Dummy.InitializeMoveFromSerializedObj(this.serializedMove2Player2);
         player2Dummy.InitializePlayerFromSerializedObj(this.serializedPlayer1, new Vector2(3f, 0f));
         player2Dummy.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
+        player2Dummy.InitializeMoveFromSerializedObj(this.serializedMove2Player1, 1);
         player1Dummy.playerName = "Training Dummy 1";
         player2Dummy.playerName = "Training Dummy 2";
 

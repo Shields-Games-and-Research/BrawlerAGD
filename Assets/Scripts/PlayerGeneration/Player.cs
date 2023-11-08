@@ -52,6 +52,7 @@ public class Player : MonoBehaviour
 
     /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move1;
+    public Move move2;
 
     /**ENGINE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
     public bool isGrounded;
@@ -286,6 +287,7 @@ public class Player : MonoBehaviour
         if (controller.GetKeyDown(controller.move2Key))
         {
             Debug.Log("Pressed Move2Key");
+            performMove(move1);
         }
 
         move1.SetInactive();
@@ -662,7 +664,7 @@ public class Player : MonoBehaviour
 
     /**Creates a move object in the player according to the player's relative position, then calls move instantiate to complete
      */
-    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove) 
+    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove, Move currMove) 
     {
         //TODO: move instantiation to make object safe should be done in player awake/start, not here
         Vector2 center = this.transform.position + new Vector3(serializedMove.moveLocX, serializedMove.moveLocY);

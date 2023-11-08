@@ -1,0 +1,18 @@
+{
+    "moveDist": 1.15,
+    "moveAngle": 0.0,
+    "moveLocX": 1.15,
+    "moveLocY": 0.0,
+    "widthScalar": 1.0,
+    "heightScalar": 1.0,
+    "warmUpDuration": 0.35,
+    "executionDuration": 0.25,
+    "coolDownDuration": 0.35,
+    "damageFactor": 5.0,
+    "damageGiven": 9.75,
+    "knockbackScalar": 8.5,
+    "knockbackModX": 1,
+    "knockbackModY": 1,
+    "hitstunDuration": 0.5,
+    "spriteIndex": 156
+}
