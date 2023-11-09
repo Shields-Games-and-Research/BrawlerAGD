@@ -200,11 +200,11 @@ public class ArenaManager : MonoBehaviour
 
         //update gameobjects instantiated into the scene with values from JSON
         player1.InitializePlayerFromSerializedObj(this.serializedPlayer1, player1Spawn);
-        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
-        player1.InitializeMoveFromSerializedObj(this.serializedMove2Player1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1, 1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove2Player1, 2);
         player2.InitializePlayerFromSerializedObj(this.serializedPlayer2, player2Spawn);
-        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
-        player2.InitializeMoveFromSerializedObj(this.serializedMove2Player2);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2, 1);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove2Player2, 2);
 
         //Set overall game options
         this.SetGameOptions();
@@ -270,8 +270,11 @@ public class ArenaManager : MonoBehaviour
 
         //update gameobjects instantiated into the scene with values from JSON
         player1.InitializePlayerFromSerializedObj(this.serializedPlayer1, player1Spawn);
-        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1, 1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove2Player1, 2);
         player2.InitializePlayerFromSerializedObj(this.serializedPlayer2, player2Spawn);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2, 1);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove2Player2, 2);
 
         //Create two NPCs with jump AI, update their names, set to jumping controller
         Vector3 spawnLocationDummy1 = new Vector3(-3f, 0f, 0f);
@@ -285,11 +288,11 @@ public class ArenaManager : MonoBehaviour
         this.SetPlayerToJumpCPU(player1Dummy, this.player1);
         this.SetPlayerToJumpCPU(player2Dummy, this.player2);
         player1Dummy.InitializePlayerFromSerializedObj(this.serializedPlayer2, new Vector2(-3f, 0f));
-        player1Dummy.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
-        player1Dummy.InitializeMoveFromSerializedObj(this.serializedMove2Player2);
+        player1Dummy.InitializeMoveFromSerializedObj(this.serializedMove1Player2, 1);
+        player1Dummy.InitializeMoveFromSerializedObj(this.serializedMove2Player2, 2);
         player2Dummy.InitializePlayerFromSerializedObj(this.serializedPlayer1, new Vector2(3f, 0f));
-        player2Dummy.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
-        player2Dummy.InitializeMoveFromSerializedObj(this.serializedMove2Player1, 1);
+        player2Dummy.InitializeMoveFromSerializedObj(this.serializedMove1Player1, 1);
+        player2Dummy.InitializeMoveFromSerializedObj(this.serializedMove2Player1, 2);
         player1Dummy.playerName = "Training Dummy 1";
         player2Dummy.playerName = "Training Dummy 2";
 
@@ -356,9 +359,11 @@ public class ArenaManager : MonoBehaviour
 
         //update gameobjects instantiated into the scene with values from JSON
         player1.InitializePlayerFromSerializedObj(this.serializedPlayer1, player1Spawn);
-        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove1Player1, 1);
+        player1.InitializeMoveFromSerializedObj(this.serializedMove2Player1, 2);
         player2.InitializePlayerFromSerializedObj(this.serializedPlayer2, player2Spawn);
-        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove1Player2, 1);
+        player2.InitializeMoveFromSerializedObj(this.serializedMove2Player2, 2);
 
         //Save game to folder for next generation
         this.SaveGameJSON(EvolutionManager.instance.currentGameID);
@@ -406,12 +411,14 @@ public class ArenaManager : MonoBehaviour
 
         // Serialized Player 1, Move 1 Setup
         this.serializedMove1Player1 = new SerializedMove(rand);
+        this.serializedMove2Player1 = new SerializedMove(rand);
 
         // Serialized Player 2 Setup
         this.serializedPlayer2 = new SerializedPlayer("Player 2", rand);
 
         // Serialized Player 2 Move 1 Setup
         this.serializedMove1Player2 = new SerializedMove(rand);
+        this.serializedMove2Player2 = new SerializedMove(rand);
     }
 
     public void ReadGame(string tempDirectoryPath)
@@ -423,10 +430,12 @@ public class ArenaManager : MonoBehaviour
         this.serializedPlayer1 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + Constants.PLAYER1_JSON);
         // Serialized Player 1, Move 1 Setup
         this.serializedMove1Player1 = this.ReadJson<SerializedMove>(tempDirectoryPath + Constants.PLAYER1MOVE1_JSON);
+        this.serializedMove2Player1 = this.ReadJson<SerializedMove>(tempDirectoryPath + Constants.PLAYER1MOVE2_JSON);
         // Serialized Player 2 Setup
         this.serializedPlayer2 = this.ReadJson<SerializedPlayer>(tempDirectoryPath + Constants.PLAYER2_JSON);
         // Serialized Player 2 Move 1 Setup
         this.serializedMove1Player2 = this.ReadJson<SerializedMove>(tempDirectoryPath + Constants.PLAYER2MOVE1_JSON);
+        this.serializedMove2Player2 = this.ReadJson<SerializedMove>(tempDirectoryPath + Constants.PLAYER2MOVE2_JSON);
         // Game Result Setup - pull generation and id number if there's a file, otherwise generate new
         this.result = new GameResult();
         if (File.Exists(tempDirectoryPath + Constants.GAME_RESULT_JSON))
@@ -598,8 +607,12 @@ public class ArenaManager : MonoBehaviour
         this.WriteJson<SerializedPlayer>(tempPlayer2Path, this.serializedPlayer2);
         string tempPlayer1Move1Path = tempDirectoryPath + Constants.PLAYER1MOVE1_JSON;
         this.WriteJson<SerializedMove>(tempPlayer1Move1Path, this.serializedMove1Player1);
+        string tempPlayer1Move2Path = tempDirectoryPath + Constants.PLAYER1MOVE2_JSON;
+        this.WriteJson<SerializedMove>(tempPlayer1Move2Path, this.serializedMove2Player1);
         string tempPlayer2Move1Path = tempDirectoryPath + Constants.PLAYER2MOVE1_JSON;
         this.WriteJson<SerializedMove>(tempPlayer2Move1Path, this.serializedMove1Player2);
+        string tempPlayer2Move2Path = tempDirectoryPath + Constants.PLAYER2MOVE2_JSON;
+        this.WriteJson<SerializedMove>(tempPlayer2Move2Path, this.serializedMove2Player2);
         
         //Build string for results
         string resultsName = "";
@@ -737,7 +750,9 @@ public static class Consts
     public static string PLAYER1_PATH = "\\player1.json";
     public static string PLAYER2_PATH = "\\player2.json";
     public static string PLAYER1MOVE1_PATH = "\\p1move1.json";
+    public static string PLAYER1MOVE2_PATH = "\\p1move2.json";
     public static string PLAYER2MOVE1_PATH = "\\p2move1.json";
+    public static string PLAYER2MOVE2_PATH = "\\p2move2.json";
     public static string GAME_RESULT_PATH = "\\gameresult.json";
     public static string RESULTS_FILE_PATH = "\\results.json";
     public static string ROUND_RESULTS_FOLDER_PATH = "\\round_results";

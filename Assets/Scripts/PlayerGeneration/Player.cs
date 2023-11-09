@@ -52,6 +52,7 @@ public class Player : MonoBehaviour
 
     /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move1;
+    /**PLAYER MOVESET: these instance variables will be used to manage the generated moves of a player. */
     public Move move2;
 
     /**ENGINE PARAMETERS: Parameters used for internal logic or defined rules in our design space. */
@@ -288,9 +289,11 @@ public class Player : MonoBehaviour
         {
             Debug.Log("Pressed Move2Key");
             performMove(move1);
+            performMove(move2);
         }
 
         move1.SetInactive();
+        move2.SetInactive();
     }
 
     /**A player, from air, can:
@@ -309,8 +312,12 @@ public class Player : MonoBehaviour
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
         if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
+        
+        if (controller.GetKeyDown(controller.move2Key)) { performMove(move2); }
 
         move1.SetInactive();
+        
+        move2.SetInactive();
 
     }
 
@@ -323,6 +330,7 @@ public class Player : MonoBehaviour
         if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
         else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
         move1.SetInactive();
+        move2.SetInactive();
     }
 
     /**A player, from warm up, can:
@@ -334,6 +342,7 @@ public class Player : MonoBehaviour
         if (controller.GetAxis(controller.horizontalAxis) > 0) { moveRight(); }
         else if (controller.GetAxis(controller.horizontalAxis) < 0) { moveLeft(); }
         move1.SetInactive();
+        move2.SetInactive();
     }
 
     /**A player, from attack, can:
@@ -343,6 +352,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.red;
         move1.SetActive();
+        move2.SetActive();
     }
 
     /**A player, from cool down, can:
@@ -352,6 +362,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.blue;
         move1.SetInactive();
+        move2.SetInactive();
     }
 
     /**A player, from stun, can:
@@ -361,6 +372,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.magenta;
         move1.SetInactive();
+        move2.SetInactive();
     }
 
     void updateLanding() { }
@@ -664,14 +676,32 @@ public class Player : MonoBehaviour
 
     /**Creates a move object in the player according to the player's relative position, then calls move instantiate to complete
      */
-    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove, Move currMove) 
+    public void InitializeMoveFromSerializedObj(SerializedMove serializedMove, int moveID) 
     {
         //TODO: move instantiation to make object safe should be done in player awake/start, not here
         Vector2 center = this.transform.position + new Vector3(serializedMove.moveLocX, serializedMove.moveLocY);
         //instantiates a move to a player and sets location relative to the player
-        this.move1 = Instantiate<Move>(move, center, Quaternion.identity, this.transform);
+        /*this.move1 = Instantiate<Move>(move, center, Quaternion.identity, this.transform);
         this.move1.center = center;
-        this.move1.InitializeMoveFromSerializedObj(serializedMove);
+        this.move1.InitializeMoveFromSerializedObj(serializedMove);*/
+        
+        //TODO: add move2 behavior
+        switch (moveID)
+        {
+            case 1:
+                this.move1 = Instantiate<Move>(move, center, Quaternion.identity, this.transform);
+                this.move1.center = center;
+                this.move1.InitializeMoveFromSerializedObj(serializedMove);
+                break;
+            case 2:
+                this.move2 = Instantiate<Move>(move, center, Quaternion.identity, this.transform);
+                this.move2.center = center;
+                this.move2.InitializeMoveFromSerializedObj(serializedMove);
+                break;
+            default:
+            Debug.Log("Move Identification Error");
+                break;
+        }
     }
 
     IEnumerator MoveCoroutine(Move move)
