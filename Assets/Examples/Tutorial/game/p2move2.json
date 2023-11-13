@@ -14,5 +14,16 @@
     "knockbackModX": 1,
     "knockbackModY": 1,
     "hitstunDuration": 0.5,
-    "spriteIndex": 156
+    "spriteIndex": 156,
+    "isShield": 1,
+    "canBreak": 1,
+    "damageDurability": 1.0,
+    "fullSizeScale": 1.0,
+    "smallSizeScale": 0.2,
+    "parryState": 0,
+    "parryWindowStart": 0,
+    "parryWindowEnd": 0,
+    "reflectionState": 0,
+    "reflectionWindowStart": 0,
+    "reflectionWindowEnd": 0
 }

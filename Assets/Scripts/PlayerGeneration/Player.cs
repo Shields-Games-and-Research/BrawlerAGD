@@ -275,20 +275,19 @@ public class Player : MonoBehaviour
 
         if (controller.GetKeyDown(controller.jumpKey))
         {
-            Debug.Log("Pressed Jump Button");
+            //Debug.Log("Pressed Jump Button");
             jump();
         }
 
         if (controller.GetKeyDown(controller.move1Key))
         {
-            Debug.Log("Pressed Move1Key");
+            //Debug.Log("Pressed Move1Key");
             performMove(move1);
         }
 
         if (controller.GetKeyDown(controller.move2Key))
         {
-            Debug.Log("Pressed Move2Key");
-            performMove(move1);
+            //Debug.Log("Pressed Move2Key");
             performMove(move2);
         }
 

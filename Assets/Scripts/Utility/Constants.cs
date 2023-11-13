@@ -48,9 +48,9 @@ public static class Constants
     public static string PLAYER1 = "player1";
     public static string PLAYER2 = "player2";
     public static string PLAYER1MOVE1 = "p1move1";
-    public static string PLAYER1MOVE2 = "p1move1";
+    public static string PLAYER1MOVE2 = "p1move2";
     public static string PLAYER2MOVE1 = "p2move1";
-    public static string PLAYER2MOVE2 = "p2move1";
+    public static string PLAYER2MOVE2 = "p2move2";
     public static string GAME_RESULT = "gameresult";
     public static string RESULTS_FILE = "results";
     public static string ROUND_RESULTS_FOLDER = "round_results";

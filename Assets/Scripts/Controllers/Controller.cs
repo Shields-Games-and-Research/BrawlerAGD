@@ -82,7 +82,7 @@ public class Controller
     {
         //Initialize empty list for checking for platforms
         List<Collider2D> platforms = new List<Collider2D>();
-        //Create a filter to only check for "floor"
+        //Create a filter to only check for "floor" 
         ContactFilter2D platformFilter = new ContactFilter2D();
         platformFilter.SetLayerMask(this.mask);
         //Check for all platforms within a reasonable range of player
