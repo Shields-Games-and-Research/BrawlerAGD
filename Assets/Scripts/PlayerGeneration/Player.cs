@@ -282,13 +282,27 @@ public class Player : MonoBehaviour
         if (controller.GetKeyDown(controller.move1Key))
         {
             //Debug.Log("Pressed Move1Key");
-            performMove(move1);
+            performMove(move1, 0);
         }
 
         if (controller.GetKeyDown(controller.move2Key))
         {
+            if (move2.isShield == 1)
+            {
+                Debug.Log("Play Shield");
+            }
             //Debug.Log("Pressed Move2Key");
-            performMove(move2);
+            performMove(move2, 0);
+        }
+        
+        if (controller.GetKeyHold(controller.move2Key))
+        {
+            performMove(move2, 1);
+        }
+        
+        if (controller.GetKeyUp(controller.move2Key))
+        {
+            performMove(move2, 2);
         }
 
         move1.SetInactive();
@@ -310,9 +324,9 @@ public class Player : MonoBehaviour
 
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
-        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
+        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1, 0); }
         
-        if (controller.GetKeyDown(controller.move2Key)) { performMove(move2); }
+        if (controller.GetKeyDown(controller.move2Key)) { performMove(move2, 0); }
 
         move1.SetInactive();
         
@@ -605,9 +619,10 @@ public class Player : MonoBehaviour
 
     }
 
-    public void performMove(Move move)
+    // int buttonState: 0 = down, 1 = hold, 2 = up
+    public void performMove(Move move, int buttonState)
     {
-        StartCoroutine(MoveCoroutine(move));
+        StartCoroutine(MoveCoroutine(move, buttonState));
     }
 
     //TODO: prevent player-facing KB
@@ -702,35 +717,57 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
-    IEnumerator MoveCoroutine(Move move)
+    
+    // int buttonState: 0 = down, 1 = hold, 2 = up
+    IEnumerator MoveCoroutine(Move move, int buttonState)
     {
-
-        state = PlayerState.warmUp;
-        yield return new WaitForSeconds(move.warmUpDuration);
-
-        state = PlayerState.attack;
-        yield return new WaitForSeconds(move.executionDuration);
-
-        state = PlayerState.coolDown;
-        yield return new WaitForSeconds(move.coolDownDuration);
-        //branch depending on air/ground
-        if (this.isGrounded)
+        if (move.isShield == 1)
         {
-            state = PlayerState.idle;
-        }
-        else 
-        {
-            if (!this.jumpsExhausted)
+            Debug.Log("play shield");
+
+            if (buttonState == 0)
             {
-                state = PlayerState.air;
+                state = PlayerState.warmUp;
+                yield return new WaitForSeconds(move.warmUpDuration);
+            }
+            else if (buttonState == 1)
+            {
+                state = PlayerState.attack;
+                //yield return new WaitForSeconds(move.executionDuration);
+            }
+            else if (buttonState == 2)
+            {
+                state = PlayerState.coolDown;
+                yield return new WaitForSeconds(move.coolDownDuration);
+            }
+        }
+        else
+        {
+            state = PlayerState.warmUp;
+            yield return new WaitForSeconds(move.warmUpDuration);
+
+            state = PlayerState.attack;
+            yield return new WaitForSeconds(move.executionDuration);
+
+            state = PlayerState.coolDown;
+            yield return new WaitForSeconds(move.coolDownDuration);
+            //branch depending on air/ground
+            if (this.isGrounded)
+            {
+                state = PlayerState.idle;
             }
             else 
             {
-                state = PlayerState.airJumpsExhausted;
-            }
+                if (!this.jumpsExhausted)
+                {
+                    state = PlayerState.air;
+                }
+                else 
+                {
+                    state = PlayerState.airJumpsExhausted;
+                }
+            }  
         }
-       
     }
 
     /**Takes a hitstun duration from a move, scales it to the player's current damage, and then sets that player to that state for that amount of time

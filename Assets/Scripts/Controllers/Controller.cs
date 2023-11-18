@@ -120,6 +120,16 @@ public class Controller
         return Input.GetButtonDown(code);
     }
 
+    public virtual bool GetKeyUp(string code)
+    {
+        return Input.GetButtonUp(code);
+    }
+    
+    public virtual bool GetKeyHold(string code)
+    {
+        return Input.GetButton(code);
+    }
+
     public bool OverPit(Vector2 offset) 
     {
         Vector3 vector3Offset = new Vector3(offset.x * this.playerTransform.localScale.x, offset.y, 0);
