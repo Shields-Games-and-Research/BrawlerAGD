@@ -276,7 +276,7 @@ public class Player : MonoBehaviour
         Debug.Log("SHIELDING");
         sr.color = Color.red;
         move2.SetActive();
-        if (controller.GetKeyUp(controller.move2Key))
+        if (controller.GetKeyUp(controller.move2Key) || !controller.GetKeyHold(controller.move2Key))
         {
             performMove(move2, 2);
             state = PlayerState.idle;
