@@ -99,7 +99,8 @@ public class Player : MonoBehaviour
         attack,
         coolDown,
         landing,
-        stun
+        stun,
+        shielding
     }
     //default player state to idle on spawn.
     public PlayerState state = PlayerState.idle;
@@ -176,6 +177,9 @@ public class Player : MonoBehaviour
                 case PlayerState.stun:
                     updateStun();
                     break;
+                case PlayerState.shielding:
+                    updateShielding();
+                    break;
                 default:
                     state = PlayerState.idle;
                     break;
@@ -213,7 +217,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-
+    
     void updatePlayerHUD() 
     {
         /*if (arenaManager.UIEnabled && !this.isDummy) 
@@ -265,7 +269,21 @@ public class Player : MonoBehaviour
      * jump
      * attack
      * be attacked
+     * shield
      */
+    private void updateShielding()
+    {
+        Debug.Log("SHIELDING");
+        sr.color = Color.red;
+        move2.SetActive();
+        if (controller.GetKeyUp(controller.move2Key))
+        {
+            performMove(move2, 2);
+            state = PlayerState.idle;
+            move2.SetInactive();
+        }
+    }
+
     void updateIdle()
     {
         sr.color = Color.white;
@@ -284,7 +302,7 @@ public class Player : MonoBehaviour
             //Debug.Log("Pressed Move1Key");
             performMove(move1, 0);
         }
-
+        // assume it is a shield for now
         if (controller.GetKeyDown(controller.move2Key))
         {
             if (move2.isShield == 1)
@@ -295,18 +313,14 @@ public class Player : MonoBehaviour
             performMove(move2, 0);
         }
         
-        if (controller.GetKeyHold(controller.move2Key))
+
+        /*if (controller.GetKeyHold(controller.move2Key))
         {
             performMove(move2, 1);
-        }
-        
-        if (controller.GetKeyUp(controller.move2Key))
-        {
-            performMove(move2, 2);
-        }
+        }*/
 
         move1.SetInactive();
-        move2.SetInactive();
+        //move2.SetInactive();
     }
 
     /**A player, from air, can:
@@ -365,7 +379,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.red;
         move1.SetActive();
-        move2.SetActive();
+        //move2.SetActive();
     }
 
     /**A player, from cool down, can:
@@ -723,22 +737,24 @@ public class Player : MonoBehaviour
     {
         if (move.isShield == 1)
         {
-            Debug.Log("play shield");
+            //Debug.Log("play shield");
 
             if (buttonState == 0)
             {
                 state = PlayerState.warmUp;
                 yield return new WaitForSeconds(move.warmUpDuration);
+                state = PlayerState.shielding;
             }
-            else if (buttonState == 1)
+            /*else if (buttonState == 1)
             {
-                state = PlayerState.attack;
+                //state = PlayerState.attack;
                 //yield return new WaitForSeconds(move.executionDuration);
-            }
+            }*/
             else if (buttonState == 2)
             {
                 state = PlayerState.coolDown;
                 yield return new WaitForSeconds(move.coolDownDuration);
+                Debug.Log("Shield End");
             }
         }
         else
