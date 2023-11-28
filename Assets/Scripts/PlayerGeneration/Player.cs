@@ -273,7 +273,7 @@ public class Player : MonoBehaviour
      */
     private void updateShielding()
     {
-        Debug.Log("SHIELDING");
+        //Debug.Log("SHIELDING");
         sr.color = Color.red;
         move2.SetActive();
         if (controller.GetKeyUp(controller.move2Key) || !controller.GetKeyHold(controller.move2Key))
@@ -496,7 +496,7 @@ public class Player : MonoBehaviour
     void OnTriggerStay2D(Collider2D collision) 
     {
         //Player has been hit by a move and is not currently invincible
-        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible) 
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding)) 
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
@@ -509,13 +509,16 @@ public class Player : MonoBehaviour
             }
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
+        } else if (state == PlayerState.shielding)
+        {
+            Debug.Log("continuous: shield blocked attack");
         }
     }
 
     void OnTriggerEnter2D(Collider2D collision) 
     {
         //Player has been hit by a move and is not currently invincible
-        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding))
         {
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
@@ -529,6 +532,9 @@ public class Player : MonoBehaviour
             }
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
+        } else if (state == PlayerState.shielding)
+        {
+            Debug.Log("shield blocked attack");
         }
     }
 
