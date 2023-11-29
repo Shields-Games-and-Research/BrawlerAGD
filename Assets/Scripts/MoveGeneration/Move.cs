@@ -69,6 +69,10 @@ public class Move : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (isShield == 1)
+        {
+            this.gameObject.tag = "Shield";
+        }
         sr = GetComponent<SpriteRenderer>();
         bc = GetComponent<BoxCollider2D>();
         //disable before starting play

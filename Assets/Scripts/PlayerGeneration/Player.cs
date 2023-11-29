@@ -478,13 +478,18 @@ public class Player : MonoBehaviour
     void OnTriggerExit2D(Collider2D collision) 
     {
         //Player has been hit by a move and is not currently invincible
-        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding))
         {
+            Debug.Log("OnTriggerExit2D: player hit by move");
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
+        }
+        else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
+        {
+            Debug.Log("on trigger exit: shield blocked attack");
         }
         //Player has left the arena
         if (collision.gameObject.CompareTag("Arena"))
@@ -498,6 +503,7 @@ public class Player : MonoBehaviour
         //Player has been hit by a move and is not currently invincible
         if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding)) 
         {
+            Debug.Log("OnTriggerStay2D: player hit by move");
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
@@ -509,7 +515,7 @@ public class Player : MonoBehaviour
             }
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
-        } else if (state == PlayerState.shielding)
+        } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
         {
             Debug.Log("continuous: shield blocked attack");
         }
@@ -520,6 +526,7 @@ public class Player : MonoBehaviour
         //Player has been hit by a move and is not currently invincible
         if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding))
         {
+            Debug.Log("OnTriggerEnter2D: player hit by move");
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             this.totalDamage += tempMove.damageGiven;
@@ -532,7 +539,7 @@ public class Player : MonoBehaviour
             }
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
-        } else if (state == PlayerState.shielding)
+        } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
         {
             Debug.Log("shield blocked attack");
         }
