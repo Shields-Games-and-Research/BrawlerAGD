@@ -32,6 +32,8 @@ public class SerializedMove
     public float knockbackModY;
     //Base Hitstun duration
     public float hitstunDuration;
+    //Damage to shieldDurability
+    public float shieldDamage = 10.0f;
     
     //Shield Properties
     // Is this move a shield? 0 = false, 1 = true
@@ -39,7 +41,7 @@ public class SerializedMove
     // Can this shield break? 0 = false, 1 = true
     public bool canBreak;
     // How much damage a shield can take before breaking
-    public float damageDurability = 0.0f;
+    public float damageDurability = 20.0f;
     // The scale when the shield has full size (hasn't taken damage (example from smash bros.))
     public float fullSizeScale = 1f;
     // The scale when the shield has the smallest size (before breaking (example from smash bros.))

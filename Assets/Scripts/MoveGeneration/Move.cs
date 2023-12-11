@@ -35,6 +35,9 @@ public class Move : MonoBehaviour
     //Determines hitstun duration
     public float hitstunDuration;
 
+    //Determines damage to shield. compared to damageDurability
+    public float shieldDamage;
+    
     //Shield fields
     // Is this move a shield? 0 = false, 1 = true
     public int isShield;
@@ -130,7 +133,7 @@ public class Move : MonoBehaviour
                 this.knockbackScalar = serializedMove.knockbackScalar;
                 this.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
                 this.hitstunDuration = serializedMove.hitstunDuration;
-                
+                this.shieldDamage = serializedMove.shieldDamage;
                 break;
             case 1:
                 //Debug.Log("YES SHIELD");

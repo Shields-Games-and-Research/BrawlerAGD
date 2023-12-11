@@ -472,7 +472,6 @@ public class Player : MonoBehaviour
                 state = PlayerState.idle;
             }
         }
-
     }
 
     void OnTriggerExit2D(Collider2D collision) 
@@ -517,7 +516,7 @@ public class Player : MonoBehaviour
             StartCoroutine(InvincibilityCoroutine(0.1f));
         } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
         {
-            Debug.Log("continuous: shield blocked attack");
+            //Debug.Log("continuous: shield blocked attack");
         }
     }
 
@@ -542,6 +541,11 @@ public class Player : MonoBehaviour
         } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
         {
             Debug.Log("shield blocked attack");
+            move2.damageDurability -= collision.gameObject.GetComponent<Move>().shieldDamage;
+            if (move2.damageDurability <= 0)
+            {
+                Debug.Log("SHIELD IS BROKEN");
+            }
         }
     }
 
