@@ -389,7 +389,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.blue;
         move1.SetInactive();
-        move2.SetInactive();
+        //move2.SetInactive();
     }
 
     /**A player, from stun, can:
@@ -399,7 +399,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.magenta;
         move1.SetInactive();
-        move2.SetInactive();
+        //move2.SetInactive();
     }
 
     void updateLanding() { }
@@ -541,7 +541,9 @@ public class Player : MonoBehaviour
         } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
         {
             Debug.Log("shield blocked attack");
-            move2.damageDurability -= collision.gameObject.GetComponent<Move>().shieldDamage;
+            float currDurability = move2.damageDurability - collision.gameObject.GetComponent<Move>().shieldDamage;
+            move2.damageDurability = currDurability;
+            Debug.Log("current Shield durability: " + currDurability);
             if (move2.damageDurability <= 0)
             {
                 Debug.Log("SHIELD IS BROKEN");
