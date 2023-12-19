@@ -57,8 +57,8 @@ public class SerializedPlayer
         {1f, 15f}, // airJump
         {0.5f, 2.5f}, // mass
         {1f, 6f}, // drag
-        {0.7f, 1.5f}, // widthScale
-        {0.5f, 1.5f}, // heightScale
+        {0.7f, 1.5f}, // widthScale                                                                  //////
+        {0.5f, 1.5f}, // heightScale                                                                 ////// 
         {0.3f, 1.3f}, // gravityScale
         {0.1f, 0.3f}, // hitstunDamageScale
     };
