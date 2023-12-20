@@ -10,6 +10,7 @@ public class Controller
     public string jumpKey;
     public string pauseKey;
     public string move1Key;
+    public string move2Key;
 
     public Player player;
     public Player opponent;
@@ -30,6 +31,7 @@ public class Controller
         this.horizontalAxis = "";
         this.jumpKey = "";
         this.move1Key = "";
+        this.move2Key = "";
 
         this.playerTransform = player.gameObject.transform;
         this.mask = LayerMask.GetMask("Floor");
@@ -60,14 +62,16 @@ public class Controller
     {
         this.horizontalAxis = "HorizontalP1";
         this.jumpKey = "JumpP1";
-        this.move1Key = "AttackP1";
+        this.move1Key = "AttackP1_1";
+        this.move2Key = "AttackP1_2";
     }
 
     public void SetPlayer2Buttons() 
     {
         this.horizontalAxis = "HorizontalP2";
         this.jumpKey = "JumpP2";
-        this.move1Key = "AttackP2";
+        this.move1Key = "AttackP2_1";
+        this.move2Key = "AttackP2_2";
     }
 
     public virtual void Update()
@@ -78,7 +82,7 @@ public class Controller
     {
         //Initialize empty list for checking for platforms
         List<Collider2D> platforms = new List<Collider2D>();
-        //Create a filter to only check for "floor"
+        //Create a filter to only check for "floor" 
         ContactFilter2D platformFilter = new ContactFilter2D();
         platformFilter.SetLayerMask(this.mask);
         //Check for all platforms within a reasonable range of player
@@ -224,6 +228,7 @@ public class AI : Controller
     public bool pressRight;
     public bool pressJump;
     public bool pressMove1;
+    public bool pressMove2;
     public int recoveryTime;
     public int recoveryTimeLimit;
     public Vector2 targetMod;
@@ -382,6 +387,10 @@ public class AI : Controller
         if (code == this.move1Key)
         {
             return this.pressMove1;
+        }
+        if (code == this.move2Key)
+        {
+            return this.pressMove2;
         }
         return false;
     }

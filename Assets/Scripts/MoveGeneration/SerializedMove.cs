@@ -32,6 +32,31 @@ public class SerializedMove
     public float knockbackModY;
     //Base Hitstun duration
     public float hitstunDuration;
+    
+    //Shield Properties
+    // Is this move a shield? 0 = false, 1 = true
+    public int isShield;
+    // Can this shield break? 0 = false, 1 = true
+    public bool canBreak;
+    // How much damage a shield can take before breaking
+    public float damageDurability = 0.0f;
+    // The scale when the shield has full size (hasn't taken damage (example from smash bros.))
+    public float fullSizeScale = 1f;
+    // The scale when the shield has the smallest size (before breaking (example from smash bros.))
+    public float smallSizeScale = 0.2f;
+    // which shield state can the parry. 0 = disabled, 1 = startup, 2 = mid, 3 = end
+    public float parryState = 0;
+    // starting tick that a player can parry in, inclusive
+    public float parryWindowStart = 0;
+    // ending tick that a player can parry in, inclusive
+    public float parryWindowEnd = 0;
+    // which shield state can the parry. 0 = disabled, 1 = startup, 2 = mid, 3 = end
+    public float reflectionState = 0;
+    // starting tick that a player can reflect in, inclusive
+    public float reflectionWindowStart = 0;
+    // ending tick that a player can reflect in, inclusive
+    public float reflectionWindowEnd = 0;
+    
     //Move sprite index (where the sprite is in the folder)
     public int spriteIndex;
     public static float[,] ranges = {
