@@ -44,6 +44,12 @@ public class Player : MonoBehaviour
     //respawn location
     public Vector2 respawnLoc = new Vector2(0, 0);
 
+   //deathsounds
+    public AudioSource audioSource;
+    public AudioClip SFX_DeathA_Lg;
+    public AudioClip SFX_DeathA_Med;
+    public AudioClip SFX_DeathA_Sm;
+
     //stocks a player starts with - must be an integer, must be positive
     public float stocks = 3f;
 
@@ -135,6 +141,9 @@ public class Player : MonoBehaviour
         tm.anchor = TextAnchor.MiddleCenter;
         tm.characterSize = 0.065f;
         tm.fontSize = 60;
+
+        // audiosource 
+        audioSource = GetComponent<AudioSource>();
 
     }
 
@@ -685,7 +694,29 @@ public class Player : MonoBehaviour
             this.state = PlayerState.idle;
             StartCoroutine(arenaManager.NotificationCoroutine(this.playerName + " HAS LOST A STOCK"));
         }
-        
+
+
+        /// debug
+        if (SFX_DeathA_Lg == null) Debug.LogError("Large death sound is null");
+        if (SFX_DeathA_Med == null) Debug.LogError("Medium death sound is null");
+        if (SFX_DeathA_Sm == null) Debug.LogError("Small death sound is null");
+
+
+
+        // Play death sound based on player height
+        float playerHeight = transform.localScale.y;
+        if (playerHeight >= 1.3f)
+        {
+            audioSource.PlayOneShot(SFX_DeathA_Lg);
+        }
+        else if (playerHeight >= 0.8f)
+        {
+            audioSource.PlayOneShot(SFX_DeathA_Med);
+        }
+        else
+        {
+            audioSource.PlayOneShot(SFX_DeathA_Sm);
+        }
     }
 
     public void destroy()
