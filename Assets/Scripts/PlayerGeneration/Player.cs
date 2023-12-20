@@ -105,7 +105,8 @@ public class Player : MonoBehaviour
         attack,
         coolDown,
         landing,
-        stun
+        stun,
+        shielding
     }
     //default player state to idle on spawn.
     public PlayerState state = PlayerState.idle;
@@ -185,6 +186,9 @@ public class Player : MonoBehaviour
                 case PlayerState.stun:
                     updateStun();
                     break;
+                case PlayerState.shielding:
+                    updateShielding();
+                    break;
                 default:
                     state = PlayerState.idle;
                     break;
@@ -222,7 +226,7 @@ public class Player : MonoBehaviour
             }
         }
     }
-
+    
     void updatePlayerHUD() 
     {
         /*if (arenaManager.UIEnabled && !this.isDummy) 
@@ -274,7 +278,21 @@ public class Player : MonoBehaviour
      * jump
      * attack
      * be attacked
+     * shield
      */
+    private void updateShielding()
+    {
+        //Debug.Log("SHIELDING");
+        sr.color = Color.red;
+        move2.SetActive();
+        if (controller.GetKeyUp(controller.move2Key) || !controller.GetKeyHold(controller.move2Key))
+        {
+            performMove(move2, 2);
+            state = PlayerState.idle;
+            move2.SetInactive();
+        }
+    }
+
     void updateIdle()
     {
         sr.color = Color.white;
@@ -291,17 +309,27 @@ public class Player : MonoBehaviour
         if (controller.GetKeyDown(controller.move1Key))
         {
             //Debug.Log("Pressed Move1Key");
-            performMove(move1);
+            performMove(move1, 0);
         }
-
+        // assume it is a shield for now
         if (controller.GetKeyDown(controller.move2Key))
         {
+            if (move2.isShield == 1)
+            {
+                Debug.Log("Play Shield");
+            }
             //Debug.Log("Pressed Move2Key");
-            performMove(move2);
+            performMove(move2, 0);
         }
+        
+
+        /*if (controller.GetKeyHold(controller.move2Key))
+        {
+            performMove(move2, 1);
+        }*/
 
         move1.SetInactive();
-        move2.SetInactive();
+        //move2.SetInactive();
     }
 
     /**A player, from air, can:
@@ -319,9 +347,9 @@ public class Player : MonoBehaviour
 
         if (controller.GetKeyDown(controller.jumpKey)) { jump(); }
 
-        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1); }
+        if (controller.GetKeyDown(controller.move1Key)) { performMove(move1, 0); }
         
-        if (controller.GetKeyDown(controller.move2Key)) { performMove(move2); }
+        if (controller.GetKeyDown(controller.move2Key)) { performMove(move2, 0); }
 
         move1.SetInactive();
         
@@ -360,7 +388,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.red;
         move1.SetActive();
-        move2.SetActive();
+        //move2.SetActive();
     }
 
     /**A player, from cool down, can:
@@ -370,7 +398,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.blue;
         move1.SetInactive();
-        move2.SetInactive();
+        //move2.SetInactive();
     }
 
     /**A player, from stun, can:
@@ -380,7 +408,7 @@ public class Player : MonoBehaviour
     {
         sr.color = Color.magenta;
         move1.SetInactive();
-        move2.SetInactive();
+        //move2.SetInactive();
     }
 
     void updateLanding() { }
@@ -453,19 +481,23 @@ public class Player : MonoBehaviour
                 state = PlayerState.idle;
             }
         }
-
     }
 
     void OnTriggerExit2D(Collider2D collision) 
     {
         //Player has been hit by a move and is not currently invincible
-        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding))
         {
+            Debug.Log("OnTriggerExit2D: player hit by move");
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, tempMove.knockbackDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
+        }
+        else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
+        {
+            Debug.Log("on trigger exit: shield blocked attack");
         }
         //Player has left the arena
         if (collision.gameObject.CompareTag("Arena"))
@@ -477,8 +509,9 @@ public class Player : MonoBehaviour
     void OnTriggerStay2D(Collider2D collision) 
     {
         //Player has been hit by a move and is not currently invincible
-        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible) 
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding)) 
         {
+            Debug.Log("OnTriggerStay2D: player hit by move");
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             Vector2 collKnockbackDir = (transform.position - collision.gameObject.transform.position);
@@ -490,14 +523,18 @@ public class Player : MonoBehaviour
             }
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
+        } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
+        {
+            //Debug.Log("continuous: shield blocked attack");
         }
     }
 
     void OnTriggerEnter2D(Collider2D collision) 
     {
         //Player has been hit by a move and is not currently invincible
-        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible)
+        if (collision.gameObject.CompareTag("Attack") && !this.isInvincible && !(state == PlayerState.shielding))
         {
+            Debug.Log("OnTriggerEnter2D: player hit by move");
             Move tempMove = collision.gameObject.GetComponent<Move>();
             this.damage += tempMove.damageGiven;
             this.totalDamage += tempMove.damageGiven;
@@ -510,6 +547,16 @@ public class Player : MonoBehaviour
             }
             this.applyKnockback(collKnockbackDir, tempMove.knockbackScalar, convertedKBDirection, tempMove.hitstunDuration);
             StartCoroutine(InvincibilityCoroutine(0.1f));
+        } else if (collision.gameObject.CompareTag("Attack") && state == PlayerState.shielding)
+        {
+            Debug.Log("shield blocked attack");
+            float currDurability = move2.damageDurability - collision.gameObject.GetComponent<Move>().shieldDamage;
+            move2.damageDurability = currDurability;
+            Debug.Log("current Shield durability: " + currDurability);
+            if (move2.damageDurability <= 0)
+            {
+                Debug.Log("SHIELD IS BROKEN");
+            }
         }
     }
 
@@ -614,9 +661,10 @@ public class Player : MonoBehaviour
 
     }
 
-    public void performMove(Move move)
+    // int buttonState: 0 = down, 1 = hold, 2 = up
+    public void performMove(Move move, int buttonState)
     {
-        StartCoroutine(MoveCoroutine(move));
+        StartCoroutine(MoveCoroutine(move, buttonState));
     }
 
     //TODO: prevent player-facing KB
@@ -733,35 +781,59 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
-    IEnumerator MoveCoroutine(Move move)
+    
+    // int buttonState: 0 = down, 1 = hold, 2 = up
+    IEnumerator MoveCoroutine(Move move, int buttonState)
     {
-
-        state = PlayerState.warmUp;
-        yield return new WaitForSeconds(move.warmUpDuration);
-
-        state = PlayerState.attack;
-        yield return new WaitForSeconds(move.executionDuration);
-
-        state = PlayerState.coolDown;
-        yield return new WaitForSeconds(move.coolDownDuration);
-        //branch depending on air/ground
-        if (this.isGrounded)
+        if (move.isShield == 1)
         {
-            state = PlayerState.idle;
-        }
-        else 
-        {
-            if (!this.jumpsExhausted)
+            //Debug.Log("play shield");
+
+            if (buttonState == 0)
             {
-                state = PlayerState.air;
+                state = PlayerState.warmUp;
+                yield return new WaitForSeconds(move.warmUpDuration);
+                state = PlayerState.shielding;
+            }
+            /*else if (buttonState == 1)
+            {
+                //state = PlayerState.attack;
+                //yield return new WaitForSeconds(move.executionDuration);
+            }*/
+            else if (buttonState == 2)
+            {
+                state = PlayerState.coolDown;
+                yield return new WaitForSeconds(move.coolDownDuration);
+                Debug.Log("Shield End");
+            }
+        }
+        else
+        {
+            state = PlayerState.warmUp;
+            yield return new WaitForSeconds(move.warmUpDuration);
+
+            state = PlayerState.attack;
+            yield return new WaitForSeconds(move.executionDuration);
+
+            state = PlayerState.coolDown;
+            yield return new WaitForSeconds(move.coolDownDuration);
+            //branch depending on air/ground
+            if (this.isGrounded)
+            {
+                state = PlayerState.idle;
             }
             else 
             {
-                state = PlayerState.airJumpsExhausted;
-            }
+                if (!this.jumpsExhausted)
+                {
+                    state = PlayerState.air;
+                }
+                else 
+                {
+                    state = PlayerState.airJumpsExhausted;
+                }
+            }  
         }
-       
     }
 
     /**Takes a hitstun duration from a move, scales it to the player's current damage, and then sets that player to that state for that amount of time

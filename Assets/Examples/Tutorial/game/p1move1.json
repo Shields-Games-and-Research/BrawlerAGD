@@ -15,6 +15,7 @@
     "knockbackModY": 1,
     "hitstunDuration": 0.5,
     "spriteIndex": 75,
+    "shieldDamage": 10.0,
     "isShield": 0,
     "canBreak": 1,
     "damageDurability": 1.0,

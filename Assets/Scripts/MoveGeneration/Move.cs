@@ -35,6 +35,9 @@ public class Move : MonoBehaviour
     //Determines hitstun duration
     public float hitstunDuration;
 
+    //Determines damage to shield. compared to damageDurability
+    public float shieldDamage;
+    
     //Shield fields
     // Is this move a shield? 0 = false, 1 = true
     public int isShield;
@@ -69,6 +72,10 @@ public class Move : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (isShield == 1)
+        {
+            this.gameObject.tag = "Shield";
+        }
         sr = GetComponent<SpriteRenderer>();
         bc = GetComponent<BoxCollider2D>();
         //disable before starting play
@@ -126,7 +133,7 @@ public class Move : MonoBehaviour
                 this.knockbackScalar = serializedMove.knockbackScalar;
                 this.knockbackDirection = new Vector2(serializedMove.knockbackModX, serializedMove.knockbackModY).normalized;
                 this.hitstunDuration = serializedMove.hitstunDuration;
-                
+                this.shieldDamage = serializedMove.shieldDamage;
                 break;
             case 1:
                 //Debug.Log("YES SHIELD");
